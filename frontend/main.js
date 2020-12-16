@@ -27,16 +27,19 @@ async function obtenerCoordsEPSG() {
 async function obtenerGeoJson(lng, lat) {
 
     // Elimina las capas
-     elMapa.eachLayer((capa) => {
-        elMapa.removeLayer(capa);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(elMapa);
+     elMapa.eachLayer((layer) => {
+        if (layer.myTag && layer.myTag == "geoJson") {
+            elMapa.removeLayer(layer);
+        }
     });
 
     let geojson = await eel.obtenerGeoJson(lng, lat)();
 
-    L.geoJSON(geojson).addTo(elMapa)
+    L.geoJSON(geojson, {
+        onEachFeature: function(feature, layer) {
+            layer.myTag = "geoJson"
+        }
+    }).addTo(elMapa)
 }
 
 
