@@ -30,10 +30,10 @@ def obtenerGeoJson(lng, lat):
 
 
 @eel.expose
-def getVehiculos(tipoDeVehiculo='SVA'):
+def getDatos(tipoDeVehiculo='SVA'):
 
     try:
-        with open('./Datos/Vehiculos.json') as f:
+        with open('./Datos/Datos.json') as f:
             data = json.load(f)[tipoDeVehiculo]
             return json.dumps(data)
     except:

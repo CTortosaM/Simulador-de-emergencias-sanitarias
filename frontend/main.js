@@ -8,22 +8,49 @@ const coordsUniversitat = {
 //var sideBar = L.control.sidebar('sidebar').addTo(elMapa);
 let pointersSVA = L.layerGroup();
 let pointersSVB = L.layerGroup();
+let pointersBases = L.layerGroup();
 
 let baseLayers = {
-    "Base":L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    "Base": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     })
 }
 
-getVehiculos("SVA");
+getDatos("SVA");
+getDatos("SVB");
+getDatos("Base");
+
 let overlays = {
     "SVA": pointersSVA,
-    "SVB": pointersSVB
+    "SVB": pointersSVB,
+    "Bases": pointersBases
 }
+
+// Marcadores
+let marcadorSVA = L.AwesomeMarkers.icon({
+    icon: 'coffee',
+    markerColor: 'red',
+    prefix: 'ion'
+});
+
+let marcadorSVB = L.AwesomeMarkers.icon({
+    icon: 'home',
+    markerColor: 'blue',
+    prefix: 'ion'
+})
+
+let marcadorBase = L.AwesomeMarkers.icon({
+    icon: 'coffee',
+    markerColor: 'pink',
+    prefix: 'ion'
+})
+
+
+
 const elMapa = L.map('mapa', {
     zoomControl: false,
     minZoom: 7,
-    layers: [baseLayers["Base"], pointersSVA, pointersSVB]
+    layers: [baseLayers["Base"], pointersSVA, pointersSVB, pointersBases]
 });
 
 L.control.zoom({
@@ -40,7 +67,6 @@ L.control.layers(baseLayers, overlays).addTo(elMapa);
 async function obtenerCoordsEPSG() {
     let coords = await eel.obtenerCoordsEPSG()();
     coords = JSON.parse(coords);
-    console.log(coords);
     elMapa.setView([coords.long, coords.lat], 10);
 }
 
@@ -62,31 +88,43 @@ async function obtenerGeoJson(lng, lat) {
     }).addTo(elMapa)
 }
 
-async function getVehiculos(tipo) {
-    let datosVehiculos = await eel.getVehiculos(tipo)();
+async function getDatos(tipo) {
+    let datosVehiculos = await eel.getDatos(tipo)();
 
     if (!datosVehiculos) return;
 
     let lista = JSON.parse(datosVehiculos);
 
     lista.forEach(place => {
-        console.log("HOLA")
         let contenidoMarcador = `
              <b>
                  ${place.Descripcion}
              </b>
-             <p>
-                 Disponibilidad: ${place.Disponibilidad}
-             </p>
-         `
-        let marker = L.marker([place.Lat, place.Lng]).bindPopup(contenidoMarcador);
+        `;
+
+        if (tipo === "SVA" || tipo === "SVB") {
+            contenidoMarcador += `
+                <p>
+                    Disponibilidad: ${place.Disponibilidad}
+                </p>
+            `
+        };
+
+        let marker;
 
         switch (tipo) {
             case "SVA":
+                marker = L.marker([place.Lat, place.Lng], {icon: marcadorSVA}).bindPopup(contenidoMarcador);
                 marker.addTo(pointersSVA);
                 break;
             case "SVB":
+                marker = L.marker([place.Lat, place.Lng], {icon: marcadorSVB}).bindPopup(contenidoMarcador);
                 marker.addTo(pointersSVB);
+                break;
+
+            case "Base":
+                marker = L.marker([place.Lat, place.Lng], {icon: marcadorBase}).bindPopup(contenidoMarcador);
+                marker.addTo(pointersBases);
                 break;
         }
     });
