@@ -28,21 +28,21 @@ let overlays = {
 
 // Marcadores
 let marcadorSVA = L.AwesomeMarkers.icon({
-    icon: 'coffee',
+    icon: 'ambulance',
     markerColor: 'red',
-    prefix: 'ion'
+    prefix: 'fa'
 });
 
 let marcadorSVB = L.AwesomeMarkers.icon({
-    icon: 'home',
+    icon: 'ambulance',
     markerColor: 'blue',
-    prefix: 'ion'
+    prefix: 'fa'
 })
 
 let marcadorBase = L.AwesomeMarkers.icon({
-    icon: 'coffee',
+    icon: 'medkit',
     markerColor: 'pink',
-    prefix: 'ion'
+    prefix: 'fa'
 })
 
 

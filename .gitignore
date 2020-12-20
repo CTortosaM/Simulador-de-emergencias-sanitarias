@@ -1,7 +1,7 @@
 #Mis folders
 Datos
 *.log
-
+Plugins
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
