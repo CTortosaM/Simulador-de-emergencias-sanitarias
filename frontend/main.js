@@ -15,6 +15,11 @@ elMapa.on('click', (event => {
     let coord = event.latlng;
     obtenerGeoJson(coord.lat, coord.lng)
 }));
+
+//var sideBar = L.control.sidebar('sidebar').addTo(elMapa);
+let pointers = [];
+
+getVehiculos("SVA");
 // ---------------
 
 async function obtenerCoordsEPSG() {
@@ -28,7 +33,7 @@ async function obtenerGeoJson(lng, lat) {
 
     // Elimina las capas
      elMapa.eachLayer((layer) => {
-        if (layer.myTag && layer.myTag == "geoJson") {
+        if (layer.myTag && layer.myTag == "asincrona") {
             elMapa.removeLayer(layer);
         }
     });
@@ -37,14 +42,19 @@ async function obtenerGeoJson(lng, lat) {
 
     L.geoJSON(geojson, {
         onEachFeature: function(feature, layer) {
-            layer.myTag = "geoJson"
+            layer.myTag = "asincrona"
         }
     }).addTo(elMapa)
 }
 
+async function getVehiculos (tipo) {
+    let datosVehiculos = await eel.getVehiculos(tipo)();
+    console.log(datosVehiculos);
+}
+
 
 obtenerCoordsEPSG();
-obtenerGeoJson(coordsUniversitat.lng, coordsUniversitat.lat);
+//obtenerGeoJson(coordsUniversitat.lng, coordsUniversitat.lat);
 
 // Bloquejat per problemes en CORS
 //obtenerGeoJson();

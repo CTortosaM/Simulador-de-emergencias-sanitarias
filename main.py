@@ -1,7 +1,8 @@
 import eel
 import json
 import requests
-
+import csv
+import pandas as pd
 # Exposa la funció al script JS
 @eel.expose
 def obtenerCoordsEPSG():
@@ -25,6 +26,21 @@ def obtenerGeoJson(lng, lat):
     }
     call = requests.post('https://api.openrouteservice.org/v2/isochrones/driving-car', json=body, headers=headers)
     return call.json()
+
+
+
+@eel.expose
+def getVehiculos(tipoDeVehiculo='SVA'):
+
+    print("Tipo de vehiculo requerido: {}".format(tipoDeVehiculo))
+
+    try:
+        with open('./Datos/SVA.json') as f:
+            data = json.load(f)
+            return json.dumps(data)
+    except:
+        return None
+
 
 eel.init("frontend")
 eel.start('main.html', cmdline_args=['--start-fullscreen'], size=(1280, 720), position=(0,0))

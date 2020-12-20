@@ -1,8 +1,24 @@
-html, body, #mapa {
+html, body,#contenedor, #mapa {
     height: 100%;
     width: 100%;
+    font-family: 'Lato', sans-serif;
 }
 
 #mapa {
-    min-height: 100vh;
+    z-index: 0;
+}
+
+#panelDeMandos {
+    opacity: 95%;
+    width: 25%;
+    max-width: 400px;
+    box-shadow: 5px;
+    background-color: rgb(59, 59, 59);
+    position: fixed;
+    z-index: 1;
+    height: 100%;
+    top: 0;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 5em;
 }
