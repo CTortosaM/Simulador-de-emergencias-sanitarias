@@ -1,9 +1,10 @@
-const coordsUniversitat = {
-    lng: 38.955,
-    lat: -0.1655,
-    zoom: 3
-}
+/*
+    Carlos Tortosa Micó
+    Trabajo final de Grado
+    Grado en Tecnologías Interactivas
 
+    14/12/2020
+*/
 // LEAFLET
 //var sideBar = L.control.sidebar('sidebar').addTo(elMapa);
 let pointersSVA = L.layerGroup();
@@ -81,8 +82,7 @@ async function obtenerCoordsEPSG() {
 
 async function obtenerGeoJson(lng, lat) {
 
-    let nuevasCoords = new L.LatLng(lng, lat);
-    marcadorIsocrona.setLatLng(nuevasCoords);
+    
 
     // Elimina las capas
     elMapa.eachLayer((layer) => {
@@ -97,7 +97,10 @@ async function obtenerGeoJson(lng, lat) {
         onEachFeature: function (feature, layer) {
             layer.myTag = "asincrona"
         }
-    }).addTo(elMapa)
+    }).addTo(elMapa);
+
+    let nuevasCoords = new L.LatLng(lng, lat);
+    marcadorIsocrona.setLatLng(nuevasCoords);
 }
 
 async function getDatos(tipo) {

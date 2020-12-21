@@ -1,3 +1,10 @@
+# Carlos Tortosa Micó
+# Trabajo final de grado
+# Grado en tecnologías interactivas
+# Escola Politècnica Superior de Gandía
+
+# 14/12/2020
+
 import eel
 import json
 import requests
