@@ -72,6 +72,17 @@ L.control.layers(baseLayers, overlays).addTo(elMapa);
 
 let marcadorIsocrona = L.marker([39, -0.6], {icon: iconoIsocrona});
 marcadorIsocrona.addTo(elMapa);
+
+let tiempoDeIsocrona = 15;
+
+let sliderDeTiempo = document.getElementById("sliderTiempo");
+let cantidadDeTiempoIsocrona = document.getElementById("cantidadDeTiempoIsocrona");
+sliderDeTiempo.value = 15;
+
+sliderDeTiempo.oninput = (ev) => {
+    tiempoDeIsocrona = parseInt(sliderDeTiempo.value);
+    cantidadDeTiempoIsocrona.innerText = tiempoDeIsocrona + " min";
+}
 // ---------------
 
 async function obtenerCoordsEPSG() {
@@ -81,9 +92,6 @@ async function obtenerCoordsEPSG() {
 }
 
 async function obtenerGeoJson(lng, lat) {
-
-    
-
     // Elimina las capas
     elMapa.eachLayer((layer) => {
         if (layer.myTag && layer.myTag == "asincrona") {
@@ -92,7 +100,7 @@ async function obtenerGeoJson(lng, lat) {
     });
 
     
-    let geojson = await eel.obtenerGeoJson(lng, lat)();
+    let geojson = await eel.obtenerGeoJson(lng, lat, tiempoDeIsocrona)();
     L.geoJSON(geojson, {
         onEachFeature: function (feature, layer) {
             layer.myTag = "asincrona"

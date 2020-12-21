@@ -23,8 +23,8 @@ def obtenerCoordsEPSG():
     return coordenadas
 
 @eel.expose
-def obtenerGeoJson(lng, lat):
-    body = {"locations":[[lat, lng]],"range":[900]}
+def obtenerGeoJson(lng, lat, tiempoEnMinutos):
+    body = {"locations":[[lat, lng]],"range":[tiempoEnMinutos*60]}
 
     headers = {
         'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
