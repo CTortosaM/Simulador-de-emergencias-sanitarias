@@ -45,6 +45,12 @@ let marcadorBase = L.AwesomeMarkers.icon({
     prefix: 'fa'
 })
 
+let iconoIsocrona = L.AwesomeMarkers.icon({
+    icon: "clock",
+    markerColor: 'orange',
+    prefix: 'fa'
+})
+
 
 
 const elMapa = L.map('mapa', {
@@ -62,6 +68,9 @@ elMapa.on('click', (event => {
     obtenerGeoJson(coord.lat, coord.lng)
 }));
 L.control.layers(baseLayers, overlays).addTo(elMapa);
+
+let marcadorIsocrona = L.marker([39, -0.6], {icon: iconoIsocrona});
+marcadorIsocrona.addTo(elMapa);
 // ---------------
 
 async function obtenerCoordsEPSG() {
@@ -72,6 +81,9 @@ async function obtenerCoordsEPSG() {
 
 async function obtenerGeoJson(lng, lat) {
 
+    let nuevasCoords = new L.LatLng(lng, lat);
+    marcadorIsocrona.setLatLng(nuevasCoords);
+
     // Elimina las capas
     elMapa.eachLayer((layer) => {
         if (layer.myTag && layer.myTag == "asincrona") {
@@ -79,8 +91,8 @@ async function obtenerGeoJson(lng, lat) {
         }
     });
 
+    
     let geojson = await eel.obtenerGeoJson(lng, lat)();
-
     L.geoJSON(geojson, {
         onEachFeature: function (feature, layer) {
             layer.myTag = "asincrona"
