@@ -9,7 +9,6 @@ import eel
 import json
 import requests
 import csv
-import pandas as pd
 # Exposa la funció al script JS
 @eel.expose
 def obtenerCoordsEPSG():
