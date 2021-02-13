@@ -11,6 +11,8 @@ let pointersSVA = L.layerGroup();
 let pointersSVB = L.layerGroup();
 let pointersBases = L.layerGroup();
 
+let marcadores = [];
+
 let baseLayers = {
     "Base": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -84,6 +86,9 @@ sliderDeTiempo.oninput = (ev) => {
     cantidadDeTiempoIsocrona.innerText = tiempoDeIsocrona + " min";
 }
 // ---------------
+const onClickMarcador = (lat, lng) => {
+    obtenerGeoJson(lat, lng);
+}
 
 async function obtenerCoordsEPSG() {
     let coords = await eel.obtenerCoordsEPSG()();
@@ -134,20 +139,21 @@ async function getDatos(tipo) {
         };
 
         let marker;
+        marcadores.push(marker);
 
         switch (tipo) {
             case "SVA":
                 marker = L.marker([place.Lat, place.Lng], {icon: marcadorSVA}).bindPopup(contenidoMarcador);
-                marker.addTo(pointersSVA);
+                marker.addTo(pointersSVA).on('click', onClickMarcador(place.Lat, place.Lng));;
                 break;
             case "SVB":
                 marker = L.marker([place.Lat, place.Lng], {icon: marcadorSVB}).bindPopup(contenidoMarcador);
-                marker.addTo(pointersSVB);
+                marker.addTo(pointersSVB).on('click', onClickMarcador(place.Lat, place.Lng));;
                 break;
 
             case "Base":
                 marker = L.marker([place.Lat, place.Lng], {icon: marcadorBase}).bindPopup(contenidoMarcador);
-                marker.addTo(pointersBases);
+                marker.addTo(pointersBases).on('click', onClickMarcador(place.Lat, place.Lng));
                 break;
         }
     });
