@@ -10,6 +10,7 @@
 let pointersSVA = L.layerGroup();
 let pointersSVB = L.layerGroup();
 let pointersBases = L.layerGroup();
+let isocronas = [];
 
 let marcadores = [];
 
@@ -62,13 +63,31 @@ const elMapa = L.map('mapa', {
     layers: [baseLayers["Base"], pointersSVA, pointersSVB, pointersBases]
 });
 
+// ------------------------------------------------------------------------
+
 L.control.zoom({
     position: 'topright'
 }).addTo(elMapa);
 
 elMapa.on('click', (event => {
     let coord = event.latlng;
-    obtenerGeoJson(coord.lat, coord.lng)
+    obtenerGeoJson(coord.lat, coord.lng).then((json) => {
+        try {
+            if (!isocronas.includes(json)) {
+
+                isocronas.push(json);
+                json.addTo(elMapa);
+
+                let nuevasCoords = new L.LatLng(coord.lat, coord.lng);
+                marcadorIsocrona.setLatLng(nuevasCoords);
+            }
+        }
+
+        catch(errorAlAñadirJson) {
+            console.error(errorAlAñadirJson);
+        }
+    });
+    //if (json) json.addTo(elMapa);
 }));
 L.control.layers(baseLayers, overlays).addTo(elMapa);
 
@@ -87,7 +106,7 @@ sliderDeTiempo.oninput = (ev) => {
 }
 // ---------------
 const onClickMarcador = (lat, lng) => {
-    obtenerGeoJson(lat, lng);
+    //obtenerGeoJson(lat, lng);
 }
 
 async function obtenerCoordsEPSG() {
@@ -106,15 +125,17 @@ async function obtenerGeoJson(lng, lat) {
 
     
     let geojson = await eel.obtenerGeoJson(lng, lat, tiempoDeIsocrona)();
-    L.geoJSON(geojson, {
+    return L.geoJSON(geojson, {
         onEachFeature: function (feature, layer) {
             layer.myTag = "asincrona"
         }
-    }).addTo(elMapa);
+    });
 
-    let nuevasCoords = new L.LatLng(lng, lat);
-    marcadorIsocrona.setLatLng(nuevasCoords);
+    //let nuevasCoords = new L.LatLng(lng, lat);
+    //marcadorIsocrona.setLatLng(nuevasCoords);
 }
+
+
 
 async function getDatos(tipo) {
     let datosVehiculos = await eel.getDatos(tipo)();
@@ -139,7 +160,7 @@ async function getDatos(tipo) {
         };
 
         let marker;
-        marcadores.push(marker);
+        
 
         switch (tipo) {
             case "SVA":
@@ -156,6 +177,9 @@ async function getDatos(tipo) {
                 marker.addTo(pointersBases).on('click', onClickMarcador(place.Lat, place.Lng));
                 break;
         }
+
+        marcadores.push(marker);
+        
     });
 }
 
