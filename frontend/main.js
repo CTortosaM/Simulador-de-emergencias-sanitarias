@@ -71,19 +71,16 @@ L.control.zoom({
 
 elMapa.on('click', (event => {
     let coord = event.latlng;
-    obtenerGeoJson(coord.lat, coord.lng).then((json) => {
+    obtenerGeoJson(coord.lat, coord.lng, "isocrona").then((json) => {
         try {
-            if (!isocronas.includes(json)) {
 
                 isocronas.push(json);
                 json.addTo(elMapa);
 
                 let nuevasCoords = new L.LatLng(coord.lat, coord.lng);
                 marcadorIsocrona.setLatLng(nuevasCoords);
-            }
-        }
-
-        catch(errorAlAñadirJson) {
+            
+        } catch (errorAlAñadirJson) {
             console.error(errorAlAñadirJson);
         }
     });
@@ -91,10 +88,13 @@ elMapa.on('click', (event => {
 }));
 L.control.layers(baseLayers, overlays).addTo(elMapa);
 
-let marcadorIsocrona = L.marker([39, -0.6], {icon: iconoIsocrona});
+let marcadorIsocrona = L.marker([39, -0.6], {
+    icon: iconoIsocrona
+});
 marcadorIsocrona.addTo(elMapa);
 
 let tiempoDeIsocrona = 15;
+let todasLasIsocronasVisibles = false;
 
 let sliderDeTiempo = document.getElementById("sliderTiempo");
 let cantidadDeTiempoIsocrona = document.getElementById("cantidadDeTiempoIsocrona");
@@ -106,7 +106,13 @@ sliderDeTiempo.oninput = (ev) => {
 }
 // ---------------
 const onClickMarcador = (lat, lng) => {
-    //obtenerGeoJson(lat, lng);
+    obtenerGeoJson(lat,lng, "marcador").then((json) => {
+        try {
+            json.addTo(elMapa);
+        } catch (error) {
+            console.error(error);
+        }
+    })
 }
 
 async function obtenerCoordsEPSG() {
@@ -115,19 +121,19 @@ async function obtenerCoordsEPSG() {
     elMapa.setView([coords.long, coords.lat], 10);
 }
 
-async function obtenerGeoJson(lng, lat) {
+async function obtenerGeoJson(lng, lat, tag) {
     // Elimina las capas
     elMapa.eachLayer((layer) => {
-        if (layer.myTag && layer.myTag == "asincrona") {
+        if (layer.myTag && layer.myTag == "isocrona") {
             elMapa.removeLayer(layer);
         }
     });
 
-    
+
     let geojson = await eel.obtenerGeoJson(lng, lat, tiempoDeIsocrona)();
     return L.geoJSON(geojson, {
         onEachFeature: function (feature, layer) {
-            layer.myTag = "asincrona"
+            layer.myTag = tag
         }
     });
 
@@ -160,27 +166,52 @@ async function getDatos(tipo) {
         };
 
         let marker;
-        
+
 
         switch (tipo) {
             case "SVA":
-                marker = L.marker([place.Lat, place.Lng], {icon: marcadorSVA}).bindPopup(contenidoMarcador);
+                marker = L.marker([place.Lat, place.Lng], {
+                    icon: marcadorSVA
+                }).bindPopup(contenidoMarcador);
                 marker.addTo(pointersSVA).on('click', onClickMarcador(place.Lat, place.Lng));;
                 break;
             case "SVB":
-                marker = L.marker([place.Lat, place.Lng], {icon: marcadorSVB}).bindPopup(contenidoMarcador);
+                marker = L.marker([place.Lat, place.Lng], {
+                    icon: marcadorSVB
+                }).bindPopup(contenidoMarcador);
                 marker.addTo(pointersSVB).on('click', onClickMarcador(place.Lat, place.Lng));;
                 break;
 
             case "Base":
-                marker = L.marker([place.Lat, place.Lng], {icon: marcadorBase}).bindPopup(contenidoMarcador);
+                marker = L.marker([place.Lat, place.Lng], {
+                    icon: marcadorBase
+                }).bindPopup(contenidoMarcador);
                 marker.addTo(pointersBases).on('click', onClickMarcador(place.Lat, place.Lng));
                 break;
         }
 
         marcadores.push(marker);
-        
+
     });
+}
+
+function toggleIsocronas() {
+    todasLasIsocronasVisibles = !todasLasIsocronasVisibles;
+
+    if (todasLasIsocronasVisibles) {
+        isocronas.forEach((isocrona) => {
+            console.log(isocrona)
+            if (!elMapa.hasLayer(isocrona)) {
+                isocrona.addTo(elMapa);
+            }
+        })
+    } else {
+        elMapa.eachLayer((layer) => {
+            if (layer.tag == "isocrona") {
+                elMapa.removeLayer(layer);
+            }
+        })
+    }
 }
 
 
