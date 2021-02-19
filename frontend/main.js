@@ -10,7 +10,7 @@
 let pointersSVA = L.layerGroup();
 let pointersSVB = L.layerGroup();
 let pointersBases = L.layerGroup();
-let isocronas = [];
+let isocronas = {};
 
 let marcadores = [];
 
@@ -74,12 +74,12 @@ elMapa.on('click', (event => {
     obtenerGeoJson(coord.lat, coord.lng, "isocrona").then((json) => {
         try {
 
-                isocronas.push(json);
-                json.addTo(elMapa);
+            isocronas[coord.lat + '/' + coord.lng] = json;
+            json.addTo(elMapa);
 
-                let nuevasCoords = new L.LatLng(coord.lat, coord.lng);
-                marcadorIsocrona.setLatLng(nuevasCoords);
-            
+            let nuevasCoords = new L.LatLng(coord.lat, coord.lng);
+            marcadorIsocrona.setLatLng(nuevasCoords);
+
         } catch (errorAlAñadirJson) {
             console.error(errorAlAñadirJson);
         }
@@ -106,13 +106,17 @@ sliderDeTiempo.oninput = (ev) => {
 }
 // ---------------
 const onClickMarcador = (lat, lng) => {
-    obtenerGeoJson(lat,lng, "marcador").then((json) => {
-        try {
-            json.addTo(elMapa);
-        } catch (error) {
-            console.error(error);
-        }
-    })
+    if (!isocronas[lat + '/' + lng]) {
+        obtenerGeoJson(lat, lng, "marcador").then((json) => {
+            console.log("la he tenido que buscar");
+            try {
+                isocronas[lat + '/' + lng] = json;
+                json.addTo(elMapa);
+            } catch (error) {
+                console.error(error);
+            }
+        })
+    }
 }
 
 async function obtenerCoordsEPSG() {
@@ -173,20 +177,26 @@ async function getDatos(tipo) {
                 marker = L.marker([place.Lat, place.Lng], {
                     icon: marcadorSVA
                 }).bindPopup(contenidoMarcador);
-                marker.addTo(pointersSVA).on('click', onClickMarcador(place.Lat, place.Lng));;
+                marker.addTo(pointersSVA).on('click', function () {
+                    onClickMarcador(place.Lat, place.Lng)
+                });;
                 break;
             case "SVB":
                 marker = L.marker([place.Lat, place.Lng], {
                     icon: marcadorSVB
                 }).bindPopup(contenidoMarcador);
-                marker.addTo(pointersSVB).on('click', onClickMarcador(place.Lat, place.Lng));;
+                marker.addTo(pointersSVB).on('click', function () {
+                    onClickMarcador(place.Lat, place.Lng)
+                });;
                 break;
 
             case "Base":
                 marker = L.marker([place.Lat, place.Lng], {
                     icon: marcadorBase
                 }).bindPopup(contenidoMarcador);
-                marker.addTo(pointersBases).on('click', onClickMarcador(place.Lat, place.Lng));
+                marker.addTo(pointersBases).on('click', function () {
+                    onClickMarcador(place.Lat, place.Lng)
+                });
                 break;
         }
 
