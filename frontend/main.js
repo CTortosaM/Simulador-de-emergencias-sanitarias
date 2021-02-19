@@ -104,18 +104,35 @@ sliderDeTiempo.oninput = (ev) => {
     tiempoDeIsocrona = parseInt(sliderDeTiempo.value);
     cantidadDeTiempoIsocrona.innerText = tiempoDeIsocrona + " min";
 }
+
+sliderDeTiempo.onchange = (ev) => {
+    isocronas = {};
+    elMapa.eachLayer((layer) => {
+        if (layer.myTag == "marcador") {
+            elMapa.removeLayer(layer);
+        }
+    })
+}
 // ---------------
 const onClickMarcador = (lat, lng) => {
     if (!isocronas[lat + '/' + lng]) {
         obtenerGeoJson(lat, lng, "marcador").then((json) => {
-            console.log("la he tenido que buscar");
             try {
                 isocronas[lat + '/' + lng] = json;
+                isocronas[lat + '/' + lng].visible = true;
                 json.addTo(elMapa);
             } catch (error) {
                 console.error(error);
             }
         })
+    } else {
+        if (isocronas[lat + '/' + lng].visible) {
+            elMapa.removeLayer(isocronas[lat + '/' + lng]);
+            isocronas[lat + '/' + lng].visible = false;
+        } else {
+            isocronas[lat + '/' + lng].addTo(elMapa);
+            isocronas[lat + '/' + lng].visible = true;
+        }
     }
 }
 
@@ -207,14 +224,12 @@ async function getDatos(tipo) {
 
 function toggleIsocronas() {
     todasLasIsocronasVisibles = !todasLasIsocronasVisibles;
+    console.log(todasLasIsocronasVisibles);
 
     if (todasLasIsocronasVisibles) {
-        isocronas.forEach((isocrona) => {
-            console.log(isocrona)
-            if (!elMapa.hasLayer(isocrona)) {
-                isocrona.addTo(elMapa);
-            }
-        })
+        for (let [coords, isocrona] of Object.entries(isocronas)) {
+            isocrona.addTo(elMapa);
+        }
     } else {
         elMapa.eachLayer((layer) => {
             if (layer.tag == "isocrona") {
