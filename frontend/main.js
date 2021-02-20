@@ -74,7 +74,8 @@ elMapa.on('click', (event => {
     obtenerGeoJson(coord.lat, coord.lng, "isocrona").then((json) => {
         try {
 
-            isocronas[coord.lat + '/' + coord.lng] = json;
+            isocronas[coord.lat + '/' + coord.lng] = {};
+            isocronas[coord.lat + '/' + coord.lng].isocrona = json;
             json.addTo(elMapa);
 
             let nuevasCoords = new L.LatLng(coord.lat, coord.lng);
@@ -95,6 +96,7 @@ marcadorIsocrona.addTo(elMapa);
 
 let tiempoDeIsocrona = 15;
 let todasLasIsocronasVisibles = false;
+todasLasIsocronasVisibles.add
 
 let sliderDeTiempo = document.getElementById("sliderTiempo");
 let cantidadDeTiempoIsocrona = document.getElementById("cantidadDeTiempoIsocrona");
@@ -118,7 +120,8 @@ const onClickMarcador = (lat, lng) => {
     if (!isocronas[lat + '/' + lng]) {
         obtenerGeoJson(lat, lng, "marcador").then((json) => {
             try {
-                isocronas[lat + '/' + lng] = json;
+                isocronas[lat + '/' + lng] = {};
+                isocronas[lat + '/' + lng].isocrona = json;
                 isocronas[lat + '/' + lng].visible = true;
                 json.addTo(elMapa);
             } catch (error) {
@@ -127,10 +130,10 @@ const onClickMarcador = (lat, lng) => {
         })
     } else {
         if (isocronas[lat + '/' + lng].visible) {
-            elMapa.removeLayer(isocronas[lat + '/' + lng]);
+            elMapa.removeLayer(isocronas[lat + '/' + lng].isocrona);
             isocronas[lat + '/' + lng].visible = false;
         } else {
-            isocronas[lat + '/' + lng].addTo(elMapa);
+            isocronas[lat + '/' + lng].isocrona.addTo(elMapa);
             isocronas[lat + '/' + lng].visible = true;
         }
     }
@@ -224,16 +227,21 @@ async function getDatos(tipo) {
 
 function toggleIsocronas() {
     todasLasIsocronasVisibles = !todasLasIsocronasVisibles;
-    console.log(todasLasIsocronasVisibles);
 
-    if (todasLasIsocronasVisibles) {
-        for (let [coords, isocrona] of Object.entries(isocronas)) {
-            isocrona.addTo(elMapa);
-        }
+    capas = Object.keys(isocronas);
+
+    if (!todasLasIsocronasVisibles) {
+        capas.forEach((capa) => {
+            if (elMapa.hasLayer(isocronas[capa].isocrona)) {
+                elMapa.removeLayer(isocronas[capa].isocrona);
+                isocronas[capa].visible = false;
+            }
+        })
     } else {
-        elMapa.eachLayer((layer) => {
-            if (layer.tag == "isocrona") {
-                elMapa.removeLayer(layer);
+        capas.forEach((capa) => {
+            if (!elMapa.hasLayer(isocronas[capa].isocrona)) {
+                isocronas[capa].isocrona.addTo(elMapa);
+                isocronas[capa].visible = true;
             }
         })
     }
