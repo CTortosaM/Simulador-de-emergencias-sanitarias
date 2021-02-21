@@ -30,6 +30,14 @@ let overlays = {
     "Bases": pointersBases
 }
 
+// Colores para las isócronas
+const coloresIsocronas =  {
+    "SVA": "#e61212",
+    "SVB":"#129fe6",
+    "Base": "#e630af",
+    "Seleccionable": "#d99725"
+}
+
 // Marcadores
 let marcadorSVA = L.AwesomeMarkers.icon({
     icon: 'ambulance',
@@ -71,7 +79,7 @@ L.control.zoom({
 
 elMapa.on('click', (event => {
     let coord = event.latlng;
-    obtenerGeoJson(coord.lat, coord.lng, "isocrona").then((json) => {
+    obtenerGeoJson(coord.lat, coord.lng, "isocrona", coloresIsocronas.Seleccionable).then((json) => {
         try {
 
             isocronas[coord.lat + '/' + coord.lng] = {};
@@ -116,9 +124,9 @@ sliderDeTiempo.onchange = (ev) => {
     })
 }
 // ---------------
-const onClickMarcador = (lat, lng) => {
+const onClickMarcador = (lat, lng, tipo) => {
     if (!isocronas[lat + '/' + lng]) {
-        obtenerGeoJson(lat, lng, "marcador").then((json) => {
+        obtenerGeoJson(lat, lng, "marcador", coloresIsocronas[tipo]).then((json) => {
             try {
                 isocronas[lat + '/' + lng] = {};
                 isocronas[lat + '/' + lng].isocrona = json;
@@ -145,7 +153,7 @@ async function obtenerCoordsEPSG() {
     elMapa.setView([coords.long, coords.lat], 10);
 }
 
-async function obtenerGeoJson(lng, lat, tag) {
+async function obtenerGeoJson(lng, lat, tag, color) {
     // Elimina las capas
     elMapa.eachLayer((layer) => {
         if (layer.myTag && layer.myTag == "isocrona") {
@@ -158,6 +166,9 @@ async function obtenerGeoJson(lng, lat, tag) {
     return L.geoJSON(geojson, {
         onEachFeature: function (feature, layer) {
             layer.myTag = tag
+        },
+        style: {
+            color: color
         }
     });
 
@@ -198,7 +209,7 @@ async function getDatos(tipo) {
                     icon: marcadorSVA
                 }).bindPopup(contenidoMarcador);
                 marker.addTo(pointersSVA).on('click', function () {
-                    onClickMarcador(place.Lat, place.Lng)
+                    onClickMarcador(place.Lat, place.Lng, "SVA")
                 });;
                 break;
             case "SVB":
@@ -206,7 +217,7 @@ async function getDatos(tipo) {
                     icon: marcadorSVB
                 }).bindPopup(contenidoMarcador);
                 marker.addTo(pointersSVB).on('click', function () {
-                    onClickMarcador(place.Lat, place.Lng)
+                    onClickMarcador(place.Lat, place.Lng, "SVB")
                 });;
                 break;
 
@@ -215,7 +226,7 @@ async function getDatos(tipo) {
                     icon: marcadorBase
                 }).bindPopup(contenidoMarcador);
                 marker.addTo(pointersBases).on('click', function () {
-                    onClickMarcador(place.Lat, place.Lng)
+                    onClickMarcador(place.Lat, place.Lng, "Base")
                 });
                 break;
         }
