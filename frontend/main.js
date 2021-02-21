@@ -123,6 +123,14 @@ sliderDeTiempo.onchange = (ev) => {
         }
     })
 }
+// ------------------------------------------------
+
+/**
+ * Evento onClick de los marcadores
+ * @param {Float} lat 
+ * @param {Float} lng 
+ * @param {String} tipo 
+ */
 // ---------------
 const onClickMarcador = (lat, lng, tipo) => {
     if (!isocronas[lat + '/' + lng]) {
@@ -147,12 +155,23 @@ const onClickMarcador = (lat, lng, tipo) => {
     }
 }
 
+/**
+ * 
+ */
 async function obtenerCoordsEPSG() {
     let coords = await eel.obtenerCoordsEPSG()();
     coords = JSON.parse(coords);
     elMapa.setView([coords.long, coords.lat], 10);
 }
 
+/**
+ * 
+ * @param {number} lng 
+ * @param {number} lat 
+ * @param {String} tag 
+ * @param {String} color
+ * @returns {GeoJson} layer
+ */
 async function obtenerGeoJson(lng, lat, tag, color) {
     // Elimina las capas
     elMapa.eachLayer((layer) => {
@@ -162,8 +181,8 @@ async function obtenerGeoJson(lng, lat, tag, color) {
     });
 
 
-    let geojson = await eel.obtenerGeoJson(lng, lat, tiempoDeIsocrona)();
-    return L.geoJSON(geojson, {
+    let geojsonHTTP = await eel.obtenerGeoJson(lng, lat, tiempoDeIsocrona)();
+    let geoJson = L.geoJSON(geojsonHTTP, {
         onEachFeature: function (feature, layer) {
             layer.myTag = tag
         },
@@ -171,6 +190,9 @@ async function obtenerGeoJson(lng, lat, tag, color) {
             color: color
         }
     });
+
+    console.log(geoJson);
+    return geoJson;
 
     //let nuevasCoords = new L.LatLng(lng, lat);
     //marcadorIsocrona.setLatLng(nuevasCoords);
@@ -260,7 +282,3 @@ function toggleIsocronas() {
 
 
 obtenerCoordsEPSG();
-//obtenerGeoJson(coordsUniversitat.lng, coordsUniversitat.lat);
-
-// Bloquejat per problemes en CORS
-//obtenerGeoJson();
