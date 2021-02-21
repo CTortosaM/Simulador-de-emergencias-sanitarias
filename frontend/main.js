@@ -14,6 +14,8 @@ let isocronas = {};
 
 let marcadores = [];
 
+let isocronasSolapadas = [];
+
 let baseLayers = {
     "Base": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -123,7 +125,15 @@ sliderDeTiempo.onchange = (ev) => {
         }
     })
 }
+
+poblarConIsocronas();
 // ------------------------------------------------
+
+function poblarConIsocronas() {
+    marcadores.forEach((marcador) => {
+        console.log(marcador);
+    })
+}
 
 /**
  * Evento onClick de los marcadores
@@ -191,11 +201,23 @@ async function obtenerGeoJson(lng, lat, tag, color) {
         }
     });
 
-    console.log(geoJson);
+    geoJson.on('click', (e) => {
+        L.DomEvent.stop(e);
+        console.log(e.layer);
+    });
     return geoJson;
 
     //let nuevasCoords = new L.LatLng(lng, lat);
     //marcadorIsocrona.setLatLng(nuevasCoords);
+}
+
+/**
+ * Añade el layer al array de solapes y realiza la
+ * comprobación con el layer ya presente en el array
+ * @param {object} layer 
+ */
+function comprobarSolape (layer) {
+    //isocronasSolapadas.
 }
 
 
