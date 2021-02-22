@@ -165,9 +165,10 @@ const onClickMarcador = (lat, lng, tipo) => {
 }
 
 
-const onClickInterseccion = (geojson) => {
+const onClickInterseccion = (geojson, ev) => {
+    L.DomEvent.stop(ev);
     console.log(geojson);
-    eel.getEstimacionPoblacion(geojson.geometry.coordinates);
+    eel.getEstimacionPoblacion(geojson.geometry.coordinates[0]);
 }
 
 /**
@@ -249,7 +250,7 @@ function comprobarSolape(layer) {
                 }
             });
             interseccionGeoJson.on('click', (ev) => {
-                onClickInterseccion(interseccion);
+                onClickInterseccion(interseccion, ev);
             })
             intersecciones.push(interseccionGeoJson);
             interseccionGeoJson.addTo(elMapa);
