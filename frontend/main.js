@@ -166,10 +166,17 @@ const onClickMarcador = (lat, lng, tipo) => {
 
 
 async function onClickInterseccion(geojson, ev) {
+    document.getElementById("textoNumeroDeHabitantes").innerText = "Cargando...";
     L.DomEvent.stop(ev);
 
     let estimacion = await eel.getEstimacionPoblacion(geojson.geometry.coordinates[0])();
-    console.log(estimacion);
+    document.getElementById("textoNumeroDeHabitantes").innerText = "-";
+    
+    let numeroDeHabitantes = estimacion.results[0].value.estimates['gpw-v4-population-count-rev10_2020']['SUM'];
+
+    if (numeroDeHabitantes) console.log(numeroDeHabitantes);
+
+    document.getElementById("textoNumeroDeHabitantes").innerText = numeroDeHabitantes;
 }
 
 /**
