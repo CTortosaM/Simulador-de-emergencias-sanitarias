@@ -226,6 +226,7 @@ async function obtenerGeoJson(lng, lat, tag, color) {
 function comprobarSolape(layer) {
 
     if (isocronasSolapadas.length > 1) {
+        intersecciones = [];
         isocronasSolapadas[0] = isocronasSolapadas[1];
         isocronasSolapadas[1] = layer;
     } else {
@@ -238,8 +239,13 @@ function comprobarSolape(layer) {
 
         let interseccion = turf.intersect(isocronasSolapadas[0], isocronasSolapadas[1]);
         if (interseccion) {
-            console.log(interseccion);
-            intersecciones.push(interseccion);
+            let interseccionGeoJson = L.geoJSON(interseccion , {
+                onEachFeature: (feature, layer) => {
+                    layer.myTag = "Interseccion"
+                }
+            });
+            intersecciones.push(interseccionGeoJson);
+            interseccionGeoJson.addTo(elMapa);
         }
     } catch(error) {
         console.error(error);
