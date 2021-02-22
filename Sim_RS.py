@@ -45,6 +45,15 @@ def getDatos(tipoDeVehiculo='SVA'):
     except:
         return None
 
+@eel.expose
+def getEstimacionPoblacion(poligono):
+    requestData = {
+        'polygon': poligono,
+
+    }
+
+    print(requestData)
+
 
 eel.init("frontend")
 eel.start('main.html', cmdline_args=['--start-fullscreen'], size=(1280, 720), position=(0,0))

@@ -133,10 +133,6 @@ function poblarConIsocronas() {
     })
 }
 
-function calcularIntersecciones () {
-
-}
-
 /**
  * Evento onClick de los marcadores
  * @param {number} lat Latitud del punto
@@ -166,6 +162,12 @@ const onClickMarcador = (lat, lng, tipo) => {
             isocronas[lat + '/' + lng].visible = true;
         }
     }
+}
+
+
+const onClickInterseccion = (geojson) => {
+    console.log(geojson);
+    eel.getEstimacionPoblacion(geojson.geometry.coordinates);
 }
 
 /**
@@ -246,6 +248,9 @@ function comprobarSolape(layer) {
                     color: '#0cf533'
                 }
             });
+            interseccionGeoJson.on('click', (ev) => {
+                onClickInterseccion(interseccion);
+            })
             intersecciones.push(interseccionGeoJson);
             interseccionGeoJson.addTo(elMapa);
         }
