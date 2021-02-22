@@ -122,11 +122,8 @@ sliderDeTiempo.oninput = (ev) => {
 sliderDeTiempo.onchange = (ev) => {
     isocronas = {};
     intersecciones = [];
-    elMapa.eachLayer((layer) => {
-        if (layer.myTag == "marcador") {
-            elMapa.removeLayer(layer);
-        }
-    })
+    eliminarCapa('marcador');
+    eliminarCapa('Interseccion');
 }
 // ------------------------------------------------
 
@@ -239,9 +236,14 @@ function comprobarSolape(layer) {
 
         let interseccion = turf.intersect(isocronasSolapadas[0], isocronasSolapadas[1]);
         if (interseccion) {
+            intersecciones = [];
+            eliminarCapa("Interseccion");
             let interseccionGeoJson = L.geoJSON(interseccion , {
                 onEachFeature: (feature, layer) => {
                     layer.myTag = "Interseccion"
+                },
+                style: {
+                    color: '#0cf533'
                 }
             });
             intersecciones.push(interseccionGeoJson);
@@ -319,6 +321,8 @@ async function getDatos(tipo) {
 
 function toggleIsocronas() {
     todasLasIsocronasVisibles = !todasLasIsocronasVisibles;
+    eliminarCapa('Interseccion');
+    intersecciones = [];
 
     capas = Object.keys(isocronas);
 
@@ -342,4 +346,15 @@ function toggleIsocronas() {
 }
 
 
+/**
+ * Elimina del mapa todas las capas con el tag
+ * @param {string} tag Tag para la capa
+ */
+function eliminarCapa(tag) {
+    elMapa.eachLayer((layer) => {
+        if (layer.myTag === tag) {
+            elMapa.removeLayer(layer);
+        }
+    })
+}
 obtenerCoordsEPSG();
