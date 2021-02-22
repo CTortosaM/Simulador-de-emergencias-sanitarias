@@ -15,6 +15,7 @@ let isocronas = {};
 let marcadores = [];
 
 let isocronasSolapadas = [];
+let intersecciones = [];
 
 let baseLayers = {
     "Base": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -33,11 +34,12 @@ let overlays = {
 }
 
 // Colores para las isócronas
-const coloresIsocronas =  {
+const coloresIsocronas = {
     "SVA": "#e61212",
-    "SVB":"#129fe6",
+    "SVB": "#129fe6",
     "Base": "#e630af",
-    "Seleccionable": "#d99725"
+    "Seleccionable": "#d99725",
+    "Intersecciones": "#000000"
 }
 
 // Marcadores
@@ -119,27 +121,30 @@ sliderDeTiempo.oninput = (ev) => {
 
 sliderDeTiempo.onchange = (ev) => {
     isocronas = {};
+    intersecciones = [];
     elMapa.eachLayer((layer) => {
         if (layer.myTag == "marcador") {
             elMapa.removeLayer(layer);
         }
     })
 }
-
-poblarConIsocronas();
 // ------------------------------------------------
 
 function poblarConIsocronas() {
     marcadores.forEach((marcador) => {
-        console.log(marcador);
+        marcador.fire('click');
     })
+}
+
+function calcularIntersecciones () {
+
 }
 
 /**
  * Evento onClick de los marcadores
- * @param {Float} lat 
- * @param {Float} lng 
- * @param {String} tipo 
+ * @param {number} lat Latitud del punto
+ * @param {number} lng Longitud del punto
+ * @param {String} tipo Tipo de marcador ("SVA", "SVB", "Base")
  */
 // ---------------
 const onClickMarcador = (lat, lng, tipo) => {
@@ -159,6 +164,7 @@ const onClickMarcador = (lat, lng, tipo) => {
             elMapa.removeLayer(isocronas[lat + '/' + lng].isocrona);
             isocronas[lat + '/' + lng].visible = false;
         } else {
+            comprobarSolape(isocronas[lat + '/' + lng].isocrona);
             isocronas[lat + '/' + lng].isocrona.addTo(elMapa);
             isocronas[lat + '/' + lng].visible = true;
         }
@@ -203,7 +209,8 @@ async function obtenerGeoJson(lng, lat, tag, color) {
 
     geoJson.on('click', (e) => {
         L.DomEvent.stop(e);
-        console.log(e.layer);
+        //console.log(e.layer);
+        comprobarSolape(e.layer.feature);
     });
     return geoJson;
 
@@ -216,8 +223,28 @@ async function obtenerGeoJson(lng, lat, tag, color) {
  * comprobación con el layer ya presente en el array
  * @param {object} layer 
  */
-function comprobarSolape (layer) {
-    //isocronasSolapadas.
+function comprobarSolape(layer) {
+
+    if (isocronasSolapadas.length > 1) {
+        isocronasSolapadas[0] = isocronasSolapadas[1];
+        isocronasSolapadas[1] = layer;
+    } else {
+        isocronasSolapadas.push(layer);
+    }
+
+    if (isocronasSolapadas[0] == isocronasSolapadas[1]) return;
+
+    try {
+
+        let interseccion = turf.intersect(isocronasSolapadas[0], isocronasSolapadas[1]);
+        if (interseccion) {
+            console.log(interseccion);
+            intersecciones.push(interseccion);
+        }
+    } catch(error) {
+        console.error(error);
+    }
+
 }
 
 
@@ -254,15 +281,18 @@ async function getDatos(tipo) {
                 }).bindPopup(contenidoMarcador);
                 marker.addTo(pointersSVA).on('click', function () {
                     onClickMarcador(place.Lat, place.Lng, "SVA")
-                });;
+                });
+                marcadores.push(marker);
                 break;
+
             case "SVB":
                 marker = L.marker([place.Lat, place.Lng], {
                     icon: marcadorSVB
                 }).bindPopup(contenidoMarcador);
                 marker.addTo(pointersSVB).on('click', function () {
                     onClickMarcador(place.Lat, place.Lng, "SVB")
-                });;
+                });
+                marcadores.push(marker);
                 break;
 
             case "Base":
@@ -272,10 +302,11 @@ async function getDatos(tipo) {
                 marker.addTo(pointersBases).on('click', function () {
                     onClickMarcador(place.Lat, place.Lng, "Base")
                 });
+                marcadores.push(marker);
                 break;
         }
 
-        marcadores.push(marker);
+        
 
     });
 }
@@ -284,6 +315,8 @@ function toggleIsocronas() {
     todasLasIsocronasVisibles = !todasLasIsocronasVisibles;
 
     capas = Object.keys(isocronas);
+
+    if (capas.length < marcadores.length) poblarConIsocronas();
 
     if (!todasLasIsocronasVisibles) {
         capas.forEach((capa) => {
