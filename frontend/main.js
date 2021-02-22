@@ -165,10 +165,11 @@ const onClickMarcador = (lat, lng, tipo) => {
 }
 
 
-const onClickInterseccion = (geojson, ev) => {
+async function onClickInterseccion(geojson, ev) {
     L.DomEvent.stop(ev);
-    console.log(geojson);
-    eel.getEstimacionPoblacion(geojson.geometry.coordinates[0]);
+
+    let estimacion = await eel.getEstimacionPoblacion(geojson.geometry.coordinates[0])();
+    console.log(estimacion);
 }
 
 /**

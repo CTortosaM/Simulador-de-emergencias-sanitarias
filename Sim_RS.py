@@ -47,16 +47,19 @@ def getDatos(tipoDeVehiculo='SVA'):
 
 @eel.expose
 def getEstimacionPoblacion(poligono):
-    print(poligono)
     requestData = {
         "polygon": poligono,
-        "variables": ["gpw-v4-population-count-rev10_2020"],
-        "statistics": ["SUM"],
-        "requestID": "123791283qiwuhe"
+        "variables": [
+        "gpw-v4-population-count-rev10_2020"
+        ],
+        "statistics": [
+            "SUM"
+        ],
+        "requestID": "123456789"
     }
 
     call = requests.post('https://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/pesv3Broker/GPServer/pesv3Broker/execute?f=json', json=requestData)
-    print(call.json())
+    return call.json()
 
 
 eel.init("frontend")
