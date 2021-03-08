@@ -171,7 +171,12 @@ const onClickMarcador = (lat, lng, tipo) => {
     }
 }
 
-
+/**
+ * Función para el proceso de colocar marcador, calcular
+ * estimación de la población, etc.
+ * @param {object} geojson 
+ * @param {object} ev 
+ */
 async function onClickInterseccion(geojson, ev) {
     document.getElementById("textoNumeroDeHabitantes").innerText = "Cargando...";
     L.DomEvent.stop(ev);
@@ -272,6 +277,12 @@ function comprobarSolape(layer) {
             centroGeoJson[1] = centroGeoJson[0];
             centroGeoJson[0] = lat;
             
+            // Elimina los marcadores anteriores
+            marcadoresSolape.forEach((marcadorS) => {
+                elMapa.removeLayer(marcadorS);
+            })
+
+            marcadoresSolape = [];
             // Coloca el marcador
             let marcador = new L.marker(centroGeoJson, {
                 icon: marcadorSolape
@@ -279,6 +290,8 @@ function comprobarSolape(layer) {
 
             marcador.bindPopup('<p>Hola buenas tardes</p>').openPopup();
             marcador.addTo(elMapa);
+
+            marcadoresSolape.push(marcador);
 
             interseccionGeoJson.on('click', (ev) => {
                 onClickInterseccion(interseccion, ev);
@@ -360,6 +373,7 @@ async function getDatos(tipo) {
 function toggleIsocronas() {
     todasLasIsocronasVisibles = !todasLasIsocronasVisibles;
     eliminarCapa('Interseccion');
+
     intersecciones = [];
 
     capas = Object.keys(isocronas);
@@ -367,6 +381,13 @@ function toggleIsocronas() {
     if (capas.length < marcadores.length) poblarConIsocronas();
 
     if (!todasLasIsocronasVisibles) {
+
+        marcadoresSolape.forEach((m) => {
+            elMapa.removeLayer(m);
+        })
+
+        marcadoresSolape = [];
+
         capas.forEach((capa) => {
             if (elMapa.hasLayer(isocronas[capa].isocrona)) {
                 elMapa.removeLayer(isocronas[capa].isocrona);
