@@ -15,6 +15,8 @@ let isocronas = {};
 let marcadores = [];
 let marcadoresSolape = [];
 
+let joinMarcadoresSolapes = [];
+
 let isocronasSolapadas = [];
 let intersecciones = [];
 
@@ -177,18 +179,11 @@ const onClickMarcador = (lat, lng, tipo) => {
  * @param {object} geojson 
  * @param {object} ev 
  */
-async function onClickInterseccion(geojson, ev) {
-    document.getElementById("textoNumeroDeHabitantes").innerText = "Cargando...";
-    L.DomEvent.stop(ev);
+async function onClickInterseccion(geojson) {
 
     let estimacion = await eel.getEstimacionPoblacion(geojson.geometry.coordinates[0])();
-    document.getElementById("textoNumeroDeHabitantes").innerText = "-";
     
-    let numeroDeHabitantes = estimacion.results[0].value.estimates['gpw-v4-population-count-rev10_2020']['SUM'];
-
-    if (numeroDeHabitantes) console.log(numeroDeHabitantes);
-
-    document.getElementById("textoNumeroDeHabitantes").innerText = numeroDeHabitantes;
+    return estimacion.results[0].value.estimates['gpw-v4-population-count-rev10_2020']['SUM'];
 }
 
 /**
@@ -288,17 +283,27 @@ function comprobarSolape(layer) {
                 icon: marcadorSolape
             });
 
-            marcador.bindPopup('<p>Hola buenas tardes</p>').openPopup();
+            marcador.bindPopup('<p>Placeholder</p>')
+            marcador.on('click', (ev) => {
+                let popup = ev.target.getPopup();
+                popup.setContent('<p>Cargando...</p>');
+
+                onClickInterseccion(interseccion).then((poblacion) => {
+                    popup.setContent(`<p>${poblacion}</p>`)
+                })
+            })
             marcador.addTo(elMapa);
 
             marcadoresSolape.push(marcador);
 
-            interseccionGeoJson.on('click', (ev) => {
+            /* interseccionGeoJson.on('click', (ev) => {
                 onClickInterseccion(interseccion, ev);
-            });
+            }); */
 
             intersecciones.push(interseccionGeoJson);
             interseccionGeoJson.addTo(elMapa);
+
+            joinMarcadoresSolapes.push([marcador, interseccionGeoJson]);
         }
     } catch(error) {
         console.error(error);
