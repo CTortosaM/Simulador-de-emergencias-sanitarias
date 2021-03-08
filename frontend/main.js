@@ -289,7 +289,9 @@ function comprobarSolape(layer) {
                 popup.setContent('<p>Cargando...</p>');
 
                 onClickInterseccion(interseccion).then((poblacion) => {
-                    popup.setContent(`<p>${poblacion}</p>`)
+                    popup.setContent(`
+                    <p>${poblacion} <i class="fas fa-user"></i></p>
+                    `)
                 })
             })
             marcador.addTo(elMapa);
