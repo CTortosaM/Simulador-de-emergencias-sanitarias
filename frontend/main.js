@@ -13,6 +13,7 @@ let pointersBases = L.layerGroup();
 let isocronas = {};
 
 let marcadores = [];
+let marcadoresSolape = [];
 
 let isocronasSolapadas = [];
 let intersecciones = [];
@@ -61,6 +62,12 @@ let marcadorBase = L.AwesomeMarkers.icon({
     prefix: 'fa'
 })
 
+let marcadorSolape = L.AwesomeMarkers.icon({
+    icon: 'layer-group',
+    markerColor: 'green',
+    prefix: 'fa'
+});
+
 let iconoIsocrona = L.AwesomeMarkers.icon({
     icon: "clock",
     markerColor: 'orange',
@@ -71,7 +78,7 @@ let iconoIsocrona = L.AwesomeMarkers.icon({
 
 const elMapa = L.map('mapa', {
     zoomControl: false,
-    minZoom: 7,
+    minZoom: 2,
     layers: [baseLayers["Base"], pointersSVA, pointersSVB, pointersBases]
 });
 
@@ -257,9 +264,26 @@ function comprobarSolape(layer) {
                     color: '#0cf533'
                 }
             });
+
+            // Calcula el centro de la intersección para poder
+            // colocar el marcador
+            let centroGeoJson = turf.center(interseccion).geometry.coordinates;
+            let lat = centroGeoJson[1];
+            centroGeoJson[1] = centroGeoJson[0];
+            centroGeoJson[0] = lat;
+            
+            // Coloca el marcador
+            let marcador = new L.marker(centroGeoJson, {
+                icon: marcadorSolape
+            });
+
+            marcador.bindPopup('<p>Hola buenas tardes</p>').openPopup();
+            marcador.addTo(elMapa);
+
             interseccionGeoJson.on('click', (ev) => {
                 onClickInterseccion(interseccion, ev);
-            })
+            });
+
             intersecciones.push(interseccionGeoJson);
             interseccionGeoJson.addTo(elMapa);
         }
