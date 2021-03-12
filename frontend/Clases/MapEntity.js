@@ -1,6 +1,20 @@
-module.exports.MapEntity = class {
+export default class MapEntity{
 
-    constructor(lat, lng, icono, isocrona, tipo) {}
+    /**
+     * 
+     * @param {number} lat 
+     * @param {number} lng 
+     * @param {object} icono // FontAwsomeIcon
+     * @param {object} isocrona // GeoJson
+     * @param {string} tipo 
+     */
+    constructor(lat = 0, lng = 0, icono = undefined, isocrona = null, tipo = 'SVA') {
+        this.lat = lat;
+        this.lat = lng;
+        this.isocrona = isocrona;
+        this.tipo = tipo;
+        this.icono = icono;
+    }
 
     /**
      * Cambia la coordenada indicada al nuevo valor proporcionado
@@ -15,7 +29,7 @@ module.exports.MapEntity = class {
     /**
      * Devuelve el valor de la coordenada cuyo nombre es el proporcionado
      * @param {string} coordname 
-     * @returns {number}
+     * @returns {number} coord value
      */
     getCoord(coordname = 'lat') {
         if (this[coordname]) return this[coordname];
