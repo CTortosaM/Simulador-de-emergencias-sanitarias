@@ -2,18 +2,46 @@ export default class MapEntity{
 
     /**
      * 
-     * @param {number} lat 
-     * @param {number} lng 
-     * @param {object} icono // FontAwsomeIcon
-     * @param {object} isocrona // GeoJson
-     * @param {string} tipo 
+     * @param {number} lat Latitud en el mapa
+     * @param {number} lng Longitud en el mapa
+     * @param {string} tipo Tipo de entidad colocada en el mapa
+     * @param {string} nombreIcono Nombre estandarizado de FontAwsome
+     * @param {string} colorMarcador Color del marcador
+     * @param {object} elMapa Referencia al mapa donde se coloca el marcador
      */
-    constructor(lat = 0, lng = 0, icono = undefined, isocrona = null, tipo = 'SVA') {
+    constructor(lat = 0, lng = 0, tipo = 'SVA', nombreIcono = 'ambulance', colorMarcador = 'red', elMapa) {
         this.lat = lat;
-        this.lat = lng;
-        this.isocrona = isocrona;
+        this.lng = lng;
         this.tipo = tipo;
-        this.icono = icono;
+        this.marcadorVisible = true;
+        this.elMapa = elMapa;
+
+        this.marcador = this.setupMarcador(nombreIcono, colorMarcador);
+
+        this.marcador.on('click', (e) => {
+            this.moveTo(0, 0);
+        });
+
+        this.marcador.addTo(elMapa);
+    }
+
+    // ------------------------------------------------------------------
+    // PRIVATE
+    // ------------------------------------------------------------------
+    /**
+     * Genera un objeto marcador de Leaflet con la información de
+     * icono proporcionada
+     * @param {string} tipo 
+     * @returns LeafletMarker
+     */
+    setupMarcador(iconName = 'ambulance', markerColor = 'red') {
+        let iconStyle = L.AwesomeMarkers.icon({
+            icon: iconName,
+            markerColor: markerColor,
+            prefix: 'fa'
+        })
+
+        return L.marker([this.lat, this.lng], {icon: iconStyle});
     }
 
     /**
@@ -22,7 +50,10 @@ export default class MapEntity{
      * @param {number} value 
      */
     setCoord(coord = 'lat', value) {
-        if (this[coord]) this[coord] = value;
+        if (coord === 'lat') this.lat = value;
+        if (coord === 'lng') this.lng = value;
+
+        this.marcador.setLatLng([this.lat, this.lng]).update();
     }
 
 
@@ -32,21 +63,33 @@ export default class MapEntity{
      * @returns {number} coord value
      */
     getCoord(coordname = 'lat') {
-        if (this[coordname]) return this[coordname];
+        if (coordname === 'lat') return this.lat;
+        if (coordname === 'lng') return this.lng;
         return null;
     }
 
 
     /**
-     * Cambia las coordenadas a las indicadas por el objeto parámetro
-     * con campo lat y lng
-     * @param {object} position 
+     * Mueve el MapEntity a las coordenadas especificadas
+     * @param {number} lat 
+     * @param {number} lng 
      */
-    moveTo(position = {lat: 0, lng: 0}) {
-        if (position.lat && position.lng) {
-            this.lat = position.lat;
-            this.lng = position.lng;
-        }
+    moveTo(lat = 0, lng = 0) {
+        this.lat = lat;
+        this.lng = lng;
+        this.marcador.setLatLng([lat, lng]).update();
+    }
+    
+    
+    setMarkerVisibility(visible = true) {
+
+        if (visible && !elMapa.hasLayer(this.marcador)) {
+            this.marcador.addTo(elMapa);
+            this.marcadorVisible = true;
+            return;
+        } 
+
+
     }
 
 }
