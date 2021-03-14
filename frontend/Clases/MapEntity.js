@@ -1,4 +1,4 @@
-export default class MapEntity{
+export default class MapEntity {
 
     /**
      * 
@@ -10,25 +10,34 @@ export default class MapEntity{
      * @param {object} elMapa Referencia al mapa donde se coloca el marcador
      * @param {object} onClick Callback para el evento onClickDelMarcador
      */
-    constructor(lat = 0, lng = 0, tipo = 'SVA', nombreIcono = 'ambulance', colorMarcador = 'red', elMapa, onClick) {
+    constructor(lat = 0, lng = 0, tipo = 'SVA', nombreIcono = 'ambulance', colorMarcador = 'red', elMapa, onClick, onDrag) {
         this.lat = lat;
         this.lng = lng;
         this.tipo = tipo;
+
+        // Propiedades del marcador
         this.marcadorVisible = true;
+        this.marcadorDraggable = false;
+
+        // Referencia al mapa
         this.elMapa = elMapa;
 
         this.marcador = this.setupMarcador(nombreIcono, colorMarcador);
 
+        // Define método onCLick del marcador definido por el usuario
         this.marcador.on('click', (e) => {
             onClick(e);
         });
 
+        // Define el comportamiento en el evento de onDrag
+        this.marcador.on('dragend', (e) => {
+            if (this.marcadorDraggable) onDrag(e);
+        });
+
+        // Finalmente, añade el marcador al mapa
         this.marcador.addTo(elMapa);
     }
 
-    // ------------------------------------------------------------------
-    // PRIVATE
-    // ------------------------------------------------------------------
     /**
      * Genera un objeto marcador de Leaflet con la información de
      * icono proporcionada
@@ -42,7 +51,10 @@ export default class MapEntity{
             prefix: 'fa'
         })
 
-        return L.marker([this.lat, this.lng], {icon: iconStyle});
+        return L.marker([this.lat, this.lng], {
+            icon: iconStyle,
+            draggable: false
+        });
     }
 
     /**
@@ -80,7 +92,7 @@ export default class MapEntity{
         this.lng = lng;
         this.marcador.setLatLng([lat, lng]).update();
     }
-    
+
     /**
      * Oculta el marcador en el mapa
      */
@@ -101,4 +113,22 @@ export default class MapEntity{
             this.marcadorVisible = true;
         }
     }
+
+
+    /**
+     * Determina si el marcador puede o no arrastrarse por el mapa
+     * @param {boolean} canBeDragged 
+     */
+    setDraggableMarker(canBeDragged = false) {
+        this.marcadorDraggable = canBeDragged;
+
+        if (canBeDragged) {
+            this.marcador.options.draggable = true;
+        } else {
+            this.marcador.options.draggable = false;
+        }
+    }
+
+
+
 }
