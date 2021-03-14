@@ -8,8 +8,9 @@ export default class MapEntity{
      * @param {string} nombreIcono Nombre estandarizado de FontAwsome
      * @param {string} colorMarcador Color del marcador
      * @param {object} elMapa Referencia al mapa donde se coloca el marcador
+     * @param {object} onClick Callback para el evento onClickDelMarcador
      */
-    constructor(lat = 0, lng = 0, tipo = 'SVA', nombreIcono = 'ambulance', colorMarcador = 'red', elMapa) {
+    constructor(lat = 0, lng = 0, tipo = 'SVA', nombreIcono = 'ambulance', colorMarcador = 'red', elMapa, onClick) {
         this.lat = lat;
         this.lng = lng;
         this.tipo = tipo;
@@ -19,7 +20,7 @@ export default class MapEntity{
         this.marcador = this.setupMarcador(nombreIcono, colorMarcador);
 
         this.marcador.on('click', (e) => {
-            this.moveTo(0, 0);
+            onClick(e);
         });
 
         this.marcador.addTo(elMapa);
@@ -80,16 +81,24 @@ export default class MapEntity{
         this.marcador.setLatLng([lat, lng]).update();
     }
     
-    
-    setMarkerVisibility(visible = true) {
-
-        if (visible && !elMapa.hasLayer(this.marcador)) {
-            this.marcador.addTo(elMapa);
-            this.marcadorVisible = true;
-            return;
-        } 
-
-
+    /**
+     * Oculta el marcador en el mapa
+     */
+    hiderMarker() {
+        if (this.marcadorVisible) {
+            this.elMapa.removeLayer(this.marcador);
+            this.marcadorVisible = false;
+        }
     }
 
+    /**
+     * Coloca el marcador en el mapa en el caso de que
+     * estuviese oculto
+     */
+    showMarker() {
+        if (!this.marcadorVisible) {
+            this.marcador.addTo(elMapa);
+            this.marcadorVisible = true;
+        }
+    }
 }
