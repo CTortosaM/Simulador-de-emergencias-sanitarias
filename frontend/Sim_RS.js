@@ -7,4 +7,4 @@ let pablito = new MapEntity(34,21, 'Ambulancia', 'ambulance', 'red', elMapa, (e)
     console.log(e.latlng);
 });
 
-pablito.setDraggableMarker(true);
+let carrito = new IsochroneEntity(0,0,'SVA',10,elMapa,(e) => {}, (e) => {});

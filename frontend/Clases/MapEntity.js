@@ -96,7 +96,7 @@ export default class MapEntity {
     /**
      * Oculta el marcador en el mapa
      */
-    hiderMarker() {
+    hideMarker() {
         if (this.marcadorVisible) {
             this.elMapa.removeLayer(this.marcador);
             this.marcadorVisible = false;
