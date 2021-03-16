@@ -7,10 +7,10 @@ export default class IsochroneEntity extends MapEntity {
      * @param {number} lat Latitud de la posición
      * @param {number} lng Longitud de la posición
      * @param {string} tipo Tipo de objeto con isócrona
-     * @param {number} tiempo tiempo de alcance de la isócrona
-     * @param {object} elMapa 
-     * @param {function} onClick 
-     * @param {function} onDrag 
+     * @param {number} tiempo Tiempo de alcance de la isócrona
+     * @param {object} elMapa Referencia al mapa de Leaflet
+     * @param {function} onClick Comportamiento al clickar
+     * @param {function} onDrag Comportamiento al arrastrar
      */
     constructor(lat = 0, lng = 0, tipo = '', tiempo = 10, elMapa, onClick, onDrag) {
 
@@ -27,15 +27,28 @@ export default class IsochroneEntity extends MapEntity {
         }
 
         super(lat, lng, tipo, 'ambulance', 'red', elMapa, onClick, onDrag);
-        
+
         this.tiempoDeIsocrona = tiempo;
         this.isocronaVisible = false;
         this.isocrona = null;
+
+        this.updateIsocrona(10);
     }
 
+    /**
+     * Recalcula la isocrona de la entidad segun el tiempo dado
+     * @param {number} tiempoDeIsocrona
+     */
+    updateIsocrona(tiempo) {
+        this.tiempoDeIsocrona = tiempo;
 
-    updateIsocrona() {
-
+        eel.obtenerGeoJson(this.lng, this.lat, this.tiempoDeIsocrona)().then((json) => {
+            if (json.type === 'FeatureCollection') {
+                this.isocrona = json;
+            }
+        }, (fallo) => {
+            console.error(fallo);
+        });
     }
 
     /**
@@ -56,7 +69,7 @@ export default class IsochroneEntity extends MapEntity {
         if (!this.isocronaVisible && this.isocrona) {
             this.isocronaVisible = true;
 
-            if (!this.elMapa.hasLayer(this.isocrona)) this.isocrona.addTo(elMapa);
+            if (!this.elMapa.hasLayer(this.isocrona)) L.geoJson(this.isocrona).addTo(elMapa);
         }
     }
 
