@@ -12,25 +12,41 @@ export default class IsochroneEntity extends MapEntity {
      * @param {function} onClick Comportamiento al clickar
      * @param {function} onDrag Comportamiento al arrastrar
      */
-    constructor(lat = 0, lng = 0, tipo = '', tiempo = 10, elMapa, onClick, onDrag) {
+    constructor(lat = 0, lng = 0, tipo = 'SVA', tiempo = 10, elMapa, onClick, onDrag) {
 
         let isocronaColor = '#ffffff';
+        let markerColor = 'red';
         let iconName = '';
 
         switch (tipo) {
             case 'SVA':
                 iconName = 'ambulance';
+                isocronaColor = '#e61212';
+                markerColor = 'blue';
                 break;
-            default :
+            case 'SVB':
                 iconName = 'ambulance';
+                isocronaColor = '#129fe6';
+                markerColor = 'blue'
+                break;
+            case 'Interseccion':
+                iconName = 'layer-group';
+                isocronaColor = '#000000'
+                markerColor = 'green'
+                break
+            default:
+                iconName = 'ambulance';
+                isocronaColor = '#e61212';
+                markerColor = 'red'
                 break;
         }
 
-        super(lat, lng, tipo, 'ambulance', 'red', elMapa, onClick, onDrag);
+        super(lat, lng, tipo, iconName, markerColor, elMapa, onClick, onDrag);
 
         this.tiempoDeIsocrona = tiempo;
         this.isocronaVisible = false;
         this.isocrona = null;
+        this.colorDeIsocrona = isocronaColor;
 
         this.updateIsocrona(10);
     }
@@ -44,10 +60,17 @@ export default class IsochroneEntity extends MapEntity {
 
         eel.obtenerGeoJson(this.lng, this.lat, this.tiempoDeIsocrona)().then((json) => {
             if (json.type === 'FeatureCollection') {
-                this.isocrona = json;
+                this.isocrona = L.geoJson(json, {
+                    style: {
+                        color: this.colorDeIsocrona
+                    }
+                });
+            } else {
+                this.isocrona = null;
             }
         }, (fallo) => {
             console.error(fallo);
+            this.isocrona = null;
         });
     }
 
@@ -59,6 +82,8 @@ export default class IsochroneEntity extends MapEntity {
             this.isocronaVisible = false;
 
             if (this.elMapa.hasLayer(this.isocrona)) this.elMapa.removeLayer(this.isocrona);
+        } else if (this.isocrona === null) {
+            this.updateIsocrona(this.tiempoDeIsocrona);
         }
     }
 
@@ -70,6 +95,8 @@ export default class IsochroneEntity extends MapEntity {
             this.isocronaVisible = true;
 
             if (!this.elMapa.hasLayer(this.isocrona)) L.geoJson(this.isocrona).addTo(elMapa);
+        } else if (this.isocrona === null) {
+            this.updateIsocrona(this.tiempoDeIsocrona);
         }
     }
 

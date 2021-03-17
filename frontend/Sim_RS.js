@@ -7,4 +7,4 @@ let pablito = new MapEntity(34,21, 'Ambulancia', 'ambulance', 'red', elMapa, (e)
     console.log(e.latlng);
 });
 
-let carrito = new IsochroneEntity(39,-0.60,'SVA',10,elMapa,(e) => {}, (e) => {});
+let carrito = new IsochroneEntity(39, -0.60, 'Interseccion', 10, elMapa, (e) => {}, (e) => {});
