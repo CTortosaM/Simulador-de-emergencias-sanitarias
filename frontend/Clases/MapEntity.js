@@ -123,10 +123,19 @@ class MapEntity {
         this.marcadorDraggable = canBeDragged;
 
         if (canBeDragged) {
-            this.marcador.options.draggable = true;
+            this.marcador.dragging.enable();
         } else {
-            this.marcador.options.draggable = false;
+            this.marcador.dragging.disable();
         }
+    }
+
+
+    /**
+     * Añade al marcador contenido html
+     * @param {string} contenido 
+     */
+    bindPopup(contenido) {
+        this.marcador.bindPopup(contenido);
     }
 
 

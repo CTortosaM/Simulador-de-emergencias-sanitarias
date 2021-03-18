@@ -45,40 +45,20 @@ class IsochroneEntity extends MapEntity {
         this.isocronaVisible = false;
         this.isocrona = null;
         this.colorDeIsocrona = isocronaColor;
-        
-        this.updateIsocrona(tiempo);
-    }
-
-    /**
-     * Recalcula la isocrona de la entidad segun el tiempo dado
-     * @param {number} tiempoDeIsocrona
-     */
-    updateIsocrona(tiempo) {
-        this.tiempoDeIsocrona = tiempo;
-
-        let json = eel.obtenerGeoJson(this.lng, this.lat, this.tiempoDeIsocrona)();
-        try {
-            this.isocrona = L.geoJson(json, {
-                style: {
-                    color: this.colorDeIsocrona
-                }
-            });
-            this.isocrona.addTo(elMapa);
-        } catch(e) {
-
-        }
     }
 
     /**
      * Oculta la isocrona en el mapa
      */
     hideIsocrona() {
-        if (this.isocronaVisible && this.isocrona) {
-            this.isocronaVisible = false;
+        if (this.isocrona) {
+            
 
-            if (this.elMapa.hasLayer(this.isocrona)) this.elMapa.removeLayer(this.isocrona);
-        } else if (this.isocrona === null) {
-            this.updateIsocrona(this.tiempoDeIsocrona);
+            if (this.elMapa.hasLayer(this.isocrona)){
+                this.isocronaVisible = false;
+                this.elMapa.removeLayer(this.isocrona);
+            }
+
         }
     }
 
@@ -86,14 +66,17 @@ class IsochroneEntity extends MapEntity {
      * Coloca la isocrona en el mapa
      */
     showIsocrona() {
-        if (this.isocrona && !this.isocronaVisible) {
+        if (this.isocrona) {
             this.isocronaVisible = true;
-            this.isocrona.addTo(elMapa);
+            this.isocrona.addTo(this.elMapa);
             return
         }
     }
 
-
+    /**
+     * Almacena el objeto isocrona
+     * @param {objet} isocrona Objeto GeoJson
+     */
     setIsocrona(isocrona) {
         this.isocrona = isocrona;
     }
