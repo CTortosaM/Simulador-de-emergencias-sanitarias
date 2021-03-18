@@ -1,6 +1,4 @@
-import MapEntity from './MapEntity.js'
-
-export default class IsochroneEntity extends MapEntity {
+class IsochroneEntity extends MapEntity {
 
     /**
      * 
@@ -47,7 +45,7 @@ export default class IsochroneEntity extends MapEntity {
         this.isocronaVisible = false;
         this.isocrona = null;
         this.colorDeIsocrona = isocronaColor;
-
+        
         this.updateIsocrona(tiempo);
     }
 
