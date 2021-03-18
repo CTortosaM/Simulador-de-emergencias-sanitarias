@@ -22,7 +22,7 @@ export default class IsochroneEntity extends MapEntity {
             case 'SVA':
                 iconName = 'ambulance';
                 isocronaColor = '#e61212';
-                markerColor = 'blue';
+                markerColor = 'red';
                 break;
             case 'SVB':
                 iconName = 'ambulance';
@@ -48,7 +48,7 @@ export default class IsochroneEntity extends MapEntity {
         this.isocrona = null;
         this.colorDeIsocrona = isocronaColor;
 
-        this.updateIsocrona(10);
+        this.updateIsocrona(tiempo);
     }
 
     /**
@@ -58,20 +58,17 @@ export default class IsochroneEntity extends MapEntity {
     updateIsocrona(tiempo) {
         this.tiempoDeIsocrona = tiempo;
 
-        eel.obtenerGeoJson(this.lng, this.lat, this.tiempoDeIsocrona)().then((json) => {
-            if (json.type === 'FeatureCollection') {
-                this.isocrona = L.geoJson(json, {
-                    style: {
-                        color: this.colorDeIsocrona
-                    }
-                });
-            } else {
-                this.isocrona = null;
-            }
-        }, (fallo) => {
-            console.error(fallo);
-            this.isocrona = null;
-        });
+        let json = eel.obtenerGeoJson(this.lng, this.lat, this.tiempoDeIsocrona)();
+        try {
+            this.isocrona = L.geoJson(json, {
+                style: {
+                    color: this.colorDeIsocrona
+                }
+            });
+            this.isocrona.addTo(elMapa);
+        } catch(e) {
+
+        }
     }
 
     /**
@@ -91,13 +88,16 @@ export default class IsochroneEntity extends MapEntity {
      * Coloca la isocrona en el mapa
      */
     showIsocrona() {
-        if (!this.isocronaVisible && this.isocrona) {
+        if (this.isocrona && !this.isocronaVisible) {
             this.isocronaVisible = true;
-
-            if (!this.elMapa.hasLayer(this.isocrona)) L.geoJson(this.isocrona).addTo(elMapa);
-        } else if (this.isocrona === null) {
-            this.updateIsocrona(this.tiempoDeIsocrona);
+            this.isocrona.addTo(elMapa);
+            return
         }
+    }
+
+
+    setIsocrona(isocrona) {
+        this.isocrona = isocrona;
     }
 
 }
