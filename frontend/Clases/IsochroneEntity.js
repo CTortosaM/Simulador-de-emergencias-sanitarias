@@ -53,23 +53,10 @@ class IsochroneEntity extends MapEntity {
 
             if (this.isocrona && this.isocronaVisible) {
                 this.hideIsocrona();
-            } else if(this.isocrona && !this.isocronaVisible) {
+            } else if (this.isocrona && !this.isocronaVisible) {
                 this.showIsocrona();
             }
         });
-
-
-        this.marcador.on('dragend', (e) => {
-            let newCoords = e.target._latlng;
-            this.moveTo(newCoords.lat, newCoords.lng);
-
-            this.hideIsocrona();
-            this.updateIsocrona(this.tiempoDeIsocrona, (worked, error) => {
-                if (worked && !error) {
-                    this.showIsocrona();
-                }
-            })
-        })
     }
 
     /**
@@ -77,7 +64,7 @@ class IsochroneEntity extends MapEntity {
      */
     hideIsocrona() {
         if (this.isocrona) {
-            if (this.elMapa.hasLayer(this.isocrona)){
+            if (this.elMapa.hasLayer(this.isocrona)) {
                 this.isocronaVisible = false;
                 this.elMapa.removeLayer(this.isocrona);
             }
@@ -111,23 +98,48 @@ class IsochroneEntity extends MapEntity {
      */
     updateIsocrona(tiempo, callback) {
         this.tiempoDeIsocrona = tiempo;
-        
-        eel.obtenerGeoJson(this.lat, this.lng, this.tiempoDeIsocrona)()
-        .then((json) => {
-            
-            if (json.type === 'FeatureCollection') {
-                this.isocrona = L.geoJSON((json), {
-                    style: {
-                        color: this.colorDeIsocrona
-                    }
-                })
-                callback('Success', null);
-                return;
-            }
 
-            this.isocrona = null;
-            callback(null, 'Null value');
-        })
+        eel.obtenerGeoJson(this.lat, this.lng, this.tiempoDeIsocrona)()
+            .then((json) => {
+
+                if (json.type === 'FeatureCollection') {
+                    this.isocrona = L.geoJSON((json), {
+                        style: {
+                            color: this.colorDeIsocrona
+                        }
+                    })
+                    callback('Success', null);
+                    return;
+                }
+
+                this.isocrona = null;
+                callback(null, 'Null value');
+            })
+    }
+
+
+    /**
+     * 
+     * @param {object} e 
+     */
+    onDragMarcador(e, callback) {
+        let newCoords = e.target._latlng;
+        this.moveTo(newCoords.lat, newCoords.lng);
+
+        this.hideIsocrona();
+        this.updateIsocrona(this.tiempoDeIsocrona, (worked, error) => {
+            if (worked && !error) {
+                this.showIsocrona();
+                callback(this.isocrona);
+            } else {
+                callback(null);
+            }
+        });
+    }
+
+
+    checkSolapeCon(otroIsochroneEntity) {
+        
     }
 
 }

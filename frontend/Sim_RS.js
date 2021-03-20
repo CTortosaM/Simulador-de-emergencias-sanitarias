@@ -40,6 +40,7 @@ const entityTypes = {
     ]
 }
 // ---------------------------
+let overlapCandidates = [];
 // ---------------------------
 
 /**
@@ -49,7 +50,7 @@ const entityTypes = {
  */
 const setupEntity = (tipo) => {
     getDatos(tipo, (resultados, error) => {
-        
+
         // Si pasa algo mejor lo dejamos estar
         if (error) {
             console.error(error);
@@ -71,6 +72,9 @@ const setupEntity = (tipo) => {
                     // Habilitamos por defecto el arrastrado de los marcadores
                     // para realizar la simulación de las isócronas
                     isochroneEntity.setDraggableMarker(true);
+                    isochroneEntity.marcador.on('dragend', (e) => {
+                        onIsochroneMoved(e, isochroneEntity);
+                    })
 
                 } else if (entityTypes.Map.includes(tipo)) {
                     entities[tipo].push(new MapEntity(
@@ -111,9 +115,44 @@ function getDatos(tipo = 'SVA', callback) {
             callback(null, 'Petición incorrecta');
             return;
         }
-
-
         callback(JSON.parse(results), null);
-
     })
+}
+
+/**
+ * Evento disparado al arrastrar marcador
+ * @param {IsochroneEntity} isochroneEntity
+ */
+function onIsochroneMoved(e, isochroneEntity) {
+
+    let candidate = null;
+
+
+    isochroneEntity.onDragMarcador(e, (isocrona) => {
+
+        // Esta es una manera de acceder al archivo
+        // original de isocrona antes de que fuese
+        // procesado por leaflet, para poder emplearlo
+        // con la librería de Turf
+        let property = Object.keys(isocrona._layers)[0];
+        candidate = isocrona._layers[property];
+
+        // De momento solo querremos comprobar 
+        // intersecciones entre los dos marcadores pulsados
+        if (overlapCandidates.length > 1) {
+            overlapCandidates[0] = overlapCandidates[1];
+            overlapCandidates[1] = candidate;
+        } else {
+            overlapCandidates.push(candidate);
+        }
+    })
+    /* let interseccion = turf.intersect(
+        overlapCandidates[0],
+        overlapCandidates[1]
+    );
+
+    if (interseccion) {
+        console.log(interseccion);
+    } */
+
 }
