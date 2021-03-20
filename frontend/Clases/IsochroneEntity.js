@@ -137,9 +137,22 @@ class IsochroneEntity extends MapEntity {
         });
     }
 
-
+    /**
+     * 
+     * @param {IsochroneEntity} otroIsochroneEntity 
+     * @returns {Overlap} interseccion
+     */
     checkSolapeCon(otroIsochroneEntity) {
-        
+        let property1 = Object.keys(this.isocrona._layers)[0];
+        let candidate1 = this.isocrona._layers[property1].feature;
+        console.log(candidate1);
+
+        let property2 = Object.keys(otroIsochroneEntity.isocrona._layers)[0];
+        let candidate2 = otroIsochroneEntity.isocrona._layers[property2].feature;
+
+        let interseccion = turf.intersect(candidate1, candidate2);
+
+        return interseccion;
     }
 
 }

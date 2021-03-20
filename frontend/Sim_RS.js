@@ -125,34 +125,16 @@ function getDatos(tipo = 'SVA', callback) {
  */
 function onIsochroneMoved(e, isochroneEntity) {
 
-    let candidate = null;
+    overlapCandidates.push(isochroneEntity);
 
+    // De momento solo nos interesa realizar la
+    // comparación entre dos isócronas
+    overlapCandidates = overlapCandidates.slice(-2, undefined);
 
-    isochroneEntity.onDragMarcador(e, (isocrona) => {
-
-        // Esta es una manera de acceder al archivo
-        // original de isocrona antes de que fuese
-        // procesado por leaflet, para poder emplearlo
-        // con la librería de Turf
-        let property = Object.keys(isocrona._layers)[0];
-        candidate = isocrona._layers[property];
-
-        // De momento solo querremos comprobar 
-        // intersecciones entre los dos marcadores pulsados
-        if (overlapCandidates.length > 1) {
-            overlapCandidates[0] = overlapCandidates[1];
-            overlapCandidates[1] = candidate;
-        } else {
-            overlapCandidates.push(candidate);
+    isochroneEntity.onDragMarcador((e), (isocrona) => {
+        if (isochroneEntity != overlapCandidates[0] && overlapCandidates.length === 2) {
+            console.log(overlapCandidates[0].checkSolapeCon(overlapCandidates[1]));
         }
-    })
-    /* let interseccion = turf.intersect(
-        overlapCandidates[0],
-        overlapCandidates[1]
-    );
-
-    if (interseccion) {
-        console.log(interseccion);
-    } */
+    });
 
 }
