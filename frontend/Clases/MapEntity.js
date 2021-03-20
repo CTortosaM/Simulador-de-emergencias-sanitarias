@@ -8,9 +8,8 @@ class MapEntity {
      * @param {string} nombreIcono Nombre estandarizado de FontAwsome
      * @param {string} colorMarcador Color del marcador
      * @param {object} elMapa Referencia al mapa donde se coloca el marcador
-     * @param {object} onClick Callback para el evento onClickDelMarcador
      */
-    constructor(lat = 0, lng = 0, tipo = 'SVA', nombreIcono = 'ambulance', colorMarcador = 'red', elMapa, onClick, onDrag) {
+    constructor(lat = 0, lng = 0, tipo = 'SVA', nombreIcono = 'ambulance', colorMarcador = 'red', elMapa) {
         this.lat = lat;
         this.lng = lng;
         this.tipo = tipo;
@@ -23,16 +22,6 @@ class MapEntity {
         this.elMapa = elMapa;
 
         this.marcador = this.setupMarcador(nombreIcono, colorMarcador);
-
-        // Define método onCLick del marcador definido por el usuario
-        this.marcador.on('click', (e) => {
-            onClick(e);
-        });
-
-        // Define el comportamiento en el evento de onDrag
-        this.marcador.on('dragend', (e) => {
-            if (this.marcadorDraggable) onDrag(e);
-        });
 
         // Finalmente, añade el marcador al mapa
         this.marcador.addTo(elMapa);
@@ -48,7 +37,9 @@ class MapEntity {
         let iconStyle = L.AwesomeMarkers.icon({
             icon: iconName,
             markerColor: markerColor,
-            prefix: 'fa'
+            prefix: 'fa' // Fa es el prefijo por el que bootstrap
+            // reconoce los iconos de FontAwesome, de manera
+            // que se formateen bien
         })
 
         return L.marker([this.lat, this.lng], {

@@ -40,8 +40,6 @@ const entityTypes = {
     ]
 }
 // ---------------------------
-const onClick = () => {};
-const onDrag = () => {};
 // ---------------------------
 
 /**
@@ -51,6 +49,8 @@ const onDrag = () => {};
  */
 const setupEntity = (tipo) => {
     getDatos(tipo, (resultados, error) => {
+        
+        // Si pasa algo mejor lo dejamos estar
         if (error) {
             console.error(error);
             return;
@@ -59,15 +59,19 @@ const setupEntity = (tipo) => {
         if (resultados) {
             resultados.forEach((resultado) => {
                 if (entityTypes.Isochrone.includes(tipo)) {
-                    entities[tipo].push(new IsochroneEntity(
+
+                    let isochroneEntity = new IsochroneEntity(
                         resultado.Lat,
                         resultado.Lng,
                         tipo,
                         10,
-                        elMapa,
-                        onClick,
-                        onDrag
-                    ))
+                        elMapa
+                    );
+
+                    // Habilitamos por defecto el arrastrado de los marcadores
+                    // para realizar la simulación de las isócronas
+                    isochroneEntity.setDraggableMarker(true);
+
                 } else if (entityTypes.Map.includes(tipo)) {
                     entities[tipo].push(new MapEntity(
                         resultado.Lat,
@@ -75,9 +79,7 @@ const setupEntity = (tipo) => {
                         tipo,
                         'medkit',
                         'pink',
-                        elMapa,
-                        onClick,
-                        onDrag
+                        elMapa
                     ));
                 }
             });

@@ -7,12 +7,8 @@ class IsochroneEntity extends MapEntity {
      * @param {string} tipo Tipo de objeto con isócrona
      * @param {number} tiempo Tiempo de alcance de la isócrona
      * @param {object} elMapa Referencia al mapa de Leaflet
-     * @param {function} onClick Comportamiento al clickar
-     * @param {function} onDrag Comportamiento al arrastrar
      */
-
-    
-    constructor(lat = 0, lng = 0, tipo = 'SVA', tiempo = 10, elMapa, onClick, onDrag) {
+    constructor(lat = 0, lng = 0, tipo = 'SVA', tiempo = 10, elMapa) {
 
         let isocronaColor = '#e61212';
         let markerColor = 'red';
@@ -41,16 +37,39 @@ class IsochroneEntity extends MapEntity {
                 break;
         }
 
-        super(lat, lng, tipo, iconName, markerColor, elMapa, onClick, onDrag);
+        super(lat, lng, tipo, iconName, markerColor, elMapa);
 
         this.tiempoDeIsocrona = tiempo;
         this.isocronaVisible = false;
         this.isocrona = null;
         this.colorDeIsocrona = isocronaColor;
 
-        this.updateIsocrona(this.tiempoDeIsocrona,  () => {
-            this.showIsocrona();
+        this.marcador.on('click', (e) => {
+            if (!this.isocrona) {
+                this.updateIsocrona(this.tiempoDeIsocrona, (s, error) => {
+                    return;
+                })
+            }
+
+            if (this.isocrona && this.isocronaVisible) {
+                this.hideIsocrona();
+            } else if(this.isocrona && !this.isocronaVisible) {
+                this.showIsocrona();
+            }
         });
+
+
+        this.marcador.on('dragend', (e) => {
+            let newCoords = e.target._latlng;
+            this.moveTo(newCoords.lat, newCoords.lng);
+
+            this.hideIsocrona();
+            this.updateIsocrona(this.tiempoDeIsocrona, (worked, error) => {
+                if (worked && !error) {
+                    this.showIsocrona();
+                }
+            })
+        })
     }
 
     /**
@@ -58,13 +77,10 @@ class IsochroneEntity extends MapEntity {
      */
     hideIsocrona() {
         if (this.isocrona) {
-            
-
             if (this.elMapa.hasLayer(this.isocrona)){
                 this.isocronaVisible = false;
                 this.elMapa.removeLayer(this.isocrona);
             }
-
         }
     }
 
@@ -72,7 +88,7 @@ class IsochroneEntity extends MapEntity {
      * Coloca la isocrona en el mapa
      */
     showIsocrona() {
-        if (this.isocrona) {
+        if (this.isocrona && !this.elMapa.hasLayer(this.isocrona)) {
             this.isocronaVisible = true;
             this.isocrona.addTo(this.elMapa);
             return
@@ -88,6 +104,11 @@ class IsochroneEntity extends MapEntity {
     }
 
 
+    /**
+     * Recalcula la isocrona de la entidad con el nuevo tiempo porporcionado
+     * @param {number} tiempo Nuevo tiempo de la isocrona
+     * @param {function} callback Callback ejecutado tras finalizar el cálculo
+     */
     updateIsocrona(tiempo, callback) {
         this.tiempoDeIsocrona = tiempo;
         
@@ -100,11 +121,12 @@ class IsochroneEntity extends MapEntity {
                         color: this.colorDeIsocrona
                     }
                 })
-                callback();
+                callback('Success', null);
                 return;
             }
 
-            callback();
+            this.isocrona = null;
+            callback(null, 'Null value');
         })
     }
 
