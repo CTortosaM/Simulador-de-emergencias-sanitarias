@@ -10,9 +10,11 @@ class IsochroneEntity extends MapEntity {
      * @param {function} onClick Comportamiento al clickar
      * @param {function} onDrag Comportamiento al arrastrar
      */
+
+    
     constructor(lat = 0, lng = 0, tipo = 'SVA', tiempo = 10, elMapa, onClick, onDrag) {
 
-        let isocronaColor = '#ffffff';
+        let isocronaColor = '#e61212';
         let markerColor = 'red';
         let iconName = '';
 
@@ -45,6 +47,10 @@ class IsochroneEntity extends MapEntity {
         this.isocronaVisible = false;
         this.isocrona = null;
         this.colorDeIsocrona = isocronaColor;
+
+        this.updateIsocrona(this.tiempoDeIsocrona,  () => {
+            this.showIsocrona();
+        });
     }
 
     /**
@@ -79,6 +85,27 @@ class IsochroneEntity extends MapEntity {
      */
     setIsocrona(isocrona) {
         this.isocrona = isocrona;
+    }
+
+
+    updateIsocrona(tiempo, callback) {
+        this.tiempoDeIsocrona = tiempo;
+        
+        eel.obtenerGeoJson(this.lat, this.lng, this.tiempoDeIsocrona)()
+        .then((json) => {
+            
+            if (json.type === 'FeatureCollection') {
+                this.isocrona = L.geoJSON((json), {
+                    style: {
+                        color: this.colorDeIsocrona
+                    }
+                })
+                callback();
+                return;
+            }
+
+            callback();
+        })
     }
 
 }

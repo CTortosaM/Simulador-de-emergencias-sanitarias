@@ -43,7 +43,7 @@ def getDatos(tipoDeVehiculo='SVA'):
             data = json.load(f)[tipoDeVehiculo]
             return json.dumps(data)
     except:
-        return None
+        return 'Wrong data'
 
 @eel.expose
 def getEstimacionPoblacion(poligono):

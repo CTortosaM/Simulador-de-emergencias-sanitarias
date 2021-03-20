@@ -29,17 +29,89 @@ L.control.zoom({
 
 elMapa.setView([39, -0.6], 10);
 // ---------------------------
-
+const entityTypes = {
+    Isochrone: [
+        'SVA',
+        'SVB',
+        'Interseccion'
+    ],
+    Map: [
+        'Base'
+    ]
+}
+// ---------------------------
 const onClick = () => {};
 const onDrag = () => {};
+// ---------------------------
 
-var carrito = new IsochroneEntity(39, -0.6, 'SVB', 10, elMapa, onClick, onDrag);
-let hospital = new MapEntity(39.06, -0.57, 'Base', 'medkit', 'pink', elMapa, onClick, onDrag);
+/**
+ * Realiza el setup de marcadores de todas las entidades
+ * del tipo proporcionado
+ * @param {string} tipo 
+ */
+const setupEntity = (tipo) => {
+    getDatos(tipo, (resultados, error) => {
+        if (error) {
+            console.error(error);
+            return;
+        }
+
+        if (resultados) {
+            resultados.forEach((resultado) => {
+                if (entityTypes.Isochrone.includes(tipo)) {
+                    entities[tipo].push(new IsochroneEntity(
+                        resultado.Lat,
+                        resultado.Lng,
+                        tipo,
+                        10,
+                        elMapa,
+                        onClick,
+                        onDrag
+                    ))
+                } else if (entityTypes.Map.includes(tipo)) {
+                    entities[tipo].push(new MapEntity(
+                        resultado.Lat,
+                        resultado.Lng,
+                        tipo,
+                        'medkit',
+                        'pink',
+                        elMapa,
+                        onClick,
+                        onDrag
+                    ));
+                }
+            });
+        }
+    });
+}
+// ----------------------------
+let entities = {
+    SVA: [],
+    SVB: [],
+    Base: []
+}
+// ----------------------------
+setupEntity('SVA');
+setupEntity('SVB');
+setupEntity('Base');
 
 
-eel.obtenerGeoJson(carrito.lng, carrito.lat, carrito.tiempoDeIsocrona)().then((json) => {
-    L.geoJSON(json).addTo(elMapa);
-});
 
-carrito.setDraggableMarker(true);
-hospital.setDraggableMarker(true);
+/**
+ * Realiza una petición al backend para sustraer los datos
+ * referidos a un tipo de entidad del mapa
+ * @param {string} tipo Tipo de entidad del mapa 
+ * @param {function} callback Callback para resultados
+ */
+function getDatos(tipo = 'SVA', callback) {
+    eel.getDatos(tipo)().then((results) => {
+        if (results === 'Wrong data') {
+            callback(null, 'Petición incorrecta');
+            return;
+        }
+
+
+        callback(JSON.parse(results), null);
+
+    })
+}
