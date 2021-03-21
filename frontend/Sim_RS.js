@@ -41,6 +41,7 @@ const entityTypes = {
 }
 // ---------------------------
 let overlapCandidates = [];
+let currentOverlap = null;
 // ---------------------------
 
 /**
@@ -124,16 +125,27 @@ function getDatos(tipo = 'SVA', callback) {
  * @param {IsochroneEntity} isochroneEntity
  */
 function onIsochroneMoved(e, isochroneEntity) {
-
-    overlapCandidates.push(isochroneEntity);
+    if (!overlapCandidates.includes(isochroneEntity)) {
+        overlapCandidates.push(isochroneEntity);
+    }
 
     // De momento solo nos interesa realizar la
     // comparación entre dos isócronas
     overlapCandidates = overlapCandidates.slice(-2, undefined);
 
     isochroneEntity.onDragMarcador((e), (isocrona) => {
-        if (isochroneEntity != overlapCandidates[0] && overlapCandidates.length === 2) {
-            console.log(overlapCandidates[0].checkSolapeCon(overlapCandidates[1]));
+        if (currentOverlap !== null) currentOverlap.hide();
+
+        // No queremos realizar el cálculo si lo que ha ocurrido
+        // es que el usuario ha movido el mismo marcador dos veces
+        if (overlapCandidates.length === 2) {
+            let overlapGeometry = overlapCandidates[0].checkSolapeCon(overlapCandidates[1]);
+            console.log(overlapGeometry);
+
+            if (overlapGeometry) {
+                currentOverlap = new Overlap(overlapGeometry, elMapa);
+                currentOverlap.show();
+            }
         }
     });
 

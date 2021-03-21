@@ -143,9 +143,12 @@ class IsochroneEntity extends MapEntity {
      * @returns {Overlap} interseccion
      */
     checkSolapeCon(otroIsochroneEntity) {
+
+        // Esta es la mejor manera que encontré de 
+        // revertir al objeto original isocrona
+        // de antes del procesado que hace leaflet
         let property1 = Object.keys(this.isocrona._layers)[0];
         let candidate1 = this.isocrona._layers[property1].feature;
-        console.log(candidate1);
 
         let property2 = Object.keys(otroIsochroneEntity.isocrona._layers)[0];
         let candidate2 = otroIsochroneEntity.isocrona._layers[property2].feature;
