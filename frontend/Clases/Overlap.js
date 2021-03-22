@@ -1,6 +1,7 @@
 class Overlap {
 
     constructor(geometry, elMapa) {
+        this.estimacionPoblacion = null;
         this.elMapa = elMapa;
         this.overlapSpace = L.geoJSON(geometry, {
             style: {
@@ -24,6 +25,23 @@ class Overlap {
                 markerColor: 'green',
                 prefix: 'fa'
             })
+        });
+
+        let contenidoMarcador = `
+            <p>Cargando...</p>
+        `;
+
+        this.marcador.bindPopup(contenidoMarcador);
+
+        this.marcador.on('click', (e) => {
+            if (!this.estimacionPoblacion) {
+                eel.getEstimacionPoblacion(geometry.geometry.coordinates[0])()
+                .then((data) => {
+                    this.estimacionPoblacion = data.results[0].value.estimates['gpw-v4-population-count-rev10_2020']['SUM'];
+                    this.marcador.setPopupContent(`<p>${this.estimacionPoblacion}`);
+                });
+            }
+            console.log(geometry);
         });
 
 

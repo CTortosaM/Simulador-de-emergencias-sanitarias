@@ -15,6 +15,8 @@ let baseLayers = {
     })
 }
 
+let isocronasVisibles = false;
+
 const elMapa = L.map('mapa', {
     zoomControl: false,
     minZoom: 2,
@@ -76,6 +78,8 @@ const setupEntity = (tipo) => {
                     isochroneEntity.marcador.on('dragend', (e) => {
                         onIsochroneMoved(e, isochroneEntity);
                     })
+
+                    entities[tipo].push(isochroneEntity);
 
                 } else if (entityTypes.Map.includes(tipo)) {
                     entities[tipo].push(new MapEntity(
@@ -149,4 +153,18 @@ function onIsochroneMoved(e, isochroneEntity) {
         }
     });
 
+}
+
+function toggleIsocronas(e) {
+    if (currentOverlap) currentOverlap.hide();
+
+    Object.keys(entities).forEach((key) => {
+        entities[key].forEach((entity) => {
+            switch (entity.tipo) {
+                case 'SVA':
+                    entity.hideIsocrona();
+                    break;
+            }
+        })
+    })
 }
