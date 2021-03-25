@@ -117,7 +117,6 @@ marcadorIsocrona.addTo(elMapa);
 
 let tiempoDeIsocrona = 15;
 let todasLasIsocronasVisibles = false;
-todasLasIsocronasVisibles.add
 
 let sliderDeTiempo = document.getElementById("sliderTiempo");
 let cantidadDeTiempoIsocrona = document.getElementById("cantidadDeTiempoIsocrona");

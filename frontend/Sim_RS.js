@@ -102,6 +102,38 @@ let entities = {
     Base: []
 }
 // ----------------------------
+let tiempoDeIsocrona = 15;
+let todasLasIsocronasVisibles = false;
+
+let sliderDeTiempo = document.getElementById("sliderTiempo");
+let cantidadDeTiempoIsocrona = document.getElementById("cantidadDeTiempoIsocrona");
+sliderDeTiempo.value = 15;
+
+sliderDeTiempo.oninput = (ev) => {
+    tiempoDeIsocrona = parseInt(sliderDeTiempo.value);
+    cantidadDeTiempoIsocrona.innerText = tiempoDeIsocrona + " min";
+}
+
+sliderDeTiempo.onchange = (ev) => {
+    entities.SVA.forEach((sva) => {
+        if (sva.isocronaVisible) {
+            sva.hideIsocrona();
+            sva.updateIsocrona(tiempoDeIsocrona, (succes, fail) => {
+                sva.showIsocrona();
+            });
+        }
+    })
+
+    entities.SVB.forEach((svb) => {
+        if (svb.isocronaVisible) {
+            svb.hideIsocrona();
+            svb.updateIsocrona(tiempoDeIsocrona, (succes, fail) => {
+                svb.showIsocrona();
+            });
+        }
+    })
+}
+// ----------------------------
 setupEntity('SVA');
 setupEntity('SVB');
 setupEntity('Base');
