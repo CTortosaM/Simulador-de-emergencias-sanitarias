@@ -16,7 +16,7 @@ class Vehiculo {
         this.tipoDeVehiculo = tipoDeVehiculo;
         this.tiempoDeIsocrona = tiempoDeIsocrona;
         this.elMapa = elMapa;
-
+        this.isocrona = null;
         // ------------------------------------------
         /*
             Setup del marcador
@@ -26,13 +26,35 @@ class Vehiculo {
         */
         // ------------------------------------------
 
+        let colorMarcador;
+
         switch (tipo) {
             case 'SVB':
+                colorMarcador = 'blue';
+                this.colorIsocrona = '#129fe6'; // Color azul en hex
                 break;
 
             case 'SAMU':
+                colorMarcador = 'red';
+                this.colorIsocrona = '#e61212' // Color rojo en hex
+                break;
+
+            default:
+                colorMarcador = 'red';
+                this.colorIsocrona = '#e61212'
                 break;
         }
+
+        let icono = L.AwesomeMarkers.icon({
+            icon: 'ambulance',
+            markerColor: colorMarcador,
+            prefix: 'fa'
+        });
+
+        this.marcador = L.marker(this.posicion, {
+            icon: icono,
+            draggable: true
+        }).addTo(this.elMapa);
     }
 
 
@@ -43,17 +65,19 @@ class Vehiculo {
      * @param {number} lng 
      */
     desplazarA(lat = 0, lng = 0) {
+        this.posicion.lat = lat;
+        this.posicion.lng = lng;
 
+        this.marcador.setLatLng(this.posicion).update();
     }
 
 
     /**
      * Actualiza el alcance de la isocrona 
-     * @param {number} nuevoTiempo 
-     * @param {function} onAcabado 
+     * @param {number} nuevoTiempo Nuevo tiempo para la isocrona
+     * @param {function} onAcabado Callback ejecutado al acabar la operación
      */
     actualizarIsocrona(nuevoTiempo = 10, onAcabado = () => {}) {
-
     }
 
 
@@ -62,14 +86,22 @@ class Vehiculo {
      * @param {boolean} visibilidad 
      */
     setVisibilidadIsocrona(visibilidad = false) {
+        if (!this.isocrona) return;
 
+        if (this.esLaIsocronaVisible()) {
+            this.elMapa.removeLayer(this.isocrona);
+            return;
+        }
+
+        this.isocrona.addTo(this.elMapa);
     }
 
     /**
+     * 
      * @returns {boolean} Visibilidad de la isocrona en el mapa
      */
     esLaIsocronaVisible() {
-    
+        return this.elMapa.hasLayer(this.isocrona);
     }
 
 }

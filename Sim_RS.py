@@ -42,8 +42,8 @@ def getDatos(tipoDeVehiculo='SVA'):
         with open('./Datos/Datos.json') as f:
             data = json.load(f)[tipoDeVehiculo]
             return json.dumps(data)
-    except:
-        return 'Wrong data'
+    except (KeyError, TypeError, ValueError) as error:
+      return 'Error'
 
 @eel.expose
 def getEstimacionPoblacion(poligono):

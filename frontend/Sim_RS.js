@@ -46,6 +46,12 @@ let overlapCandidates = [];
 let currentOverlap = null;
 // ---------------------------
 
+const enlaceABackend = new EnlaceABackend();
+
+enlaceABackend.getVehiculos('SVA', (vehiculos, error) => {
+    console.log(vehiculos);
+})
+
 /**
  * Realiza el setup de marcadores de todas las entidades
  * del tipo proporcionado
