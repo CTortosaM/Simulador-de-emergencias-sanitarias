@@ -17,6 +17,8 @@ class Vehiculo {
         this.tiempoDeIsocrona = tiempoDeIsocrona;
         this.elMapa = elMapa;
         this.isocrona = null;
+
+        this.enlaceABakend = new EnlaceABackend();
         // ------------------------------------------
         /*
             Setup del marcador
@@ -28,7 +30,7 @@ class Vehiculo {
 
         let colorMarcador;
 
-        switch (tipo) {
+        switch (tipoDeVehiculo) {
             case 'SVB':
                 colorMarcador = 'blue';
                 this.colorIsocrona = '#129fe6'; // Color azul en hex
@@ -58,6 +60,11 @@ class Vehiculo {
     }
 
 
+    #onMarcadorDrag(e) {
+
+    }
+
+
     /**
      * Desplaza el vehiculo a la posición indicada 
      * por las coordenadas proporcionadas
@@ -77,7 +84,31 @@ class Vehiculo {
      * @param {number} nuevoTiempo Nuevo tiempo para la isocrona
      * @param {function} onAcabado Callback ejecutado al acabar la operación
      */
-    actualizarIsocrona(nuevoTiempo = 10, onAcabado = () => {}) {
+    actualizarIsocrona(nuevoTiempo = 10, onAcabado = (success, failure) => {}) {
+        this.tiempoDeIsocrona = nuevoTiempo;
+
+        this.enlaceABakend.getIsocrona(
+            this.posicion.lat,
+            this.posicion.lng,
+            this.tiempoDeIsocrona,
+            (res, error) => {
+                if (error) {
+                    this.isocrona = null;
+
+                    // Success - Failure
+                    onAcabado(null, error);
+                    return;
+                }
+
+                this.isocrona = L.geoJSON(res, {
+                    style: {
+                        color: this.colorIsocrona
+                    }
+                });
+
+                onAcabado('Success', null);
+            }
+        )
     }
 
 
@@ -102,6 +133,28 @@ class Vehiculo {
      */
     esLaIsocronaVisible() {
         return this.elMapa.hasLayer(this.isocrona);
+    }
+
+
+    /**
+     * Comprueba si existe solape entre isocronas y devuelve
+     * un objeto Overlap / null
+     * @param {Vehiculo} otroVehiculo 
+     * @returns interseccion
+     */
+    checkSolapeCon(otroVehiculo) {
+        // Esta es la mejor manera que encontré de 
+        // revertir al objeto original isocrona
+        // de antes del procesado que hace leaflet
+        let property1 = Object.keys(this.isocrona._layers)[0];
+        let candidate1 = this.isocrona._layers[property1].feature;
+
+        let property2 = Object.keys(otroVehiculo.isocrona._layers)[0];
+        let candidate2 = otroVehiculo.isocrona._layers[property2].feature;
+
+        let interseccion = turf.intersect(candidate1, candidate2);
+
+        return interseccion;
     }
 
 }

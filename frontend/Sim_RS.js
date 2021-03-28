@@ -47,10 +47,15 @@ let currentOverlap = null;
 // ---------------------------
 
 const enlaceABackend = new EnlaceABackend();
-
-enlaceABackend.getVehiculos('SVA', (vehiculos, error) => {
-    console.log(vehiculos);
-})
+let vehiculo = new Vehiculo(39, -0.6, 'SVA', 10, elMapa);
+vehiculo.actualizarIsocrona(11, (sucess, failure) => {
+    console.log(sucess);
+    console.log(failure);
+});
+enlaceABackend.getIsocrona(39, -0.6, 10, (res, error) => {
+    console.log(res);
+    console.log(error);
+});
 
 /**
  * Realiza el setup de marcadores de todas las entidades

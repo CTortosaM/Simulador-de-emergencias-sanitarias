@@ -9,6 +9,12 @@ class EnlaceABackend {
      * @param {function} callback 
      */
     getEstimacionPoblacion(poligono, callback) {
+        let geometriaPoligono = poligono.geometry.coordinates[0];
+        eel.getEstimacionPoblacion(geometriaPoligono)().then((resultado) => {
+            callback(resultado, null);
+        }, (rejected) => {
+            callback(null, rejected);
+        });
 
     }
 
@@ -32,6 +38,27 @@ class EnlaceABackend {
             callback(null, rejected);
             return;
         });
+    }
+
+
+    /**
+     * Obtener isocrona en la localización indicada con extensión
+     * del tiempo proporcionado
+     * @param {number} lat 
+     * @param {number} lng 
+     * @param {number} tiempo 
+     * @param {function} callback 
+     */
+    getIsocrona(lat, lng, tiempo, callback) {
+        eel.obtenerGeoJson(lng, lat, tiempo)().then((resultado) => {
+            if (!resultado.type === 'FeatureCollection') {
+                callback(null, resultado);
+                return;
+            }
+            callback(resultado , null);
+        }, (rejected) => {
+            callback(null, rejected)
+        })
     }
 
 }
