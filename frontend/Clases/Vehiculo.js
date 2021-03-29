@@ -36,7 +36,7 @@ class Vehiculo {
                 this.colorIsocrona = '#129fe6'; // Color azul en hex
                 break;
 
-            case 'SAMU':
+            case 'SVA':
                 colorMarcador = 'red';
                 this.colorIsocrona = '#e61212' // Color rojo en hex
                 break;
