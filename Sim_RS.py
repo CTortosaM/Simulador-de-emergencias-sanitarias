@@ -31,7 +31,6 @@ def obtenerGeoJson(lng, lat, tiempoEnMinutos):
         'Content-Type': 'application/json; charset=utf-8'
     }
     call = requests.post('https://api.openrouteservice.org/v2/isochrones/driving-car', json=body, headers=headers)
-    print(call.json())
     return call.json()
 
 

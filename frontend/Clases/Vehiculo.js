@@ -170,11 +170,8 @@ class Vehiculo {
 
         this.setVisibilidadIsocrona(false);
         this.actualizarIsocrona(this.tiempoDeIsocrona, (worked, error) => {
-            console.log(error);
-            console.log(worked);
             if (worked && !error) {
                 this.setVisibilidadIsocrona(true);
-                console.log(worked);
                 callback(this.isocrona);
             } else {
                 callback(null);

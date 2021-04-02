@@ -121,19 +121,18 @@ function onIsochroneMoved(e, isochroneEntity) {
     overlapCandidates = overlapCandidates.slice(-2, undefined);
 
     isochroneEntity.onDragMarcador((e), (isocrona) => {
-        /*if (currentOverlap !== null) currentOverlap.hide();
+        if (currentOverlap !== null) currentOverlap.hide();
 
         // No queremos realizar el cálculo si lo que ha ocurrido
         // es que el usuario ha movido el mismo marcador dos veces
         if (overlapCandidates.length === 2) {
             let overlapGeometry = overlapCandidates[0].checkSolapeCon(overlapCandidates[1]);
-            console.log(overlapGeometry);
 
             if (overlapGeometry) {
                 currentOverlap = new Overlap(overlapGeometry, elMapa);
                 currentOverlap.show();
             }
-        } */
+        }
     });
 
 }
