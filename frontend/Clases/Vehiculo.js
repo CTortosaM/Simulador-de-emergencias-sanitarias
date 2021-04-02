@@ -8,7 +8,7 @@ class Vehiculo {
      * @param {number} tiempoDeIsocrona Alcance de la isocrona del vehiculo
      * @param {object} elMapa Referencia al mapa de Leaflet
      */
-    constructor(lat = 0, lng = 0, tipoDeVehiculo = 'SAMU', tiempoDeIsocrona = 10, elMapa = null) {
+    constructor(lat = 0, lng = 0, tipoDeVehiculo = 'SVA', tiempoDeIsocrona = 10, elMapa = null) {
         this.posicion = {};
         this.posicion.lat = lat;
         this.posicion.lng = lng;
@@ -57,6 +57,10 @@ class Vehiculo {
             icon: icono,
             draggable: true
         }).addTo(this.elMapa);
+
+        this.marcador.on('click', (e) => {
+            this.setVisibilidadIsocrona(!this.esLaIsocronaVisible());
+        })
     }
 
 
@@ -146,6 +150,7 @@ class Vehiculo {
      * @returns interseccion
      */
     checkSolapeCon(otroVehiculo) {
+
         // Esta es la mejor manera que encontré de 
         // revertir al objeto original isocrona
         // de antes del procesado que hace leaflet
