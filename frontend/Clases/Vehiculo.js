@@ -18,7 +18,7 @@ class Vehiculo {
         this.elMapa = elMapa;
         this.isocrona = null;
 
-        this.enlaceABakend = new EnlaceABackend();
+        this.enlaceABackend = new EnlaceABackend();
         // ------------------------------------------
         /*
             Setup del marcador
@@ -60,10 +60,6 @@ class Vehiculo {
     }
 
 
-    #onMarcadorDrag(e) {
-
-    }
-
 
     /**
      * Desplaza el vehiculo a la posición indicada 
@@ -87,7 +83,7 @@ class Vehiculo {
     actualizarIsocrona(nuevoTiempo = 10, onAcabado = (success, failure) => {}) {
         this.tiempoDeIsocrona = nuevoTiempo;
 
-        this.enlaceABakend.getIsocrona(
+        this.enlaceABackend.getIsocrona(
             this.posicion.lat,
             this.posicion.lng,
             this.tiempoDeIsocrona,
@@ -97,6 +93,13 @@ class Vehiculo {
 
                     // Success - Failure
                     onAcabado(null, error);
+                    return;
+                }
+
+                if (res.error) {
+                    this.isocrona = null;
+
+                    onAcabado(null, res.error);
                     return;
                 }
 
@@ -155,6 +158,28 @@ class Vehiculo {
         let interseccion = turf.intersect(candidate1, candidate2);
 
         return interseccion;
+    }
+
+    /**
+     * 
+     * @param {object} e 
+     */
+     onDragMarcador(e, callback) {
+        let newCoords = e.target._latlng;
+        this.desplazarA(newCoords.lat, newCoords.lng);
+
+        this.setVisibilidadIsocrona(false);
+        this.actualizarIsocrona(this.tiempoDeIsocrona, (worked, error) => {
+            console.log(error);
+            console.log(worked);
+            if (worked && !error) {
+                this.setVisibilidadIsocrona(true);
+                console.log(worked);
+                callback(this.isocrona);
+            } else {
+                callback(null);
+            }
+        });
     }
 
 }

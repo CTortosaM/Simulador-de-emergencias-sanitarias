@@ -59,13 +59,17 @@ getDatos('SVA', (res, err) => {
     }
 
     res.forEach((vehiculoData) => {
-        entidadesMapa.SVA.push(new Vehiculo(
+        let vehiculo = new Vehiculo(
             vehiculoData.Lat,
             vehiculoData.Lng,
             'SVA',
             10,
             elMapa
-        ));
+        );
+        vehiculo.marcador.on('dragend', (e) => {
+            onIsochroneMoved(e, vehiculo)
+        });
+        entidadesMapa.SVA.push(vehiculo);
     });
 });
 
@@ -76,15 +80,20 @@ getDatos('SVB', (res, err) => {
     }
 
     res.forEach((vehiculoData) => {
-        entidadesMapa.SVB.push(new Vehiculo(
+        let vehiculo = new Vehiculo(
             vehiculoData.Lat,
             vehiculoData.Lng,
             'SVB',
             10,
             elMapa
-        ));
+        );
+        vehiculo.marcador.on('dragend', (e) => {
+            onIsochroneMoved(e, vehiculo)
+        });
+        entidadesMapa.SVB.push(vehiculo);
     });
 });
+
 
 /**
  * Realiza una petición al backend para sustraer los datos
@@ -112,7 +121,7 @@ function onIsochroneMoved(e, isochroneEntity) {
     overlapCandidates = overlapCandidates.slice(-2, undefined);
 
     isochroneEntity.onDragMarcador((e), (isocrona) => {
-        if (currentOverlap !== null) currentOverlap.hide();
+        /*if (currentOverlap !== null) currentOverlap.hide();
 
         // No queremos realizar el cálculo si lo que ha ocurrido
         // es que el usuario ha movido el mismo marcador dos veces
@@ -124,7 +133,7 @@ function onIsochroneMoved(e, isochroneEntity) {
                 currentOverlap = new Overlap(overlapGeometry, elMapa);
                 currentOverlap.show();
             }
-        }
+        } */
     });
 
 }

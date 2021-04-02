@@ -23,7 +23,7 @@ def obtenerCoordsEPSG():
 
 @eel.expose
 def obtenerGeoJson(lng, lat, tiempoEnMinutos):
-    body = {"locations":[[lat, lng]],"range":[tiempoEnMinutos*60]}
+    body = {"locations":[[lng, lat]],"range":[tiempoEnMinutos*60]}
 
     headers = {
         'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
@@ -31,6 +31,7 @@ def obtenerGeoJson(lng, lat, tiempoEnMinutos):
         'Content-Type': 'application/json; charset=utf-8'
     }
     call = requests.post('https://api.openrouteservice.org/v2/isochrones/driving-car', json=body, headers=headers)
+    print(call.json())
     return call.json()
 
 
