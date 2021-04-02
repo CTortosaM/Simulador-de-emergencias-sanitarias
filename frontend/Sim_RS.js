@@ -63,6 +63,7 @@ getDatos('SVA', (res, err) => {
             vehiculoData.Lat,
             vehiculoData.Lng,
             'SVA',
+            vehiculoData.Disponibilidad,
             10,
             elMapa
         );
@@ -84,6 +85,7 @@ getDatos('SVB', (res, err) => {
             vehiculoData.Lat,
             vehiculoData.Lng,
             'SVB',
+            vehiculoData.Disponibilidad,
             10,
             elMapa
         );
@@ -91,6 +93,19 @@ getDatos('SVB', (res, err) => {
             onIsochroneMoved(e, vehiculo)
         });
         entidadesMapa.SVB.push(vehiculo);
+    });
+});
+
+getDatos('Base', (res, err) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+
+    res.forEach((baseData) => {
+        let base = new Base(baseData.Lat, baseData.Lng);
+
+        entidadesMapa.Base.push(base);
     });
 });
 

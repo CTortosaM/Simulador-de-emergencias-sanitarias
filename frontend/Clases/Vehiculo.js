@@ -1,3 +1,7 @@
+/**
+ * Representa una entidad vehiculo en el Mapa
+ */
+
 class Vehiculo {
 
     /**
@@ -5,13 +9,16 @@ class Vehiculo {
      * @param {number} lat Latitud de la posición geográfica
      * @param {number} lng Longitud de la posición geográfica
      * @param {string} tipoDeVehiculo Por defecto 'SAMU'
+     * @param {string} horario Horario del día que está disponible el vehiculo
      * @param {number} tiempoDeIsocrona Alcance de la isocrona del vehiculo
      * @param {object} elMapa Referencia al mapa de Leaflet
      */
-    constructor(lat = 0, lng = 0, tipoDeVehiculo = 'SVA', tiempoDeIsocrona = 10, elMapa = null) {
+    constructor(lat = 0, lng = 0, tipoDeVehiculo = 'SVA', disponibilidad = '12 AM', tiempoDeIsocrona = 10, elMapa = null) {
         this.posicion = {};
         this.posicion.lat = lat;
         this.posicion.lng = lng;
+
+        this.disponibilidad = disponibilidad;
 
         this.tipoDeVehiculo = tipoDeVehiculo;
         this.tiempoDeIsocrona = tiempoDeIsocrona;
