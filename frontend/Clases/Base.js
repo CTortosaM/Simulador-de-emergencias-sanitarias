@@ -29,13 +29,17 @@ class Base {
      * Añade vehiculo a la pila correspondiente
      * @param {Vehiculo} unVehiculo
      */
-    anyadirVehiculo(unVehiculo = new Vehiculo(0, 0, 'SVA', '12h Dia', 10, elMapa)) {
-        
+    anyadirVehiculo(unVehiculo) {
+        console.log(typeof vehiculo);
     }
 
 
-    extaerVehiculo() {
-
+    /**
+     * Guarda el vehiculo en esta base
+     * @param {Vehiculo} vehiculo Vehiculo a anyadir 
+     */
+    extaerVehiculo(vehiculo) {
+        console.log(typeof vehiculo);
     }
 
 }
