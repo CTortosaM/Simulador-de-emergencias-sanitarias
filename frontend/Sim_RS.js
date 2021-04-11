@@ -23,6 +23,10 @@ const elMapa = L.map('mapa', {
     layers: [baseLayers["Base"]]
 });
 
+elMapa.on('click', (e) => {
+    setSelectionMode(false);
+})
+
 L.control.layers(baseLayers).addTo(elMapa);
 
 L.control.zoom({
@@ -74,7 +78,8 @@ getDatos('SVA', (res, err) => {
             'SVA',
             vehiculoData.Disponibilidad,
             10,
-            elMapa
+            elMapa,
+            vehiculoData.Descripcion
         );
         vehiculo.marcador.on('dragend', (e) => {
             onIsochroneMoved(e, vehiculo)
@@ -96,7 +101,8 @@ getDatos('SVB', (res, err) => {
             'SVB',
             vehiculoData.Disponibilidad,
             10,
-            elMapa
+            elMapa,
+            vehiculoData.Descripcion
         );
         vehiculo.marcador.on('dragend', (e) => {
             onIsochroneMoved(e, vehiculo)

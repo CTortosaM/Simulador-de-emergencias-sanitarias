@@ -13,12 +13,13 @@ class Vehiculo {
      * @param {number} tiempoDeIsocrona Alcance de la isocrona del vehiculo
      * @param {object} elMapa Referencia al mapa de Leaflet
      */
-    constructor(lat = 0, lng = 0, tipoDeVehiculo = 'SVA', disponibilidad = '12 AM', tiempoDeIsocrona = 10, elMapa = null) {
+    constructor(lat = 0, lng = 0, tipoDeVehiculo = 'SVA', disponibilidad = '12 AM', tiempoDeIsocrona = 10, elMapa = null, descripcion = '') {
         this.posicion = {};
         this.posicion.lat = lat;
         this.posicion.lng = lng;
 
         this.disponibilidad = disponibilidad;
+        this.descripcion = descripcion;
 
         this.tipoDeVehiculo = tipoDeVehiculo;
         this.tiempoDeIsocrona = tiempoDeIsocrona;
@@ -73,6 +74,11 @@ class Vehiculo {
                 setSelectionMode(false);
             }
         })
+
+        this.marcador.bindPopup(`
+            <b>${descripcion}<b>
+            <p>Disponibilidad: ${disponibilidad}</p>
+        `);
     }
 
 

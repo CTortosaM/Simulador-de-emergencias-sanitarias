@@ -37,7 +37,7 @@ class Base {
             <br>
             <button class="btn btn-dark" onClick="extraerVehiculo()">Extraer Vehiculo</button>
             <button class="btn btn-dark" onClick="setSelectionMode(true)">Anyadir Vehiculo</button>
-            <p>${this.vehiculos.length} coches disponibles</p>
+            <p>${this.vehiculos.length} vehiculos disponibles</p>
         `;
 
         this.marcador = L.marker(this.posicion, {
@@ -109,7 +109,7 @@ class Base {
         <br>
         <button class="btn btn-dark" onClick="extraerVehiculo()">Extraer Vehiculo</button>
         <button class="btn btn-dark" onClick="setSelectionMode(true)">Anyadir Vehiculo</button>
-        <p>${this.vehiculos.length} coches disponibles</p>
+        <p>${this.vehiculos.length} vehiculos disponibles</p>
     `);
     }
 
