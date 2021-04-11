@@ -171,9 +171,3 @@ function toggleIsocronas(e) {
         })
     })
 }
-
-
-
-function onClickBase() {
-    console.log('Increible espectacular');
-}

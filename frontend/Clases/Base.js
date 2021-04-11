@@ -6,17 +6,25 @@ class Base {
 
     /**
      * 
-     * @param {number} lat 
-     * @param {number} lng 
+     * @param {number} lat Latitud de la posición
+     * @param {number} lng Longitud de la posición
+     * @param {string} descripcion Descripción de la base
+     * @param {object} elMapa Referencia al mapa de Leaflet
+     * @param {function} onClickExtraer Acción al clickar botón de extraer
      */
-    constructor(lat = 0, lng = 0, descripcion = 'Una descripción', elMapa) {
-        this.posicion = {lat: lat, lng: lng};
+    constructor(lat = 0, lng = 0, descripcion = 'Una descripción', elMapa, onClickExtraer) {
+        this.posicion = {
+            lat: lat,
+            lng: lng
+        };
         this.descripcion = descripcion;
 
         this.elMapa = elMapa;
 
         this.vehiculosSVA = [];
         this.vehiculosSVB = [];
+
+        this.vehiculos = [];
 
         let icono = L.AwesomeMarkers.icon({
             icon: 'medkit',
@@ -26,6 +34,9 @@ class Base {
 
         let markerContent = `
             <b>${this.descripcion}</b>
+            <br>
+            <button class="btn btn-dark">Extraer Vehiculo</button>
+            <p>${this.vehiculos.length} coches disponibles</p>
         `;
 
         this.marcador = L.marker(this.posicion, {
@@ -44,19 +55,50 @@ class Base {
      */
     anyadirVehiculo(unVehiculo) {
         if (unVehiculo instanceof Vehiculo) {
-            console.log(unVehiculo.tipoDeVehiculo)
+            if (!this.vehiculos.includes(unVehiculo)) {
+                this.vehiculos.push(unVehiculo);
+
+                if (unVehiculo.tipoDeVehiculo === 'SVA') {
+                    this.vehiculosSVA.push(unVehiculo);
+                    return;
+                }
+
+                this.vehiculosSVB.push(unVehiculo);
+                this._updatePopup();
+            }
         }
     }
 
 
     /**
-     * Extrae el un vehiculo elegido
-     * @param {Vehiculo} vehiculo Vehiculo a anyadir 
+     * Extrae el último vehiculo añadido a la base 
      */
-    extaerVehiculo(vehiculo) {
-        if (3) {
+    extaerVehiculo() {
 
+        if (this.vehiculos.length === 0) return null;
+
+        let elVehiculo = this.vehiculos.pop();
+
+        if (this.vehiculosSVA.includes(elVehiculo)) {
+            this.vehiculosSVA.splice(this.vehiculosSVA.indexOf(elVehiculo), 1);
         }
+
+        if (this.vehiculosSVB.includes(elVehiculo)) {
+            this.vehiculosSVB.splice(this.vehiculosSVB.indexOf(elVehiculo), 1);
+        }
+
+        this._updatePopup();
+        return elVehiculo;
+    }
+
+
+    _updatePopup() {
+        this.marcador.setPopupContent(`
+        <b>${this.descripcion}</b>
+        <br>
+        <button class="btn btn-dark">Extraer Vehiculo</button>
+        <p>${this.vehiculos.length} coches disponibles</p>
+        `);
     }
 
 }
