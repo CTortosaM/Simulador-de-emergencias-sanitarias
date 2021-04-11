@@ -52,6 +52,12 @@ let entidadesMapa = {
     Base: []
 }
 // --------------------------
+
+let unCoche = new Vehiculo(0,0,'SVA', '12h Mañana', 10, elMapa);
+let unaBase = new Base(0,-0.001, 'Pues una descripción', elMapa);
+
+unaBase.anyadirVehiculo(unCoche);
+
 getDatos('SVA', (res, err) => {
     if (err) {
         console.error(err);
@@ -103,7 +109,7 @@ getDatos('Base', (res, err) => {
     }
 
     res.forEach((baseData) => {
-        let base = new Base(baseData.Lat, baseData.Lng);
+        let base = new Base(baseData.Lat, baseData.Lng, baseData.Descripcion, elMapa);
 
         entidadesMapa.Base.push(base);
     });
@@ -164,4 +170,10 @@ function toggleIsocronas(e) {
             }
         })
     })
+}
+
+
+
+function onClickBase() {
+    console.log('Increible espectacular');
 }

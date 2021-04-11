@@ -9,6 +9,8 @@ import eel
 import json
 import requests
 import csv
+
+from requests.api import head
 # Exposa la funció al script JS
 @eel.expose
 def obtenerCoordsEPSG():
@@ -47,6 +49,13 @@ def getDatos(tipoDeVehiculo='SVA'):
 
 @eel.expose
 def getEstimacionPoblacion(poligono):
+    url = 'https://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/pesv3Broker/GPServer/pesv3Broker/execute?f=json'
+
+    headers = {
+        'Accept-Content':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'Cookie': '_ga=GA1.2.222787148.1613236203; _gid=GA1.2.55038318.1617956848; logged=false; urs_login_status=false; uvts=28d5d143-200c-4477-4d09-314a514fbfa8',
+        'Accept-Encoding':'gzip, deflate, br'
+    }
     requestData = {
         "polygon": poligono,
         "variables": [
@@ -58,7 +67,8 @@ def getEstimacionPoblacion(poligono):
         "requestID": "123456789"
     }
 
-    call = requests.post('https://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/pesv3Broker/GPServer/pesv3Broker/execute?f=json', json=requestData)
+    print(requestData)
+    call = requests.post(url, data=requestData, headers=headers)
     return call.json()
 
 
