@@ -35,7 +35,7 @@ class Base {
         let markerContent = `
             <b>${this.descripcion}</b>
             <br>
-            <button class="btn btn-dark">Extraer Vehiculo</button>
+            <button class="btn btn-dark" onClick="extraerVehiculo()">Extraer Vehiculo</button>
             <p>${this.vehiculos.length} coches disponibles</p>
         `;
 
@@ -46,6 +46,10 @@ class Base {
 
         this.marcador.bindPopup(markerContent);
         this.marcador.addTo(this.elMapa);
+
+        this.marcador.on('click', (e) => {
+            lastBaseClicked = this;
+        })
     }
 
 
@@ -54,36 +58,31 @@ class Base {
      * @param {Vehiculo} unVehiculo
      */
     anyadirVehiculo(unVehiculo) {
-        console.log('el primer log')
         if (unVehiculo instanceof Vehiculo) {
             if (!this.vehiculos.includes(unVehiculo)) {
                 this.vehiculos.push(unVehiculo);
 
                 if (unVehiculo.tipoDeVehiculo === 'SVA') {
                     this.vehiculosSVA.push(unVehiculo);
-                    this._updatePopup();
-                    return;
+                } else if (unVehiculo.tipoDeVehiculo === 'SVB') {
+                    this.vehiculosSVB.push(unVehiculo);
                 }
 
-                this.vehiculosSVB.push(unVehiculo);
+                unVehiculo.setVisibilidadIsocrona(false);
+                elMapa.removeLayer(unVehiculo.marcador);
+
                 this._updatePopup();
-                console.log('si o no')
-                
-            } else {
-                console.log('aparentmente está ya en el array')
             }
-        } else {
-            console.log('Aparentmente no es un coche')
         }
     }
 
 
     /**
-     * Extrae el último vehiculo añadido a la base 
+     * Extrae el último vehículo y lo coloca en el mapa
      */
-    extaerVehiculo() {
+    extraerVehiculo() {
 
-        if (this.vehiculos.length === 0) return null;
+        if (this.vehiculos.length === 0) return;
 
         let elVehiculo = this.vehiculos.pop();
 
@@ -96,12 +95,14 @@ class Base {
         }
 
         this._updatePopup();
-        return elVehiculo;
+        
+        // Lo coloco al lado del centro
+        elVehiculo.desplazarA(this.posicion.lat, this.posicion.lng + 0.12);
+        elVehiculo.marcador.addTo(elMapa);
     }
 
 
     _updatePopup() {
-        console.log('creo que me muero')
         this.marcador.setPopupContent(`
         <b>${this.descripcion}</b>
         <br>

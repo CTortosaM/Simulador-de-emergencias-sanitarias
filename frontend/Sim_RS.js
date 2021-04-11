@@ -45,6 +45,8 @@ const entityTypes = {
 // ---------------------------
 let overlapCandidates = [];
 let currentOverlap = null;
+
+let lastBaseClicked = null;
 // ---------------------------
 let entidadesMapa = {
     SVA: [],
@@ -170,4 +172,16 @@ function toggleIsocronas(e) {
             }
         })
     })
+}
+
+function extraerVehiculo() {
+    if (lastBaseClicked) {
+        lastBaseClicked.extraerVehiculo();
+    }
+}
+
+function anyadirVehiculo(vehiculo) {
+    if (lastBaseClicked) {
+        lastBaseClicked.anyadirVehiculo(vehiculo);
+    }
 }
