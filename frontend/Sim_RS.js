@@ -54,7 +54,7 @@ let entidadesMapa = {
 // --------------------------
 
 let unCoche = new Vehiculo(0,0,'SVA', '12h Mañana', 10, elMapa);
-let unaBase = new Base(0,-0.001, 'Pues una descripción', elMapa);
+let unaBase = new Base(0,-0.2, 'Pues una descripción', elMapa);
 
 unaBase.anyadirVehiculo(unCoche);
 

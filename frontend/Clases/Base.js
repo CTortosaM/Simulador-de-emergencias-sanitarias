@@ -54,18 +54,26 @@ class Base {
      * @param {Vehiculo} unVehiculo
      */
     anyadirVehiculo(unVehiculo) {
+        console.log('el primer log')
         if (unVehiculo instanceof Vehiculo) {
             if (!this.vehiculos.includes(unVehiculo)) {
                 this.vehiculos.push(unVehiculo);
 
                 if (unVehiculo.tipoDeVehiculo === 'SVA') {
                     this.vehiculosSVA.push(unVehiculo);
+                    this._updatePopup();
                     return;
                 }
 
                 this.vehiculosSVB.push(unVehiculo);
                 this._updatePopup();
+                console.log('si o no')
+                
+            } else {
+                console.log('aparentmente está ya en el array')
             }
+        } else {
+            console.log('Aparentmente no es un coche')
         }
     }
 
@@ -93,6 +101,7 @@ class Base {
 
 
     _updatePopup() {
+        console.log('creo que me muero')
         this.marcador.setPopupContent(`
         <b>${this.descripcion}</b>
         <br>
