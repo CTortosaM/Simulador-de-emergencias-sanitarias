@@ -36,6 +36,7 @@ class Base {
             <b>${this.descripcion}</b>
             <br>
             <button class="btn btn-dark" onClick="extraerVehiculo()">Extraer Vehiculo</button>
+            <button class="btn btn-dark" onClick="setSelectionMode(true)">Anyadir Vehiculo</button>
             <p>${this.vehiculos.length} coches disponibles</p>
         `;
 
@@ -95,7 +96,7 @@ class Base {
         }
 
         this._updatePopup();
-        
+
         // Lo coloco al lado del centro
         elVehiculo.desplazarA(this.posicion.lat, this.posicion.lng + 0.12);
         elVehiculo.marcador.addTo(elMapa);
@@ -106,9 +107,10 @@ class Base {
         this.marcador.setPopupContent(`
         <b>${this.descripcion}</b>
         <br>
-        <button class="btn btn-dark">Extraer Vehiculo</button>
+        <button class="btn btn-dark" onClick="extraerVehiculo()">Extraer Vehiculo</button>
+        <button class="btn btn-dark" onClick="setSelectionMode(true)">Anyadir Vehiculo</button>
         <p>${this.vehiculos.length} coches disponibles</p>
-        `);
+    `);
     }
 
 }

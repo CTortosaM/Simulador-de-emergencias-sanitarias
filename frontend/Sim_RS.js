@@ -47,6 +47,7 @@ let overlapCandidates = [];
 let currentOverlap = null;
 
 let lastBaseClicked = null;
+let selectionMode = false;
 // ---------------------------
 let entidadesMapa = {
     SVA: [],
@@ -184,4 +185,8 @@ function anyadirVehiculo(vehiculo) {
     if (lastBaseClicked) {
         lastBaseClicked.anyadirVehiculo(vehiculo);
     }
+}
+
+function setSelectionMode(selecting) {
+    selectionMode = selecting; 
 }

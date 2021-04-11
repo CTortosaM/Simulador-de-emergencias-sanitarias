@@ -67,6 +67,11 @@ class Vehiculo {
 
         this.marcador.on('click', (e) => {
             this.setVisibilidadIsocrona(!this.esLaIsocronaVisible());
+
+            if (selectionMode) {
+                anyadirVehiculo(this);
+                setSelectionMode(false);
+            }
         })
     }
 
