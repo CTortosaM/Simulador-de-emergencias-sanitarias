@@ -92,6 +92,7 @@ class Vehiculo {
      * @param {function} onAcabado Callback ejecutado al acabar la operación
      */
     actualizarIsocrona(nuevoTiempo = 10, onAcabado = (success, failure) => {}) {
+        this.setVisibilidadIsocrona(false);
         this.tiempoDeIsocrona = nuevoTiempo;
 
         this.enlaceABackend.getIsocrona(
