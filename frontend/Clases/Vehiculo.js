@@ -70,6 +70,7 @@ class Vehiculo {
             this.setVisibilidadIsocrona(!this.esLaIsocronaVisible());
 
             if (selectionMode) {
+                this.setVisibilidadIsocrona(false);
                 anyadirVehiculo(this);
                 setSelectionMode(false);
             }

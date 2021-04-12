@@ -50,6 +50,7 @@ class Base {
 
         this.marcador.on('click', (e) => {
             lastBaseClicked = this;
+            setSelectionMode(false);
         })
     }
 
