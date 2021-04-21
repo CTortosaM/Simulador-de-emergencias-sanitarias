@@ -9,6 +9,7 @@ import eel
 import json
 import requests
 import csv
+import urllib.parse as parser
 
 from requests.api import head
 # Exposa la funció al script JS
@@ -67,8 +68,11 @@ def getEstimacionPoblacion(poligono):
         "requestID": "123456789"
     }
 
-    print(requestData)
-    call = requests.post(url, data=requestData, headers=headers)
+    data = {
+        "Input_Data": requestData
+    }
+
+    call = requests.post(url, data=parser.urlencode(data), headers=headers)
     return call.json()
 
 

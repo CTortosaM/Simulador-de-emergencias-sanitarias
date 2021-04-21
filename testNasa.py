@@ -1,22 +1,23 @@
-import requests
-import json as js
-
+import urllib,json
+from urllib import request as rq
+import urllib.parse as par
 url = 'https://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/pesv3Broker/GPServer/pesv3Broker/execute?f=json'
 
-headers = {
-    "accept-language": "es-ES,es;q=0.9",
-    'Content-type': 'application/json',
-    'Accept':'application/json'
-}
-requestData = {
-    'polygon': [[-0.5600002645860996, 39.1272762870883], [-0.5602012963916762, 39.12765185148563], [-0.5592264186022798, 39.12931503584611], [-0.558619, 39.12896], [-0.557708, 39.128426]], 
-    'variables': ['gpw-v4-population-count-rev10_2020'], 
-    'statistics': ['SUM'], 
-    'requestID': '123456789'
-}
-requestData = js.dumps(requestData)
-print(requestData)
-call = requests.post(url, json=requestData, headers=headers)
+import requests
+def pesRequest(p):
+    params = par.urlencode(p)
+        # execute query
+    queryURL = 'https://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/pesv3Broker/GPServer/pesv3Broker/execute?f=json'
+    response = json.loads(rq.urlopen(queryURL,params).read())
+    return response
 
+p={"Input_Data":
+   {"polygon":[[-13.7109375,59.88893689676585],[135,60.413852350464914],
+               [135,4.740675384778373],[-10.72265625,4.390228926463396],
+               [-13.7109375,59.88893689676585]],
+  "variables":["gpw-v4-population-count-rev10_2020"],
+  "statistics":["SUM"],
+  "requestID":'12345'}}
 
+call = requests.post(url, data=par.urlencode(p))
 print(call.json())
