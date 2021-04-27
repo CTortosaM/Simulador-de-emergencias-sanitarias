@@ -16,7 +16,7 @@ def test_driver(driver:WebDriver, nombreNavegador:str):
 
     # Presencia de marcadores
     marcadores = driver.find_elements_by_class_name('awesome-marker')
-    assert marcadores.__len__() > 100, 'No se han encontrado marcadores en la página'
+    assert marcadores.__len__() > 0, 'No se han encontrado marcadores en la página'
 
 # Instancia navegadores
 with Chrome() as driverChrome:
@@ -25,5 +25,5 @@ with Chrome() as driverChrome:
 with Firefox() as driverFirefox:
     test_driver(driver=driverFirefox, nombreNavegador='Firefox')
 
-with Edge() as driverEdge:
-    test_driver(driver=driverEdge)
+with Edge(executable_path='C:/Program Files/EdgeDriver/msedgedriver.exe') as driverEdge:
+    test_driver(driver=driverEdge, nombreNavegador='Edge')
