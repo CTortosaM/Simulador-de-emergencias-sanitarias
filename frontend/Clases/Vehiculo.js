@@ -105,6 +105,8 @@ class Vehiculo {
      */
     actualizarIsocrona(nuevoTiempo = 10, onAcabado = (success, failure) => {}) {
         this.setVisibilidadIsocrona(false);
+        
+        if (elMapa.hasLayer(this.isocrona)) elMapa.removeLayer(this.isocrona);
         this.tiempoDeIsocrona = nuevoTiempo;
 
         this.enlaceABackend.getIsocrona(
@@ -114,7 +116,7 @@ class Vehiculo {
             (res, error) => {
                 if (error) {
                     this.isocrona = null;
-
+                    this.setVisibilidadIsocrona(false);
                     // Success - Failure
                     onAcabado(null, error);
                     return;
@@ -194,7 +196,9 @@ class Vehiculo {
         this.desplazarA(newCoords.lat, newCoords.lng);
 
         this.setVisibilidadIsocrona(false);
+        console.log(this.esLaIsocronaVisible())
         this.actualizarIsocrona(this.tiempoDeIsocrona, (worked, error) => {
+            console.log(this.esLaIsocronaVisible())
             if (worked && !error) {
                 this.setVisibilidadIsocrona(true);
                 callback(this.isocrona);
