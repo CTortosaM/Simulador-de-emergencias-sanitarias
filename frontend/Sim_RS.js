@@ -59,11 +59,15 @@ let entidadesMapa = {
     Base: []
 }
 // --------------------------
+let tiempoLabel = document.getElementById('cantidadDeTiempoIsocrona');
 
-let unCoche = new Vehiculo(0,0,'SVA', '12h Mañana', 10, elMapa);
-let unaBase = new Base(0,-0.2, 'Pues una descripción', elMapa);
+let sliderTiempoIsocronas = document.getElementById('sliderTiempo');
 
-unaBase.anyadirVehiculo(unCoche);
+sliderTiempoIsocronas.oninput = (ev) => {
+    let tiempo = sliderTiempoIsocronas.value;
+    tiempoLabel.innerHTML =  tiempo + ' min';
+}
+// --------------------------
 
 getDatos('SVA', (res, err) => {
     if (err) {
