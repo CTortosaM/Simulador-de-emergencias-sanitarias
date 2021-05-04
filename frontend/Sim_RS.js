@@ -59,6 +59,7 @@ let entidadesMapa = {
     Base: []
 }
 // --------------------------
+let tiempoDeIsocronas = 15;
 let tiempoLabel = document.getElementById('cantidadDeTiempoIsocrona');
 
 let sliderTiempoIsocronas = document.getElementById('sliderTiempo');
@@ -66,6 +67,10 @@ let sliderTiempoIsocronas = document.getElementById('sliderTiempo');
 sliderTiempoIsocronas.oninput = (ev) => {
     let tiempo = sliderTiempoIsocronas.value;
     tiempoLabel.innerHTML =  tiempo + ' min';
+}
+
+sliderTiempoIsocronas.onchange = (ev) => {
+    tiempoDeIsocronas = sliderTiempoIsocronas.value;
 }
 // --------------------------
 
@@ -199,4 +204,12 @@ function anyadirVehiculo(vehiculo) {
 
 function setSelectionMode(selecting) {
     selectionMode = selecting; 
+}
+
+/**
+ * Actualiza las entidades del mapa con el nuevo tiempo de isocrona
+ * @param {number} tiempo Nuevo tiempo de las isocronas
+ */
+function updateTiempoDeIsocronas(tiempo) {
+
 }
