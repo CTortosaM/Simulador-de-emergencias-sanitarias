@@ -67,7 +67,7 @@ class Vehiculo {
         }).addTo(this.elMapa);
 
         this.marcador.on('click', (e) => {
-            this.setVisibilidadIsocrona(!this.esLaIsocronaVisible());
+            this.setVisibilidadIsocrona(!this.marcador.isPopupOpen());
 
             if (selectionMode) {
                 this.setVisibilidadIsocrona(false);
@@ -75,7 +75,7 @@ class Vehiculo {
                 setSelectionMode(false);
             }
         })
-
+        
         this.marcador.bindPopup(`
             <b>${descripcion}<b>
             <p>Disponibilidad: ${disponibilidad}</p>
@@ -148,12 +148,16 @@ class Vehiculo {
     setVisibilidadIsocrona(visibilidad = false) {
         if (!this.isocrona) return;
 
-        if (this.esLaIsocronaVisible()) {
-            this.elMapa.removeLayer(this.isocrona);
+        if (!visibilidad) {
+            if (this.isocrona) {
+                this.elMapa.removeLayer(this.isocrona);
+            }
             return;
         }
 
-        this.isocrona.addTo(this.elMapa);
+        if (this.isocrona) {
+            this.isocrona.addTo(this.elMapa);
+        }
     }
 
     /**
