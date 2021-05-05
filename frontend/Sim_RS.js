@@ -70,7 +70,8 @@ sliderTiempoIsocronas.oninput = (ev) => {
 }
 
 sliderTiempoIsocronas.onchange = (ev) => {
-    tiempoDeIsocronas = sliderTiempoIsocronas.value;
+    tiempoDeIsocronas = parseInt(sliderTiempoIsocronas.value);
+    updateTiempoDeIsocronas(parseInt(sliderTiempoIsocronas.value));
 }
 // --------------------------
 
@@ -211,5 +212,16 @@ function setSelectionMode(selecting) {
  * @param {number} tiempo Nuevo tiempo de las isocronas
  */
 function updateTiempoDeIsocronas(tiempo) {
+    Object.keys(entidadesMapa).forEach((subseccion) => {
 
+        // TODO: Considerar cambiar este if statement por algo
+        // del estilo if (subseccion !== "Base")
+        if (subseccion === "SVA" || subseccion === "SVB") {
+            entidadesMapa[subseccion].forEach((vehiculo) => {
+                vehiculo.actualizarIsocrona(tiempo, (res, err) => {
+                    if (err) console.error(err);
+                });
+            });
+        };
+    });
 }

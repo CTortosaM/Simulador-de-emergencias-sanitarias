@@ -196,9 +196,7 @@ class Vehiculo {
         this.desplazarA(newCoords.lat, newCoords.lng);
 
         this.setVisibilidadIsocrona(false);
-        console.log(this.esLaIsocronaVisible())
         this.actualizarIsocrona(this.tiempoDeIsocrona, (worked, error) => {
-            console.log(this.esLaIsocronaVisible())
             if (worked && !error) {
                 this.setVisibilidadIsocrona(true);
                 callback(this.isocrona);
