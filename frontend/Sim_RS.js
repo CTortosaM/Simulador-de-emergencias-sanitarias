@@ -180,14 +180,14 @@ function onIsochroneMoved(e, isochroneEntity) {
 function toggleIsocronas(e) {
     if (currentOverlap) currentOverlap.hide();
 
-    Object.keys(entities).forEach((key) => {
-        entities[key].forEach((entity) => {
-            switch (entity.tipo) {
-                case 'SVA':
-                    entity.hideIsocrona();
-                    break;
-            }
-        })
+    isocronasVisibles = !isocronasVisibles;
+
+    Object.keys(entidadesMapa).forEach((tipo) => {
+        if (tipo === 'SVA' || tipo === 'SVB') {
+            entidadesMapa[tipo].forEach((entidad) => {
+                entidad.setVisibilidadIsocrona(isocronasVisibles);
+            })
+        }
     })
 }
 
