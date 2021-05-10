@@ -205,6 +205,7 @@ class Vehiculo {
                 this.setVisibilidadIsocrona(true);
                 callback(this.isocrona);
             } else {
+                console.error(error + ' ' + worked)
                 callback(null);
             }
         });
