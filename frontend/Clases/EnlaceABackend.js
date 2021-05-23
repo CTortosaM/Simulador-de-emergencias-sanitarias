@@ -20,6 +20,20 @@ class EnlaceABackend {
 
 
     /**
+     * 
+     * @param {Array} poligono Array con los vértices del polígono 
+     * @param {function} callback Función callback para devolver el resultado 
+     */
+    getEstimacionPoblacion_WorldPop(poligono, callback) {
+        eel.getEstimacionPoblacion_WorldPop(poligono)().then((resultado) => {
+            callback(resultado, null);
+        }, (rejected) => {
+            callback(null, rejected);
+        })
+    }
+
+
+    /**
      * Obtén un array de vehiculos de los datos
      * @param {string} tipo
      * @param {function} callback

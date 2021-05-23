@@ -76,5 +76,11 @@ def getEstimacionPoblacion(poligono):
     return call.json()
 
 
+@eel.expose
+def getEstimacionPoblacion_WorlPop(poligono):
+    urlParcial = 'https://api.worldpop.org/v1/services&stats?'
+    return "Buenas tardes"
+
+
 eel.init("frontend")
 eel.start('main.html', cmdline_args=['--start-fullscreen'], size=(1280, 720), position=(0,0))
