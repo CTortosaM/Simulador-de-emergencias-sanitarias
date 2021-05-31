@@ -135,12 +135,10 @@ class Vehiculo {
                     }
                 });
 
-                let index = Object.keys(this.isocrona._layers);
-                let geometria = this.isocrona._layers[index[0]].feature.geometry.coordinates;
-
-                eel.getEstimacionPoblacion_WorlPop(geometria)().then((algo) => {
+                
+                eel.getEstimacionPoblacion_WorlPop(res)().then((algo) => {
                     console.log(algo);
-                })
+                }) 
 
                 onAcabado('Success', null);
             }

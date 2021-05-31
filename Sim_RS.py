@@ -11,7 +11,7 @@ import requests
 import csv
 import urllib.parse as parser
 
-from requests.api import head
+from requests.api import head, request
 # Exposa la funció al script JS
 @eel.expose
 def obtenerCoordsEPSG():
@@ -78,8 +78,26 @@ def getEstimacionPoblacion(poligono):
 
 @eel.expose
 def getEstimacionPoblacion_WorlPop(poligono):
-    urlParcial = 'https://api.worldpop.org/v1/services&stats?'
-    return "Buenas tardes"
+    urlParcialPoblacion = 'https://api.worldpop.org/v1/services/stats?dataset=wpgppop&year=2010&geojson='
+    urlParcialTask = 'https://api.worldpop.org/v1/tasks/'
+
+    urlDeMuestra = 'https://api.worldpop.org/v1/services'
+
+    query = urlParcialPoblacion + json.dumps(poligono)
+    
+    call = requests.get(url=query)
+    jsonRespuesta = call.json()
+
+    if not jsonRespuesta['taskid']:
+        return 'Error: No hay taskid'
+
+    taskid = jsonRespuesta['taskid']
+
+    taskCall = requests.get(url=urlParcialTask + taskid)
+    taskRespuesta = taskCall.json()
+
+    print(taskRespuesta)
+
 
 
 eel.init("frontend")
