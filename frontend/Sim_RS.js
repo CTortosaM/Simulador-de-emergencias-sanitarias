@@ -218,9 +218,12 @@ function updateTiempoDeIsocronas(tiempo) {
         // del estilo if (subseccion !== "Base")
         if (subseccion === "SVA" || subseccion === "SVB") {
             entidadesMapa[subseccion].forEach((vehiculo) => {
-                vehiculo.actualizarIsocrona(tiempo, (res, err) => {
-                    if (err) console.error(err);
-                });
+                vehiculo.tiempoDeIsocrona = tiempo;
+                if (vehiculo.tieneIsocrona()) {
+                    vehiculo.actualizarIsocrona(tiempo, (res, err) => {
+                        if (err) console.error(err);
+                    });
+                }
             });
         };
     });

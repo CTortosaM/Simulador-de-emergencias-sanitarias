@@ -216,4 +216,9 @@ class Vehiculo {
         });
     }
 
+
+    tieneIsocrona() {
+        return this.isocrona != null;
+    }
+
 }
