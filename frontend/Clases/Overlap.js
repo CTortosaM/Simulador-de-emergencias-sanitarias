@@ -35,11 +35,25 @@ class Overlap {
 
         this.marcador.on('click', (e) => {
             if (!this.estimacionPoblacion) {
-                eel.getEstimacionPoblacion(geometry.geometry.coordinates[0])()
+                /*eel.getEstimacionPoblacion(geometry.geometry.coordinates[0])()
                 .then((data) => {
                     this.estimacionPoblacion = data.results[0].value.estimates['gpw-v4-population-count-rev10_2020']['SUM'];
                     this.marcador.setPopupContent(`<p>${this.estimacionPoblacion}`);
-                });
+                }); */
+
+                enlaceABackend.getEstimacionPoblacion_WorldPop(geometry, (res, error) => {
+                    if (res) {
+                        if (typeof res === 'number') {
+                            this.estimacionPoblacion = res;
+                            this.marcador.setPopupContent(`<p>${this.estimacionPoblacion}`);
+                        } else {
+                            console.log(res);
+                        }
+                    } else {
+                        console.error(error);
+                        this.marcador.setPopupContent(`<p>Error obteniendo datos de población`);
+                    }
+                })
             }
             console.log(geometry);
         });

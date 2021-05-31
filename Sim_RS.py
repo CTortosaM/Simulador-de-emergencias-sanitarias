@@ -97,7 +97,10 @@ def getEstimacionPoblacion_WorlPop(poligono):
     taskid = jsonRespuesta['taskid']
     taskCall = requests.get(url=urlParcialTask + taskid)
     
-    taskRespuesta = taskCall.json()
+    try:
+        taskRespuesta = taskCall.json()
+    except ValueError as error:
+        return error
     
     if taskRespuesta['error']:
         return taskRespuesta['error_message']

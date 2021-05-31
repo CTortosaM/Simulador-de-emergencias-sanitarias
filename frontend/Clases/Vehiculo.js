@@ -135,11 +135,6 @@ class Vehiculo {
                     }
                 });
 
-                
-                eel.getEstimacionPoblacion_WorlPop(res)().then((algo) => {
-                    console.log(algo);
-                }) 
-
                 onAcabado('Success', null);
             }
         )

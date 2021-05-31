@@ -25,7 +25,7 @@ class EnlaceABackend {
      * @param {function} callback Función callback para devolver el resultado 
      */
     getEstimacionPoblacion_WorldPop(poligono, callback) {
-        eel.getEstimacionPoblacion_WorldPop(poligono)().then((resultado) => {
+        eel.getEstimacionPoblacion_WorlPop(poligono)().then((resultado) => {
             callback(resultado, null);
         }, (rejected) => {
             callback(null, rejected);
