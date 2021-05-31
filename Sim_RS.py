@@ -8,7 +8,6 @@
 import eel
 import json
 import requests
-import csv
 import urllib.parse as parser
 
 from requests.api import head, request
@@ -78,7 +77,11 @@ def getEstimacionPoblacion(poligono):
 
 @eel.expose
 def getEstimacionPoblacion_WorlPop(poligono):
-    urlParcialPoblacion = 'https://api.worldpop.org/v1/services/stats?dataset=wpgppop&year=2010&geojson='
+
+    # Proporcionamos el parámetro runasync false porque si no
+    # la tarea de comprobar como de avanzada estaba la tarea mediante la API
+    # se volvia demasiado compleja.
+    urlParcialPoblacion = 'https://api.worldpop.org/v1/services/stats?dataset=wpgppop&year=2010&runasync=false&geojson='
     urlParcialTask = 'https://api.worldpop.org/v1/tasks/'
 
     urlDeMuestra = 'https://api.worldpop.org/v1/services'
@@ -92,13 +95,14 @@ def getEstimacionPoblacion_WorlPop(poligono):
         return 'Error: No hay taskid'
 
     taskid = jsonRespuesta['taskid']
-
     taskCall = requests.get(url=urlParcialTask + taskid)
+    
     taskRespuesta = taskCall.json()
+    
+    if taskRespuesta['error']:
+        return taskRespuesta['error_message']
 
-    print(taskRespuesta)
-
-
+    return taskRespuesta['data']['total_population']
 
 eel.init("frontend")
 eel.start('main.html', cmdline_args=['--start-fullscreen'], size=(1280, 720), position=(0,0))
