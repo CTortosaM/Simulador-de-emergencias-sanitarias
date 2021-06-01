@@ -44,6 +44,7 @@ class Overlap {
                 enlaceABackend.getEstimacionPoblacion_WorldPop(geometry, (res, error) => {
                     if (res) {
                         if (typeof res === 'number') {
+                            res = Math.floor(res);
                             this.estimacionPoblacion = res;
                             this.marcador.setPopupContent(`<p>${this.estimacionPoblacion}`);
                         } else {
