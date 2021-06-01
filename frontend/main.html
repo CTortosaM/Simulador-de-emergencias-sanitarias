@@ -22,6 +22,7 @@
 
 <body>
     <script src="https://unpkg.com/@turf/turf@5.1.6/turf.min.js"></script>
+    <script src="https://unpkg.com/shpjs@latest/dist/shp.js"></script>
     <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -46,6 +47,10 @@
                             <div class="mt-3">
                                 <h6>Mostrar/Ocultar todas las isócronas</h6>
                                 <button id="botonToggleIsocronas" class="btn btn-primary" onclick="toggleIsocronas()">Mostrar/Ocultar</button>
+                            </div>
+                            <div class="mt-3">
+                                <h6>Archivos shape</h6>
+                                <button id="botonUploadShape" class="btn btn-primary" onclick="onSubirShapeFile()">Subir archivo</button>
                             </div>
                         </div>
                     </li>

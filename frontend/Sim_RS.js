@@ -228,3 +228,19 @@ function updateTiempoDeIsocronas(tiempo) {
         };
     });
 }
+
+function loadArrayBuffer(e) {
+     // e.target.result === reader.result
+    console.log(e.target.result.byteLength);
+    shp(e.target.result).then(function (geojson) {
+        console.log(geojson);
+    }).catch(function(err) {
+    console.log(err);
+  });
+}
+
+function onSubirShapeFile() {
+    shp("Datos/BarriosValencia.zip").then((laCosa) => {
+        console.log(laCosa);
+    });
+}

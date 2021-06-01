@@ -81,7 +81,7 @@ def getEstimacionPoblacion_WorlPop(poligono):
     # Proporcionamos el parámetro runasync false porque si no
     # la tarea de comprobar como de avanzada estaba la tarea mediante la API
     # se volvia demasiado compleja.
-    urlParcialPoblacion = 'https://api.worldpop.org/v1/services/stats?dataset=wpgppop&year=2010&runasync=false&geojson='
+    urlParcialPoblacion = 'https://api.worldpop.org/v1/services/stats?dataset=wpgppop&year=2020&runasync=false&geojson='
     urlParcialTask = 'https://api.worldpop.org/v1/tasks/'
 
     urlDeMuestra = 'https://api.worldpop.org/v1/services'
