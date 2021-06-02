@@ -8,5 +8,6 @@
   },
   "author": "Carlos Tortosa Micó",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {}
 }
