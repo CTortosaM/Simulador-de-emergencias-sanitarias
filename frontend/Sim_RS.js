@@ -232,8 +232,6 @@ function updateTiempoDeIsocronas(tiempo) {
 function loadArrayBuffer(e) {
      // e.target.result === reader.result
     shp(e.target.result).then(function (geojson) {
-        console.log(geojson);
-
         try {
             L.geoJSON(geojson, {}).addTo(elMapa);
         } catch(error) {
