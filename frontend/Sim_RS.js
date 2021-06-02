@@ -231,16 +231,29 @@ function updateTiempoDeIsocronas(tiempo) {
 
 function loadArrayBuffer(e) {
      // e.target.result === reader.result
-    console.log(e.target.result.byteLength);
     shp(e.target.result).then(function (geojson) {
         console.log(geojson);
+
+        try {
+            L.geoJSON(geojson, {}).addTo(elMapa);
+        } catch(error) {
+            console.error(error);
+        }
     }).catch(function(err) {
-    console.log(err);
+        alert(err);
   });
 }
 
 function onSubirShapeFile() {
-    shp("Datos/BarriosValencia.zip").then((laCosa) => {
-        console.log(laCosa);
-    });
+    let input = document.createElement('input');
+    input.type = 'file'
+    input.onchange = function(e) {
+        let file = e.target.files[0];
+
+        let reader = new FileReader();
+        reader.onload = loadArrayBuffer;
+        reader.readAsArrayBuffer(file);
+        
+    }
+    input.click();
 }
