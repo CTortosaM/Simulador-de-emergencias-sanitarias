@@ -232,8 +232,11 @@ class Vehiculo {
 
 
     updatePoblacionCubierta () {
-        console.log(this.poblacionCubierta);
-        this.poblacionCubierta = 23;
+        if (!this.isocrona) return;
+
+        const propiedadFeature = Object.keys(this.isocrona._layers)[0];
+        const feature = this.isocrona._layers[propiedadFeature].feature;
+        console.log(feature);
     }
 
 }
