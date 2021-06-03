@@ -27,6 +27,8 @@ class Vehiculo {
         this.isocrona = null;
 
         this.enlaceABackend = new EnlaceABackend();
+
+        this.poblacionCubierta = null;
         // ------------------------------------------
         /*
             Setup del marcador
@@ -68,6 +70,13 @@ class Vehiculo {
 
         this.marcador.on('click', (e) => {
             this.setVisibilidadIsocrona(!this.marcador.isPopupOpen());
+
+            // Uso la negación para que realice el update 
+            // al ABRIR el popup, con lo cual la función
+            // devuelve que sigue cerrado
+            if (!this.marcador.isPopupOpen() && !this.poblacionCubierta) {
+                this.updatePoblacionCubierta();
+            }
 
             if (selectionMode) {
                 this.setVisibilidadIsocrona(false);
@@ -212,8 +221,19 @@ class Vehiculo {
     }
 
 
+    /**
+     * Informa sobre si el vehiculo tiene localmente
+     * la isocrona de la superficie que puede cubrir
+     * @returns {boolean}
+     */
     tieneIsocrona() {
         return this.isocrona != null;
+    }
+
+
+    updatePoblacionCubierta () {
+        console.log(this.poblacionCubierta);
+        this.poblacionCubierta = 23;
     }
 
 }

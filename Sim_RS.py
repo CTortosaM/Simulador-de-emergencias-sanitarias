@@ -105,6 +105,7 @@ def getEstimacionPoblacion_WorlPop(poligono):
     if taskRespuesta['error']:
         return taskRespuesta['error_message']
 
+    print(taskRespuesta)
     return taskRespuesta['data']['total_population']
 
 eel.init("frontend")
