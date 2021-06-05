@@ -121,6 +121,12 @@ class Vehiculo {
         if (elMapa.hasLayer(this.isocrona)) elMapa.removeLayer(this.isocrona);
         this.tiempoDeIsocrona = nuevoTiempo;
 
+        this.marcador.setPopupContent(`
+        <b>${this.descripcion}<b>
+        <p>Disponibilidad: ${this.disponibilidad}</p>
+        <p>Población cubierta: Cargando...</p>
+    `)
+
         this.enlaceABackend.getIsocrona(
             this.posicion.lat,
             this.posicion.lng,
@@ -258,6 +264,11 @@ class Vehiculo {
         this.enlaceABackend.getEstimacionPoblacion_WorldPop(feature, (res, err) => {
             if (err) {
                 console.error(err);
+                this.marcador.setPopupContent(`
+                <b>${this.descripcion}<b>
+                <p>Disponibilidad: ${this.disponibilidad}</p>
+                <p>Población cubierta: No disponible</p>
+            `)
                 return;
             }
 

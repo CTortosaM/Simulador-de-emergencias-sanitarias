@@ -87,7 +87,7 @@ getDatos('SVA', (res, err) => {
             vehiculoData.Lng,
             'SVA',
             vehiculoData.Disponibilidad,
-            10,
+            tiempoDeIsocronas,
             elMapa,
             vehiculoData.Descripcion
         );
@@ -110,7 +110,7 @@ getDatos('SVB', (res, err) => {
             vehiculoData.Lng,
             'SVB',
             vehiculoData.Disponibilidad,
-            10,
+            tiempoDeIsocronas,
             elMapa,
             vehiculoData.Descripcion
         );
