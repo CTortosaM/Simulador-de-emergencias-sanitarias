@@ -29,6 +29,8 @@ class Vehiculo {
         this.enlaceABackend = new EnlaceABackend();
 
         this.poblacionCubierta = null;
+
+        this.isBusy = false;
         // ------------------------------------------
         /*
             Setup del marcador
@@ -88,6 +90,7 @@ class Vehiculo {
         this.marcador.bindPopup(`
             <b>${descripcion}<b>
             <p>Disponibilidad: ${disponibilidad}</p>
+            <p>Población cubierta: Cargando...</p>
         `);
     }
 
@@ -125,6 +128,7 @@ class Vehiculo {
             (res, error) => {
                 if (error) {
                     this.isocrona = null;
+                    this.poblacionCubierta = null;
                     this.setVisibilidadIsocrona(false);
                     // Success - Failure
                     onAcabado(null, error);
@@ -133,7 +137,7 @@ class Vehiculo {
 
                 if (res.error) {
                     this.isocrona = null;
-
+                    this.poblacionCubierta = null;
                     onAcabado(null, res.error);
                     return;
                 }
@@ -143,6 +147,8 @@ class Vehiculo {
                         color: this.colorIsocrona
                     }
                 });
+
+                this.updatePoblacionCubierta();
 
                 onAcabado('Success', null);
             }
@@ -209,6 +215,13 @@ class Vehiculo {
         this.desplazarA(newCoords.lat, newCoords.lng);
 
         this.setVisibilidadIsocrona(false);
+
+        this.marcador.setPopupContent(`
+        <b>${this.descripcion}<b>
+        <p>Disponibilidad: ${this.disponibilidad}</p>
+        <p>Población cubierta: Cargando...</p>
+        `)
+
         this.actualizarIsocrona(this.tiempoDeIsocrona, (worked, error) => {
             if (worked && !error) {
                 this.setVisibilidadIsocrona(true);
@@ -231,12 +244,39 @@ class Vehiculo {
     }
 
 
+    /**
+     * Actualiza el número de la población contenida en la isocrona
+     * del vehiculo
+     * @returns {void}
+     */
     updatePoblacionCubierta () {
         if (!this.isocrona) return;
 
         const propiedadFeature = Object.keys(this.isocrona._layers)[0];
         const feature = this.isocrona._layers[propiedadFeature].feature;
-        console.log(feature);
+        
+        this.enlaceABackend.getEstimacionPoblacion_WorldPop(feature, (res, err) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+
+            // La api suele devolver un número con decimales
+            // lo rendondeamos a un número entero
+            try {
+                res = Math.floor(res);
+                this.poblacionCubierta = res;
+
+                this.marcador.setPopupContent(`
+                <b>${this.descripcion}<b>
+                <p>Disponibilidad: ${this.disponibilidad}</p>
+                <p>Población cubierta: ${this.poblacionCubierta}</p>
+            `)
+            } catch (error) {
+                console.error(error);
+                return;
+            }
+        })
     }
 
 }

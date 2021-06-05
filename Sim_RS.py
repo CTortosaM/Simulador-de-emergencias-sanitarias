@@ -105,6 +105,9 @@ def getEstimacionPoblacion_WorlPop(poligono):
     if taskRespuesta['error']:
         return taskRespuesta['error_message']
 
+    if taskRespuesta['status'] == 'started':
+        return 'Not avalaible'
+
     print(taskRespuesta)
     return taskRespuesta['data']['total_population']
 
