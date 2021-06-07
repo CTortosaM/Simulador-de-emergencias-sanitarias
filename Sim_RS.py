@@ -5,6 +5,7 @@
 
 # 14/12/2020
 
+from json.encoder import JSONEncoder
 import eel
 import json
 import requests
@@ -84,32 +85,22 @@ def getEstimacionPoblacion_WorlPop(poligono):
     urlParcialPoblacion = 'https://api.worldpop.org/v1/services/stats?dataset=wpgppop&year=2020&runasync=false&geojson='
     urlParcialTask = 'https://api.worldpop.org/v1/tasks/'
 
-    urlDeMuestra = 'https://api.worldpop.org/v1/services'
-
     query = urlParcialPoblacion + json.dumps(poligono)
     
-    call = requests.get(url=query)
-    jsonRespuesta = call.json()
+    taskQueueRespuesta = requests.get(query)
 
-    if not jsonRespuesta['taskid']:
-        return 'Error: No hay taskid'
-
-    taskid = jsonRespuesta['taskid']
-    taskCall = requests.get(url=urlParcialTask + taskid)
-    
-    try:
-        taskRespuesta = taskCall.json()
-    except ValueError as error:
-        return error
-    
-    if taskRespuesta['error']:
-        return taskRespuesta['error_message']
-
-    if taskRespuesta['status'] == 'started':
+    if taskQueueRespuesta.status_code != 200:
         return 'Not avalaible'
 
-    print(taskRespuesta)
-    return taskRespuesta['data']['total_population']
+    respuestaJson = taskQueueRespuesta.json()
+
+    if (respuestaJson['error']):
+        return respuestaJson['error']
+
+    if (respuestaJson['status'] != 'finished'):
+        return 'Not avalaible'
+
+    return respuestaJson['data']
 
 eel.init("frontend")
 eel.start('main.html', cmdline_args=['--start-fullscreen'], size=(1280, 720), position=(0,0))

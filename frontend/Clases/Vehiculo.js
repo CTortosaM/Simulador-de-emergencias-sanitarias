@@ -86,12 +86,14 @@ class Vehiculo {
                 setSelectionMode(false);
             }
         })
-        
+
         this.marcador.bindPopup(`
             <b>${descripcion}<b>
             <p>Disponibilidad: ${disponibilidad}</p>
             <p>Población cubierta: Cargando...</p>
         `);
+
+        this.updateContenidoPopup(descripcion, disponibilidad, 'Cargando...');
     }
 
 
@@ -117,15 +119,15 @@ class Vehiculo {
      */
     actualizarIsocrona(nuevoTiempo = 10, onAcabado = (success, failure) => {}) {
         this.setVisibilidadIsocrona(false);
-        
+
         if (elMapa.hasLayer(this.isocrona)) elMapa.removeLayer(this.isocrona);
         this.tiempoDeIsocrona = nuevoTiempo;
 
-        this.marcador.setPopupContent(`
-        <b>${this.descripcion}<b>
-        <p>Disponibilidad: ${this.disponibilidad}</p>
-        <p>Población cubierta: Cargando...</p>
-    `)
+        this.updateContenidoPopup(
+            this.descripcion,
+            this.disponibilidad,
+            'Cargando...'
+        )
 
         this.enlaceABackend.getIsocrona(
             this.posicion.lat,
@@ -216,17 +218,17 @@ class Vehiculo {
      * 
      * @param {object} e 
      */
-     onDragMarcador(e, callback) {
+    onDragMarcador(e, callback) {
         let newCoords = e.target._latlng;
         this.desplazarA(newCoords.lat, newCoords.lng);
 
         this.setVisibilidadIsocrona(false);
 
-        this.marcador.setPopupContent(`
-        <b>${this.descripcion}<b>
-        <p>Disponibilidad: ${this.disponibilidad}</p>
-        <p>Población cubierta: Cargando...</p>
-        `)
+        this.updateContenidoPopup(
+            this.descripcion,
+            this.disponibilidad,
+            'Cargando...'
+        )
 
         this.actualizarIsocrona(this.tiempoDeIsocrona, (worked, error) => {
             if (worked && !error) {
@@ -255,39 +257,73 @@ class Vehiculo {
      * del vehiculo
      * @returns {void}
      */
-    updatePoblacionCubierta () {
+    updatePoblacionCubierta() {
         if (!this.isocrona) return;
 
         const propiedadFeature = Object.keys(this.isocrona._layers)[0];
         const feature = this.isocrona._layers[propiedadFeature].feature;
-        
+
         this.enlaceABackend.getEstimacionPoblacion_WorldPop(feature, (res, err) => {
-            if (err) {
-                console.error(err);
-                this.marcador.setPopupContent(`
-                <b>${this.descripcion}<b>
-                <p>Disponibilidad: ${this.disponibilidad}</p>
-                <p>Población cubierta: No disponible</p>
-            `)
+            if (err || typeof res.total_population !== 'number') {
+                this.updateContenidoPopup(
+                    this.descripcion,
+                    this.disponibilidad,
+                    'No disponible'
+                );
                 return;
             }
 
             // La api suele devolver un número con decimales
             // lo rendondeamos a un número entero
             try {
-                res = Math.floor(res);
+                console.log(res);
+                res = Math.floor(res.total_population);
                 this.poblacionCubierta = res;
 
-                this.marcador.setPopupContent(`
-                <b>${this.descripcion}<b>
-                <p>Disponibilidad: ${this.disponibilidad}</p>
-                <p>Población cubierta: ${this.poblacionCubierta}</p>
-            `)
+                this.updateContenidoPopup(
+                    this.descripcion,
+                    this.disponibilidad,
+                    this.poblacionCubierta
+                );
+
             } catch (error) {
                 console.error(error);
+                this.updateContenidoPopup(
+                    this.descripcion,
+                    this.disponibilidad,
+                    'No disponible'
+                );
                 return;
             }
         })
     }
 
+
+    /**
+     * Actualiza el contenido del popup del marcador
+     * @param {string} descripcion Descripción del vehiculo 
+     * @param {string} disponibilidad Disponibilidad del vehiculo
+     * @param {string} textoPoblacion Texto en el apartado de población cubierta
+     */
+    updateContenidoPopup(descripcion, disponibilidad, textoPoblacion) {
+        let newContent = `
+        <table class="table">
+            <tbody>
+                <tr>
+                <th scope="row">Descripción:</th>
+                <td>${descripcion}</td>
+                </tr>
+                <tr>
+                <th scope="row">Disponibilidad:</th>
+                <td>${disponibilidad}</td>
+                </tr>
+                <tr>
+                <th scope="row">Población cubierta:</th>
+                <td>${textoPoblacion}</td>
+                </tr>
+            </tbody>
+        </table>    
+        `
+        this.marcador.setPopupContent(newContent);
+    }
 }

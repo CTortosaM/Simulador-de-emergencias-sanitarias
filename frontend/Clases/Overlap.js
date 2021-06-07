@@ -42,21 +42,18 @@ class Overlap {
                 }); */
 
                 enlaceABackend.getEstimacionPoblacion_WorldPop(geometry, (res, error) => {
-                    if (res) {
-                        if (typeof res === 'number') {
-                            res = Math.floor(res);
-                            this.estimacionPoblacion = res;
-                            this.marcador.setPopupContent(`<p>${this.estimacionPoblacion}`);
-                        } else {
-                            console.log(res);
-                        }
-                    } else {
-                        console.error(error);
-                        this.marcador.setPopupContent(`<p>Error obteniendo datos de población`);
+                    if (error) {
+                        this.marcador.setPopupContent('Error');
+                        return;
+                    }
+                    try {
+                        this.estimacionPoblacion = Math.floor(res.total_population);
+                        this.marcador.setPopupContent(`${this.estimacionPoblacion}`);
+                    } catch(err) {
+                        this.marcador.setPopupContent('Error obteniendo datos de población');
                     }
                 })
             }
-            console.log(geometry);
         });
 
 
