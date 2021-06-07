@@ -15,6 +15,10 @@ let baseLayers = {
     })
 }
 
+let pointersSVA = L.layerGroup();
+let poinersSVB = L.layerGroup();
+let pointersBases = L.layerGroup();
+
 let isocronasVisibles = false;
 
 const elMapa = L.map('mapa', {
@@ -27,7 +31,7 @@ elMapa.on('click', (e) => {
     setSelectionMode(false);
 })
 
-L.control.layers(baseLayers).addTo(elMapa);
+
 
 L.control.zoom({
     position: 'topright'
@@ -94,6 +98,8 @@ getDatos('SVA', (res, err) => {
         vehiculo.marcador.on('dragend', (e) => {
             onIsochroneMoved(e, vehiculo)
         });
+
+        vehiculo.marcador.addTo(pointersSVA);
         entidadesMapa.SVA.push(vehiculo);
     });
 });
@@ -117,6 +123,8 @@ getDatos('SVB', (res, err) => {
         vehiculo.marcador.on('dragend', (e) => {
             onIsochroneMoved(e, vehiculo)
         });
+
+        vehiculo.marcador.addTo(poinersSVB);
         entidadesMapa.SVB.push(vehiculo);
     });
 });
@@ -129,11 +137,21 @@ getDatos('Base', (res, err) => {
 
     res.forEach((baseData) => {
         let base = new Base(baseData.Lat, baseData.Lng, baseData.Descripcion, elMapa);
-
+        base.marcador.addTo(pointersBases);
         entidadesMapa.Base.push(base);
     });
 });
 
+let overlays = {
+    "SVA": pointersSVA,
+    "SVB": poinersSVB,
+    "Bases": pointersBases
+}
+
+// --------------------------
+// Controles del mapa
+// --------------------------
+L.control.layers(baseLayers, overlays).addTo(elMapa);
 
 /**
  * Realiza una petición al backend para sustraer los datos
