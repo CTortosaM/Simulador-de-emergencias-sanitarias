@@ -48,7 +48,7 @@ class Overlap {
                     }
                     try {
                         this.estimacionPoblacion = Math.floor(res.total_population);
-                        this.marcador.setPopupContent(`${this.estimacionPoblacion}`);
+                        this.marcador.setPopupContent(`Población cubierta: ${this.estimacionPoblacion}`);
                     } catch(err) {
                         this.marcador.setPopupContent('Error obteniendo datos de población');
                     }
