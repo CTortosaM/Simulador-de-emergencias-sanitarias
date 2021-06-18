@@ -25,6 +25,7 @@ class Vehiculo {
         this.tiempoDeIsocrona = tiempoDeIsocrona;
         this.elMapa = elMapa;
         this.isocrona = null;
+        this.isocronaSimple = null;
 
         this.enlaceABackend = new EnlaceABackend();
 
@@ -136,6 +137,8 @@ class Vehiculo {
             (res, error) => {
                 if (error) {
                     this.isocrona = null;
+                    this.isocronaSimple = null;
+
                     this.poblacionCubierta = null;
                     this.setVisibilidadIsocrona(false);
                     // Success - Failure
@@ -145,10 +148,23 @@ class Vehiculo {
 
                 if (res.error) {
                     this.isocrona = null;
+                    this.isocronaSimple = null;
+
                     this.poblacionCubierta = null;
                     onAcabado(null, res.error);
                     return;
                 }
+
+                this.isocronaSimple = turf.simplify(res, {
+                    tolerance: 0.01,
+                    highQuality: true
+                });
+
+                /*L.geoJSON(this.isocronaSimple, {
+                    style: {
+                        color: '#129fe6'
+                    }
+                }).addTo(this.elMapa); */
 
                 this.isocrona = L.geoJSON(res, {
                     style: {
@@ -260,10 +276,10 @@ class Vehiculo {
     updatePoblacionCubierta() {
         if (!this.isocrona) return;
 
-        const propiedadFeature = Object.keys(this.isocrona._layers)[0];
-        const feature = this.isocrona._layers[propiedadFeature].feature;
+        //const propiedadFeature = Object.keys(this.isocrona._layers)[0];
+        //const feature = this.isocrona._layers[propiedadFeature].feature;
 
-        this.enlaceABackend.getEstimacionPoblacion_WorldPop(feature, (res, err) => {
+        this.enlaceABackend.getEstimacionPoblacion_WorldPop(this.isocronaSimple, (res, err) => {
             if (err || typeof res.total_population !== 'number') {
                 this.updateContenidoPopup(
                     this.descripcion,
