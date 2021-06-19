@@ -156,15 +156,15 @@ class Vehiculo {
                 }
 
                 this.isocronaSimple = turf.simplify(res, {
-                    tolerance: 0.01,
+                    tolerance: this.calcularToleranceDePoligono(),
                     highQuality: true
                 });
 
-                /*L.geoJSON(this.isocronaSimple, {
+                L.geoJSON(this.isocronaSimple, {
                     style: {
                         color: '#129fe6'
                     }
-                }).addTo(this.elMapa); */
+                }).addTo(this.elMapa);
 
                 this.isocrona = L.geoJSON(res, {
                     style: {
@@ -177,6 +177,36 @@ class Vehiculo {
                 onAcabado('Success', null);
             }
         )
+    }
+
+    /**
+     * Calcula la tolerancia para la simplifciación 
+     * del polígono en función del tiempo de isócrona
+     * actual del vehículo
+     * 
+     * @returns toleranciaSimplificacion
+     */
+    calcularToleranceDePoligono() {
+        // En esta función haremos un map
+        // para calcular el parámetro "tolerance" de
+        // simplificación del poligono
+
+        // Tiempo min = 1 min
+        // Tiempo max = 60 min
+        // Tolerancia min = 0.001
+        // Tolerancia max = 0.05
+        const lowerTiempo = 1;
+        const upperTiempo = 60;
+
+        const lowerTolerance = 0.0007;
+        const upperTolerance = 0.04;
+
+        // Algoritmo:  [A, B] --> [a, b]
+        // (valor - A) * (b - a)/(B - A) + a
+        let segundoFactor = (upperTolerance - lowerTolerance)/(upperTiempo - lowerTiempo) + lowerTolerance;
+        let tolerance = (this.tiempoDeIsocrona - lowerTiempo) * segundoFactor;
+
+        return tolerance;
     }
 
 
@@ -292,7 +322,6 @@ class Vehiculo {
             // La api suele devolver un número con decimales
             // lo rendondeamos a un número entero
             try {
-                console.log(res);
                 res = Math.floor(res.total_population);
                 this.poblacionCubierta = res;
 
