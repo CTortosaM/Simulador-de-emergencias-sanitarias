@@ -160,11 +160,11 @@ class Vehiculo {
                     highQuality: true
                 });
 
-                L.geoJSON(this.isocronaSimple, {
+                /* L.geoJSON(this.isocronaSimple, {
                     style: {
                         color: '#129fe6'
                     }
-                }).addTo(this.elMapa);
+                }).addTo(this.elMapa); */
 
                 this.isocrona = L.geoJSON(res, {
                     style: {
