@@ -78,57 +78,6 @@ sliderTiempoIsocronas.onchange = (ev) => {
     updateTiempoDeIsocronas(parseInt(sliderTiempoIsocronas.value));
 }
 // --------------------------
-
-getDatos('SVA', (res, err) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
-
-    res.forEach((vehiculoData) => {
-        let vehiculo = new Vehiculo(
-            vehiculoData.Lat,
-            vehiculoData.Lng,
-            'SVA',
-            vehiculoData.Disponibilidad,
-            tiempoDeIsocronas,
-            elMapa,
-            vehiculoData.Descripcion
-        );
-        vehiculo.marcador.on('dragend', (e) => {
-            onIsochroneMoved(e, vehiculo)
-        });
-
-        vehiculo.marcador.addTo(pointersSVA);
-        entidadesMapa.SVA.push(vehiculo);
-    });
-});
-
-getDatos('SVB', (res, err) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
-
-    res.forEach((vehiculoData) => {
-        let vehiculo = new Vehiculo(
-            vehiculoData.Lat,
-            vehiculoData.Lng,
-            'SVB',
-            vehiculoData.Disponibilidad,
-            tiempoDeIsocronas,
-            elMapa,
-            vehiculoData.Descripcion
-        );
-        vehiculo.marcador.on('dragend', (e) => {
-            onIsochroneMoved(e, vehiculo)
-        });
-
-        vehiculo.marcador.addTo(poinersSVB);
-        entidadesMapa.SVB.push(vehiculo);
-    });
-});
-
 getDatos('Base', (res, err) => {
     if (err) {
         console.error(err);
@@ -141,6 +90,57 @@ getDatos('Base', (res, err) => {
         entidadesMapa.Base.push(base);
     });
 });
+
+getDatos_CSV((res, error) => {
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    let losSVA = res['SVA'];
+    let losSVB = res['SVB'];
+
+    losSVA.forEach((sva) => {
+        let vehiculo = new Vehiculo(
+            sva.Lat,
+            sva.Lng,
+            'SVA',
+            sva.Disponibilidad,
+            tiempoDeIsocronas,
+            elMapa,
+            sva.Descripcion
+        );
+
+        vehiculo.marcador.on('dragend', (e) => {
+            onIsochroneMoved(e, vehiculo)
+        });
+
+        vehiculo.marcador.addTo(pointersSVA);
+        entidadesMapa.SVA.push(vehiculo);
+    });
+
+    losSVB.forEach((svb) => {
+        let vehiculo = new Vehiculo(
+            svb.Lat,
+            svb.Lng,
+            'SVB',
+            svb.Disponibilidad,
+            tiempoDeIsocronas,
+            elMapa,
+            svb.Descripcion
+        );
+
+        vehiculo.marcador.on('dragend', (e) => {
+            onIsochroneMoved(e, vehiculo)
+        });
+
+        vehiculo.marcador.addTo(poinersSVB);
+        entidadesMapa.SVB.push(vehiculo);
+    });
+    
+})
+
+
 
 let overlays = {
     "SVA": pointersSVA,
@@ -161,6 +161,13 @@ L.control.layers(baseLayers, overlays).addTo(elMapa);
  */
 function getDatos(tipo = 'SVA', callback) {
     enlaceABackend.getVehiculos(tipo, (datos, error) => {
+        callback(datos, error);
+    })
+}
+
+
+function getDatos_CSV(callback) {
+    enlaceABackend.getVehiculos_CSV((datos, error) => {
         callback(datos, error);
     })
 }

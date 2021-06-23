@@ -5,6 +5,7 @@
 
 # 14/12/2020
 
+import csv
 from json.encoder import JSONEncoder
 import eel
 import json
@@ -47,6 +48,29 @@ def getDatos(tipoDeVehiculo='SVA'):
             return json.dumps(data)
     except (KeyError, TypeError, ValueError) as error:
       return 'Error'
+
+
+@eel.expose
+def getDatos_CSV():
+    
+    try:
+        with open('./Datos/Datos.csv') as datos_f:
+            csv_reader = csv.DictReader(datos_f)
+
+            sva = []
+            svb = []
+            datos = {'SVA': sva, 'SVB': svb}
+            for row in csv_reader:
+                if len(row) > 1:
+                    if (row['Tipo'] == "SVA"):
+                        sva.append(row)
+                    else:
+                        svb.append(row)
+            
+            return json.dumps(datos)
+    except (ValueError, IOError, RuntimeError) as error:
+        return 'Error'
+
 
 @eel.expose
 def getEstimacionPoblacion(poligono):

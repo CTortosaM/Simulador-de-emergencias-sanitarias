@@ -54,6 +54,23 @@ class EnlaceABackend {
         });
     }
 
+    /**
+     * Obtén los datos de los vehículos mediante lectura de
+     * fichero csv
+     * @param {function} callback 
+     */
+    getVehiculos_CSV(callback) {
+        eel.getDatos_CSV()().then((datos) => {
+            if (datos === 'Error') {
+                callback(null, datos);
+                return;
+            }
+
+            callback(JSON.parse(datos), null);
+            return;
+        })
+    }
+
 
     /**
      * Obtener isocrona en la localización indicada con extensión
