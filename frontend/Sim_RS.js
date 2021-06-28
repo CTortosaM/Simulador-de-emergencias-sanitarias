@@ -148,6 +148,7 @@ function desactivarControles() {
 }
 
 function cargarFicheroCSVdeVehiculos() {
+
     let input = document.createElement('input');
     input.type = 'file';
 
@@ -196,6 +197,8 @@ function cargarFicheroCSVdeVehiculos() {
                 resetPage();
                 cargarDatos(losDatos);
                 activarControles();
+
+                document.getElementById('botonCargarFicheroCSV').innerHTML = "Cargar datos nuevos";
 
             }
         })
