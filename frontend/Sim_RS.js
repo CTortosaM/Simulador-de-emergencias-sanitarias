@@ -165,8 +165,6 @@ function cargarFicheroCSVdeVehiculos() {
                     return;
                 }
 
-                activarControles();
-
                 let losDatos = {
                     SVA: [],
                     SVB: []
@@ -185,7 +183,8 @@ function cargarFicheroCSVdeVehiculos() {
                     console.error(error);
                 }
             
-                cargarDatos(losDatos)
+                cargarDatos(losDatos);
+                activarControles();
 
             }
         })
