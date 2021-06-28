@@ -371,4 +371,9 @@ class Vehiculo {
         `
         this.marcador.setPopupContent(newContent);
     }
+
+    destruir() {
+        this.setVisibilidadIsocrona(false);
+        this.elMapa.removeLayer(this.marcador);
+    }
 }

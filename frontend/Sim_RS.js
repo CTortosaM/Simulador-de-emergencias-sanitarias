@@ -178,11 +178,13 @@ function cargarFicheroCSVdeVehiculos() {
                             losDatos.SVB.push(vehiculo);
                         }
                     });
-                } catch(error) {
+                } catch (error) {
                     alert("Asegurate que el formato del archivo CSV es correcto");
                     console.error(error);
+                    return;
                 }
-            
+
+                resetPage();
                 cargarDatos(losDatos);
                 activarControles();
 
@@ -345,4 +347,33 @@ function onSubirShapeFile() {
 
     }
     input.click();
+}
+
+
+function resetPage() {
+
+    // Elimina los vehiculos del mapa
+    Object.keys(entidadesMapa).forEach((tipo) => {
+        entidadesMapa[tipo].forEach((entidad) => {
+            if (tipo === 'SVA' || tipo === 'SVB') {
+                entidad.destruir();
+            }
+        })
+    });
+
+    // Restablece controles
+    tiempoDeIsocronas = 15;
+    sliderTiempoIsocronas.value = 15;
+    tiempoLabel.innerHTML = 15 + ' min';
+
+    if (currentOverlap) currentOverlap.hide();
+    currentOverlap = null;
+
+    isocronasVisibles = false;
+
+    entidadesMapa = {
+        SVA: [],
+        SVB: [],
+        Base: entidadesMapa.Base
+    };
 }
