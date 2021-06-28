@@ -154,6 +154,13 @@ function cargarFicheroCSVdeVehiculos() {
     input.onchange = (e) => {
         let file = e.target.files[0];
 
+        const extension = file.name.split('.').pop();
+        
+        if (extension !== 'csv') {
+            setErrorMessageExtensionFichero(true);
+            return;
+        }
+
         Papa.parse(file, {
             header: true,
             complete: function (res) {
@@ -162,6 +169,7 @@ function cargarFicheroCSVdeVehiculos() {
                         console.error(error.message);
                     })
 
+                    setErrorMessageExtensionFichero(true);
                     return;
                 }
 
@@ -179,11 +187,12 @@ function cargarFicheroCSVdeVehiculos() {
                         }
                     });
                 } catch (error) {
-                    alert("Asegurate que el formato del archivo CSV es correcto");
+                    setErrorMessageExtensionFichero(true);
                     console.error(error);
                     return;
                 }
 
+                setErrorMessageExtensionFichero(false);
                 resetPage();
                 cargarDatos(losDatos);
                 activarControles();
@@ -376,4 +385,18 @@ function resetPage() {
         SVB: [],
         Base: entidadesMapa.Base
     };
+}
+
+/**
+ * Activa o desactiva el mensaje de error de extensión de fichero
+ * @param {boolean} hayError 
+ */
+function setErrorMessageExtensionFichero(hayError) {
+    let mensaje = document.getElementById('mensajeAlertaExtension');
+
+    if (hayError) {
+        mensaje.classList.remove('invisible');
+    } else {
+        mensaje.classList.add('invisible');
+    }
 }
