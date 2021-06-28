@@ -70,7 +70,7 @@ let sliderTiempoIsocronas = document.getElementById('sliderTiempo');
 
 sliderTiempoIsocronas.oninput = (ev) => {
     let tiempo = sliderTiempoIsocronas.value;
-    tiempoLabel.innerHTML =  tiempo + ' min';
+    tiempoLabel.innerHTML = tiempo + ' min';
 }
 
 sliderTiempoIsocronas.onchange = (ev) => {
@@ -80,8 +80,6 @@ sliderTiempoIsocronas.onchange = (ev) => {
 
 let botonToggleIsocronas = document.getElementById('botonToggleIsocronas');
 // --------------------------
-
-cargarDatos();
 
 let overlays = {
     "SVA": pointersSVA,
@@ -94,6 +92,22 @@ let overlays = {
 // --------------------------
 desactivarControles();
 L.control.layers(baseLayers, overlays).addTo(elMapa);
+
+// --------------------------
+// Carga las bases
+// Ahora cargamos las bases, que son permanentes
+getDatos('Base', (res, err) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+
+    res.forEach((baseData) => {
+        let base = new Base(baseData.Lat, baseData.Lng, baseData.Descripcion, elMapa);
+        base.marcador.addTo(pointersBases);
+        entidadesMapa.Base.push(base);
+    });
+});
 
 /**
  * Realiza una petición al backend para sustraer los datos
@@ -120,6 +134,7 @@ function getDatos_CSV(callback) {
  */
 function activarControles() {
     sliderTiempoIsocronas.disabled = false;
+    botonToggleIsocronas.classList.replace("btn-secondary", "btn-primary")
     botonToggleIsocronas.disabled = false;
 }
 
@@ -132,69 +147,96 @@ function desactivarControles() {
     botonToggleIsocronas.disabled = true;
 }
 
-function cargarDatos() {
-    getDatos_CSV((res, error) => {
-        if (error) {
-            console.error(error);
-            return;
-        }
-    
-        let losSVA = res['SVA'];
-        let losSVB = res['SVB'];
-    
-        losSVA.forEach((sva) => {
-            let vehiculo = new Vehiculo(
-                sva.Lat,
-                sva.Lng,
-                'SVA',
-                sva.Disponibilidad,
-                tiempoDeIsocronas,
-                elMapa,
-                sva.Descripcion
-            );
-    
-            vehiculo.marcador.on('dragend', (e) => {
-                onIsochroneMoved(e, vehiculo)
-            });
-    
-            vehiculo.marcador.addTo(pointersSVA);
-            entidadesMapa.SVA.push(vehiculo);
-        });
-    
-        losSVB.forEach((svb) => {
-            let vehiculo = new Vehiculo(
-                svb.Lat,
-                svb.Lng,
-                'SVB',
-                svb.Disponibilidad,
-                tiempoDeIsocronas,
-                elMapa,
-                svb.Descripcion
-            );
-    
-            vehiculo.marcador.on('dragend', (e) => {
-                onIsochroneMoved(e, vehiculo)
-            });
-    
-            vehiculo.marcador.addTo(poinersSVB);
-            entidadesMapa.SVB.push(vehiculo);
+function cargarFicheroCSVdeVehiculos() {
+    let input = document.createElement('input');
+    input.type = 'file';
+
+    input.onchange = (e) => {
+        let file = e.target.files[0];
+
+        Papa.parse(file, {
+            header: true,
+            complete: function (res) {
+                if (res.errors.length > 0) {
+                    res.errors.forEach((error) => {
+                        console.error(error.message);
+                    })
+
+                    return;
+                }
+
+                activarControles();
+
+                let losDatos = {
+                    SVA: [],
+                    SVB: []
+                }
+
+                try {
+                    res.data.forEach((vehiculo) => {
+                        if (vehiculo.Tipo == 'SVA') {
+                            losDatos.SVA.push(vehiculo);
+                        } else {
+                            losDatos.SVB.push(vehiculo);
+                        }
+                    });
+                } catch(error) {
+                    alert("Asegurate que el formato del archivo CSV es correcto");
+                    console.error(error);
+                }
+            
+                cargarDatos(losDatos)
+
+            }
+        })
+    }
+
+    input.click();
+}
+
+function cargarDatos(datos) {
+
+    let losSVA = datos['SVA'];
+    let losSVB = datos['SVB'];
+
+    losSVA.forEach((sva) => {
+        let vehiculo = new Vehiculo(
+            sva.Lat,
+            sva.Lng,
+            'SVA',
+            sva.Disponibilidad,
+            tiempoDeIsocronas,
+            elMapa,
+            sva.Descripcion
+        );
+
+        vehiculo.marcador.on('dragend', (e) => {
+            onIsochroneMoved(e, vehiculo)
         });
 
-        // Ahora cargamos las bases, que son permanentes
-        getDatos('Base', (res, err) => {
-            if (err) {
-                console.error(err);
-                return;
-            }
-        
-            res.forEach((baseData) => {
-                let base = new Base(baseData.Lat, baseData.Lng, baseData.Descripcion, elMapa);
-                base.marcador.addTo(pointersBases);
-                entidadesMapa.Base.push(base);
-            });
-        });
-        
+        vehiculo.marcador.addTo(pointersSVA);
+        entidadesMapa.SVA.push(vehiculo);
     });
+
+    losSVB.forEach((svb) => {
+        let vehiculo = new Vehiculo(
+            svb.Lat,
+            svb.Lng,
+            'SVB',
+            svb.Disponibilidad,
+            tiempoDeIsocronas,
+            elMapa,
+            svb.Descripcion
+        );
+
+        vehiculo.marcador.on('dragend', (e) => {
+            onIsochroneMoved(e, vehiculo)
+        });
+
+        vehiculo.marcador.addTo(poinersSVB);
+        entidadesMapa.SVB.push(vehiculo);
+    });
+
 }
 
 /**
@@ -254,7 +296,7 @@ function anyadirVehiculo(vehiculo) {
 }
 
 function setSelectionMode(selecting) {
-    selectionMode = selecting; 
+    selectionMode = selecting;
 }
 
 /**
@@ -280,28 +322,28 @@ function updateTiempoDeIsocronas(tiempo) {
 }
 
 function loadArrayBuffer(e) {
-     // e.target.result === reader.result
+    // e.target.result === reader.result
     shp(e.target.result).then(function (geojson) {
         try {
             L.geoJSON(geojson, {}).addTo(elMapa);
-        } catch(error) {
+        } catch (error) {
             console.error(error);
         }
-    }).catch(function(err) {
+    }).catch(function (err) {
         alert(err);
-  });
+    });
 }
 
 function onSubirShapeFile() {
     let input = document.createElement('input');
     input.type = 'file'
-    input.onchange = function(e) {
+    input.onchange = function (e) {
         let file = e.target.files[0];
 
         let reader = new FileReader();
         reader.onload = loadArrayBuffer;
         reader.readAsArrayBuffer(file);
-        
+
     }
     input.click();
 }
