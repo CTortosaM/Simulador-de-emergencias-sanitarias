@@ -77,70 +77,11 @@ sliderTiempoIsocronas.onchange = (ev) => {
     tiempoDeIsocronas = parseInt(sliderTiempoIsocronas.value);
     updateTiempoDeIsocronas(parseInt(sliderTiempoIsocronas.value));
 }
+
+let botonToggleIsocronas = document.getElementById('botonToggleIsocronas');
 // --------------------------
-getDatos('Base', (res, err) => {
-    if (err) {
-        console.error(err);
-        return;
-    }
 
-    res.forEach((baseData) => {
-        let base = new Base(baseData.Lat, baseData.Lng, baseData.Descripcion, elMapa);
-        base.marcador.addTo(pointersBases);
-        entidadesMapa.Base.push(base);
-    });
-});
-
-getDatos_CSV((res, error) => {
-    if (error) {
-        console.error(error);
-        return;
-    }
-
-    let losSVA = res['SVA'];
-    let losSVB = res['SVB'];
-
-    losSVA.forEach((sva) => {
-        let vehiculo = new Vehiculo(
-            sva.Lat,
-            sva.Lng,
-            'SVA',
-            sva.Disponibilidad,
-            tiempoDeIsocronas,
-            elMapa,
-            sva.Descripcion
-        );
-
-        vehiculo.marcador.on('dragend', (e) => {
-            onIsochroneMoved(e, vehiculo)
-        });
-
-        vehiculo.marcador.addTo(pointersSVA);
-        entidadesMapa.SVA.push(vehiculo);
-    });
-
-    losSVB.forEach((svb) => {
-        let vehiculo = new Vehiculo(
-            svb.Lat,
-            svb.Lng,
-            'SVB',
-            svb.Disponibilidad,
-            tiempoDeIsocronas,
-            elMapa,
-            svb.Descripcion
-        );
-
-        vehiculo.marcador.on('dragend', (e) => {
-            onIsochroneMoved(e, vehiculo)
-        });
-
-        vehiculo.marcador.addTo(poinersSVB);
-        entidadesMapa.SVB.push(vehiculo);
-    });
-    
-})
-
-
+cargarDatos();
 
 let overlays = {
     "SVA": pointersSVA,
@@ -151,6 +92,7 @@ let overlays = {
 // --------------------------
 // Controles del mapa
 // --------------------------
+desactivarControles();
 L.control.layers(baseLayers, overlays).addTo(elMapa);
 
 /**
@@ -170,6 +112,89 @@ function getDatos_CSV(callback) {
     enlaceABackend.getVehiculos_CSV((datos, error) => {
         callback(datos, error);
     })
+}
+
+/**
+ * Activa los elementos del panel de control referidos
+ * a las isocronas
+ */
+function activarControles() {
+    sliderTiempoIsocronas.disabled = false;
+    botonToggleIsocronas.disabled = false;
+}
+
+
+/**
+ * Desactiva los controles referidos a la isocronas del panel de contol
+ */
+function desactivarControles() {
+    sliderTiempoIsocronas.disabled = true;
+    botonToggleIsocronas.disabled = true;
+}
+
+function cargarDatos() {
+    getDatos_CSV((res, error) => {
+        if (error) {
+            console.error(error);
+            return;
+        }
+    
+        let losSVA = res['SVA'];
+        let losSVB = res['SVB'];
+    
+        losSVA.forEach((sva) => {
+            let vehiculo = new Vehiculo(
+                sva.Lat,
+                sva.Lng,
+                'SVA',
+                sva.Disponibilidad,
+                tiempoDeIsocronas,
+                elMapa,
+                sva.Descripcion
+            );
+    
+            vehiculo.marcador.on('dragend', (e) => {
+                onIsochroneMoved(e, vehiculo)
+            });
+    
+            vehiculo.marcador.addTo(pointersSVA);
+            entidadesMapa.SVA.push(vehiculo);
+        });
+    
+        losSVB.forEach((svb) => {
+            let vehiculo = new Vehiculo(
+                svb.Lat,
+                svb.Lng,
+                'SVB',
+                svb.Disponibilidad,
+                tiempoDeIsocronas,
+                elMapa,
+                svb.Descripcion
+            );
+    
+            vehiculo.marcador.on('dragend', (e) => {
+                onIsochroneMoved(e, vehiculo)
+            });
+    
+            vehiculo.marcador.addTo(poinersSVB);
+            entidadesMapa.SVB.push(vehiculo);
+        });
+
+        // Ahora cargamos las bases, que son permanentes
+        getDatos('Base', (res, err) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+        
+            res.forEach((baseData) => {
+                let base = new Base(baseData.Lat, baseData.Lng, baseData.Descripcion, elMapa);
+                base.marcador.addTo(pointersBases);
+                entidadesMapa.Base.push(base);
+            });
+        });
+        
+    });
 }
 
 /**
