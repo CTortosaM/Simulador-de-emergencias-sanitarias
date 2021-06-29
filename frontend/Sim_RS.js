@@ -64,6 +64,8 @@ let entidadesMapa = {
     SVB: [],
     Base: []
 }
+
+let capasShapeFile = [];
 // --------------------------
 let tiempoDeIsocronas = 15;
 let tiempoLabel = document.getElementById('cantidadDeTiempoIsocrona');
@@ -161,7 +163,7 @@ function cargarFicheroCSVdeVehiculos() {
         let file = e.target.files[0];
 
         const extension = file.name.split('.').pop();
-        
+
         if (extension !== 'csv') {
             setErrorMessageExtensionFichero(true, 'mensajeAlertaExtension');
             return;
@@ -198,7 +200,7 @@ function cargarFicheroCSVdeVehiculos() {
                     return;
                 }
 
-                setErrorMessageExtensionFichero(false ,'mensajeAlertaExtension');
+                setErrorMessageExtensionFichero(false, 'mensajeAlertaExtension');
                 resetPage();
                 cargarDatos(losDatos);
                 activarControles();
@@ -339,35 +341,71 @@ function updateTiempoDeIsocronas(tiempo) {
     });
 }
 
-function loadArrayBuffer(e) {
-    // e.target.result === reader.result
-    shp(e.target.result).then(function (geojson) {
-        try {
-            L.geoJSON(geojson, {}).addTo(elMapa);
-        } catch (error) {
-            console.error(error);
-            setErrorMessageExtensionFichero(true, 'mensajeAlertaShapeFile');
-        }
-    }).catch(function (err) {
-        setErrorMessageExtensionFichero(true, 'mensajeAlertaShapeFile');
-        console.error(err);
-    });
-
-    setErrorMessageExtensionFichero(false, 'mensajeAlertaShapeFile');
-}
-
 function onSubirShapeFile() {
     let input = document.createElement('input');
     input.type = 'file'
-    input.onchange = function (e) {
-        let file = e.target.files[0];
+    input.onchange = function (ev) {
+
+        let file = ev.target.files[0];
+        const nombreFile = file.name;
 
         let reader = new FileReader();
-        reader.onload = loadArrayBuffer;
-        reader.readAsArrayBuffer(file);
+        reader.onload = function (e) {
+            let capaGeoJson = null;
+            shp(e.target.result).then(function (geojson) {
+                try {
 
+                    capaGeoJson = L.geoJSON(geojson, {});
+                    setErrorMessageExtensionFichero(false, 'mensajeAlertaShapeFile');
+
+                    anyadirCapaShapefile(nombreFile, capaGeoJson);
+
+                } catch (error) {
+                    console.error(error);
+                    setErrorMessageExtensionFichero(true, 'mensajeAlertaShapeFile');
+                    return;
+                }
+            }).catch(function (err) {
+                setErrorMessageExtensionFichero(true, 'mensajeAlertaShapeFile');
+                console.error(err);
+                return;
+            });
+        };
+        reader.readAsArrayBuffer(file);
     }
+
     input.click();
+}
+
+/**
+ * Añade la capa shapefile al registro y el mapa
+ * @param {string} nombreShapefile 
+ * @param {object} capa 
+ */
+function anyadirCapaShapefile(nombreShapefile, capa) {
+    let tenemosLaCapa = elShapeFileYaEstaEnElMapa(nombreShapefile);
+    if (!tenemosLaCapa) {
+        capasShapeFile.push({
+            FileName: nombreShapefile,
+            GeoJson: capa
+        });
+        capa.addTo(elMapa);
+    }
+}
+
+function elShapeFileYaEstaEnElMapa(nombreShapefile) {
+    let flag = false;
+    capasShapeFile.forEach((capa) => {
+        // Si la capa ya existe no la quiero volver a añadir
+        if (capa.FileName == nombreShapefile) {
+
+            // TODO : Quiero parar el bucle cuando encuentre
+            // un duplicado
+            flag = true;
+        }
+    });
+
+    return flag;
 }
 
 
