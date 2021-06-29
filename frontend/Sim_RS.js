@@ -40,6 +40,8 @@ L.control.zoom({
 elMapa.setView([39, -0.6], 10);
 // ---------------------------
 const enlaceABackend = new EnlaceABackend();
+
+
 // ---------------------------
 const entityTypes = {
     Vehiculo: [
@@ -93,10 +95,13 @@ let overlays = {
 desactivarControles();
 L.control.layers(baseLayers, overlays).addTo(elMapa);
 
+eel.getDatosDeBases()().then((data) => {
+    console.log(data);
+});
+
 // --------------------------
-// Carga las bases
-// Ahora cargamos las bases, que son permanentes
-getDatos('Base', (res, err) => {
+// Cargamos las bases, que son datos permanentes
+enlaceABackend.getBases_DB((err, res) => {
     if (err) {
         console.error(err);
         return;
@@ -107,7 +112,7 @@ getDatos('Base', (res, err) => {
         base.marcador.addTo(pointersBases);
         entidadesMapa.Base.push(base);
     });
-});
+})
 
 /**
  * Realiza una petición al backend para sustraer los datos

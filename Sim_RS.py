@@ -8,6 +8,7 @@ import eel
 import json
 import requests
 import urllib.parse as parser
+import sqlite3
 # Exposa la funció al script JS
 @eel.expose
 def obtenerCoordsEPSG():
@@ -43,6 +44,36 @@ def getDatos(tipoDeVehiculo='SVA'):
             return json.dumps(data)
     except (KeyError, TypeError, ValueError) as error:
       return 'Error'
+
+@eel.expose
+def getDatosDeBases():
+    response = {
+        'Error': None,
+        'Data': []
+    }
+
+    try:
+        conn = sqlite3.connect('./Datos/Datos.db')
+        cur = conn.cursor()
+
+        for row in cur.execute('SELECT Lat, Lng, Descripcion FROM Bases'):
+            response['Data'].append(row)
+
+    except (sqlite3.Error) as errorSqlite:
+        response['Data'] = None
+        response['Error'] = errorSqlite
+    
+    finally:
+        if len(response['Data']) == 0:
+            response['Data'] = None
+            response['Error'] = 'No entries'
+            
+        return response
+
+    
+    
+
+    
 
 
 # @eel.expose

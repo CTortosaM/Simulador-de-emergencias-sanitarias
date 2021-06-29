@@ -73,6 +73,40 @@ class EnlaceABackend {
 
 
     /**
+     * Contacta al backend para extraer la información de bases
+     * @param {function} callback 
+     */
+    getBases_DB(callback) {
+        eel.getDatosDeBases()().then((data) => {
+            if (data.Error) {
+                callback(data.Error, null);
+                return;
+            }
+
+            if (!data.Data || data.Data.length === 0) {
+                callback('No entries', null);
+                return;
+            }
+
+            let bases = [];
+
+            data.Data.forEach(row => {
+                bases.push({
+                    Lat: row[0],
+                    Lng: row[1],
+                    Descripcion: row[2]
+                });
+            });
+
+            callback(null, bases);
+
+        }, (rejected) => {
+            callback(rejected, null);
+        });
+    }
+
+
+    /**
      * Obtener isocrona en la localización indicada con extensión
      * del tiempo proporcionado
      * @param {number} lat 
