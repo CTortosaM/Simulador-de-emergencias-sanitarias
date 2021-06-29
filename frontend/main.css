@@ -33,7 +33,7 @@ html, body,#contenedor, #mapa {
     padding: 0.3rem;
 }
 
-.btn-panel, #mensajeAlertaExtension {
+.btn-panel, #mensajeAlertaExtension, .mensajeDeError{
     width: 92%;
 }
 

@@ -158,7 +158,7 @@ function cargarFicheroCSVdeVehiculos() {
         const extension = file.name.split('.').pop();
         
         if (extension !== 'csv') {
-            setErrorMessageExtensionFichero(true);
+            setErrorMessageExtensionFichero(true, 'mensajeAlertaExtension');
             return;
         }
 
@@ -170,7 +170,7 @@ function cargarFicheroCSVdeVehiculos() {
                         console.error(error.message);
                     })
 
-                    setErrorMessageExtensionFichero(true);
+                    setErrorMessageExtensionFichero(true, 'mensajeAlertaExtension');
                     return;
                 }
 
@@ -193,7 +193,7 @@ function cargarFicheroCSVdeVehiculos() {
                     return;
                 }
 
-                setErrorMessageExtensionFichero(false);
+                setErrorMessageExtensionFichero(false ,'mensajeAlertaExtension');
                 resetPage();
                 cargarDatos(losDatos);
                 activarControles();
@@ -341,10 +341,14 @@ function loadArrayBuffer(e) {
             L.geoJSON(geojson, {}).addTo(elMapa);
         } catch (error) {
             console.error(error);
+            setErrorMessageExtensionFichero(true, 'mensajeAlertaShapeFile');
         }
     }).catch(function (err) {
-        alert(err);
+        setErrorMessageExtensionFichero(true, 'mensajeAlertaShapeFile');
+        console.error(err);
     });
+
+    setErrorMessageExtensionFichero(false, 'mensajeAlertaShapeFile');
 }
 
 function onSubirShapeFile() {
@@ -394,8 +398,8 @@ function resetPage() {
  * Activa o desactiva el mensaje de error de extensión de fichero
  * @param {boolean} hayError 
  */
-function setErrorMessageExtensionFichero(hayError) {
-    let mensaje = document.getElementById('mensajeAlertaExtension');
+function setErrorMessageExtensionFichero(hayError, id) {
+    let mensaje = document.getElementById(id);
 
     if (hayError) {
         mensaje.classList.remove('invisible');
