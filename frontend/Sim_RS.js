@@ -384,31 +384,72 @@ function onSubirShapeFile() {
  */
 function anyadirCapaShapefile(nombreShapefile, capa) {
     let tenemosLaCapa = elShapeFileYaEstaEnElMapa(nombreShapefile);
+
+    // Puesto que vamos a incorporar el nombre al DOM, realizamos una limpieza
+    // de carácteres especiales para evitar las inyecciones
+    let sanitizedName = sanitizeString(nombreShapefile);
     if (!tenemosLaCapa) {
         capasShapeFile.push({
             FileName: nombreShapefile,
+            SanitizedName: 'elementoCapa' + sanitizedName,
             GeoJson: capa
         });
         capa.addTo(elMapa);
+        crearElementoHTMLCapa(sanitizedName);
     }
 }
 
+/**
+ * Elimina los elementos no alphanumericos del string
+ * @param {string} input String al cual hacer sanitizing
+ */
+function sanitizeString(input) {
+    input = input.replace('zip', '');
+    return input.replace(/\W/g, '');
+}
+
+/**
+ * Añade a la lista de capas un elemento capa que se puede eliminar
+ * interactuando con el botón
+ * @param {string} nombre ID para el elemento HTML
+ */
 function crearElementoHTMLCapa(nombre) {
-    let elemento = `<li class="list-group-item capaDeLaLista" id=${nombre}>
+    let elemento = `<li class="list-group-item capaDeLaLista" id="elementoCapa${nombre}">
     <div class="card cardCapa">
         <div class="card-body cuerpoCardCapa">
-            <p class="col-10">Texto</p>
-            <button  class="btn bg-secondary col-2">
+            <p class="col-10">${nombre}</p>
+            <button  class="btn bg-secondary col-2" id="elementoCapaBoton${nombre}">
                 <i class="fa fa-trash-o fa-lg"></i>
             </button>
         </div>
     </div>
 </li>`
-    const lista = document.getElementById('listaDeCapas');
-    lista.insertAdjacentHTML('beforeend', elemento);
-}
+    try {
+        const lista = document.getElementById('listaDeCapas');
+        lista.insertAdjacentHTML('beforeend', elemento);
+        let elElementoAnyadido = document.getElementById('elementoCapaBoton' + nombre);
 
-crearElementoHTMLCapa('Pepito');
+        elElementoAnyadido.addEventListener('click', (e) => {
+            let elementoPadre = document.getElementById('elementoCapa' + nombre);
+            elementoPadre.parentNode.removeChild(elementoPadre);
+
+            for (let i = 0; i < capasShapeFile.length; i++) {
+
+                if (capasShapeFile[i].SanitizedName === 'elementoCapa' + nombre) {
+                    // Quitamos la capa del mapa
+                    elMapa.removeLayer(capasShapeFile[i].GeoJson);
+
+                    // Eliminamos el registro de la capa
+                    capasShapeFile.splice(capasShapeFile.indexOf(capasShapeFile[i]));
+                    break;
+                }
+            }
+        });
+
+    } catch(e) {
+        console.error(e);
+    } 
+}
 
 function elShapeFileYaEstaEnElMapa(nombreShapefile) {
     let flag = false;
@@ -425,7 +466,9 @@ function elShapeFileYaEstaEnElMapa(nombreShapefile) {
     return flag;
 }
 
-
+/**
+ * Elimina todos los vehículos e isócronas del mapa
+ */
 function resetPage() {
 
     // Elimina los vehiculos del mapa
@@ -452,6 +495,15 @@ function resetPage() {
         SVB: [],
         Base: entidadesMapa.Base
     };
+}
+
+/**
+ * 
+ * @param {Event} e 
+ */
+function deleteElementoCapa(e) {
+    let target = e.target;
+    console.log(e);
 }
 
 /**
