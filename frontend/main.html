@@ -33,7 +33,7 @@
                 <h4 class="card-title">Panel de control</h4>
             </div>
             <div class="card-body">
-                <ul class="list-group list-group-flush">
+                <ul class="list-group list-group-flush" id="contenidoPanel">
                     <li class="list-group-item">
                         <div id="SeccionDatos" class="mb-5">
                             <h5>Datos</h5>
@@ -72,8 +72,8 @@
                             </div>
                             <div id="dragAndDropCapas">
                                 <h6>Capas</h6>
-                                <ul id="listaDeCapas" class="border">
-                                    <li>
+                                <ul id="listaDeCapas" class="border list-group overflow-auto">
+                                    <li class="list-group-item capaDeLaLista">
                                         <div class="card cardCapa">
                                             <div class="card-body cuerpoCardCapa">
                                                 <p class="col-10">Texto</p>

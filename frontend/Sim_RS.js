@@ -393,6 +393,9 @@ function anyadirCapaShapefile(nombreShapefile, capa) {
     }
 }
 
+function crearElementoHTMLCapa(nombre) {
+}
+
 function elShapeFileYaEstaEnElMapa(nombreShapefile) {
     let flag = false;
     capasShapeFile.forEach((capa) => {
@@ -450,3 +453,5 @@ function setErrorMessageExtensionFichero(hayError, id) {
         mensaje.classList.add('invisible');
     }
 }
+
+
