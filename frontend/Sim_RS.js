@@ -394,7 +394,21 @@ function anyadirCapaShapefile(nombreShapefile, capa) {
 }
 
 function crearElementoHTMLCapa(nombre) {
+    let elemento = `<li class="list-group-item capaDeLaLista" id=${nombre}>
+    <div class="card cardCapa">
+        <div class="card-body cuerpoCardCapa">
+            <p class="col-10">Texto</p>
+            <button  class="btn bg-secondary col-2">
+                <i class="fa fa-trash-o fa-lg"></i>
+            </button>
+        </div>
+    </div>
+</li>`
+    const lista = document.getElementById('listaDeCapas');
+    lista.insertAdjacentHTML('beforeend', elemento);
 }
+
+crearElementoHTMLCapa('Pepito');
 
 function elShapeFileYaEstaEnElMapa(nombreShapefile) {
     let flag = false;
