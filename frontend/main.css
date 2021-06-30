@@ -5,6 +5,15 @@ html, body,#contenedor, #mapa {
     font-size: 14px;
 }
 
+ul {
+    list-style-type: none;
+}
+
+li {
+    width: 100%;
+
+}
+
 #mapa {
     z-index: 0;
 }
@@ -34,6 +43,11 @@ html, body,#contenedor, #mapa {
 }
 
 .btn-panel, #mensajeAlertaExtension, .mensajeDeError{
-    width: 92%;
+    width: 100%;
+}
+
+.cuerpoCardCapa {
+    display: flex;
+    align-items: center;
 }
 
