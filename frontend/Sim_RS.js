@@ -438,7 +438,7 @@ function crearElementoHTMLCapa(nombre) {
     <div class="card cardCapa">
         <div class="card-body cuerpoCardCapa">
             <p class="col-10">${nombre}</p>
-            <button  class="btn bg-secondary col-2" id="elementoCapaBoton${nombre}">
+            <button  class="btn btn-light col-2" id="elementoCapaBoton${nombre}">
                 <i class="far fa-trash-alt"></i>
             </button>
         </div>

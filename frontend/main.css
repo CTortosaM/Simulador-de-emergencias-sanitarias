@@ -52,12 +52,12 @@ li {
 #listaDeCapas {
     max-height: 280px;
     min-height: 10rem;
-    background-color: #D5D5D5  ;
     overflow: auto;
 }
 
 .cuerpoCardCapa {
     display: flex;
     align-items: center;
+    background-color: #D5D5D5;
 }
 
