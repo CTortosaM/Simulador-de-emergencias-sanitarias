@@ -335,16 +335,24 @@ function onIsochroneMoved(e, isochroneEntity) {
 
 function toggleIsocronas(e) {
     if (currentOverlap) currentOverlap.hide();
-
+    let flag = true;
     isocronasVisibles = !isocronasVisibles;
 
     Object.keys(entidadesMapa).forEach((tipo) => {
         if (tipo === 'SVA' || tipo === 'SVB') {
-            entidadesMapa[tipo].forEach((entidad) => {
-                entidad.setVisibilidadIsocrona(isocronasVisibles);
-            })
+            for (let i = 0; i < entidadesMapa[tipo].length; i++) {
+                if (entidadesMapa[tipo][i].esLaIsocronaVisible()) {
+                    flag = false;
+                }
+            }
+
+            for (let i = 0; i < entidadesMapa[tipo].length; i++) {
+                entidadesMapa[tipo][i].setVisibilidadIsocrona(flag);
+                if  (currentOverlap && flag) currentOverlap.show();
+            }
         }
     })
+
 }
 
 function extraerVehiculo() {
