@@ -36,7 +36,8 @@ class Base {
             <b>${this.descripcion}</b>
             <br>
             <button class="btn btn-dark" onClick="extraerVehiculo()">Extraer Vehiculo</button>
-            <button class="btn btn-dark" onClick="setSelectionMode(true)">Anyadir Vehiculo</button>
+            <button class="btn btn-dark" onClick="setSelectionMode(true)">Mover Vehiculo</button>
+            <p>Tras pulsar "Mover Vehiculo", selecciona en el mapa un marcador de vehículo</p>
             <p>${this.vehiculos.length} vehiculos disponibles</p>
         `;
 
@@ -109,7 +110,8 @@ class Base {
         <b>${this.descripcion}</b>
         <br>
         <button class="btn btn-dark" onClick="extraerVehiculo()">Extraer Vehiculo</button>
-        <button class="btn btn-dark" onClick="setSelectionMode(true)">Añadir Vehiculo</button>
+        <button class="btn btn-dark" onClick="setSelectionMode(true)">Mover Vehiculo</button>
+        <p>Tras pulsar "Mover Vehiculo", selecciona en el mapa un marcador de vehículo</p>
         <p>${this.vehiculos.length} vehiculos disponibles</p>
     `);
     }
