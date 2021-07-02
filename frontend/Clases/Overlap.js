@@ -9,6 +9,11 @@ class Overlap {
             }
         });
 
+        this.simpleGeometry = turf.simplify(geometry, {
+            tolerance: 0.005,
+            highQuality: true
+        })
+
         let coordenadasMarcador = turf.center(geometry).geometry.coordinates;
 
         // Por algun mótivo la librería de turf
@@ -41,14 +46,19 @@ class Overlap {
                     this.marcador.setPopupContent(`<p>${this.estimacionPoblacion}`);
                 }); */
 
-                enlaceABackend.getEstimacionPoblacion_WorldPop(geometry, (res, error) => {
+                enlaceABackend.getEstimacionPoblacion_WorldPop(this.simpleGeometry, (res, error) => {
                     if (error) {
                         this.marcador.setPopupContent('Error');
                         return;
                     }
                     try {
                         this.estimacionPoblacion = Math.floor(res.total_population);
-                        this.marcador.setPopupContent(`Población cubierta: ${this.estimacionPoblacion}`);
+
+                        if (this.estimacionPoblacion == isNaN) {
+                            this.marcador.setPopupContent('Error obteniendo datos de población');
+                        } else {
+                            this.marcador.setPopupContent(`Población cubierta: ${this.estimacionPoblacion}`);
+                        }
                     } catch(err) {
                         this.marcador.setPopupContent('Error obteniendo datos de población');
                     }
