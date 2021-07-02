@@ -230,18 +230,18 @@ function cargarDatos(datos) {
         );
 
         vehiculo.marcador.on('click', (e) => {
+            onIsochroneMoved(e.latlng, vehiculo)
+
             if (overlapCandidates.includes(vehiculo)) {
                 if (currentOverlap) {
-                    for (let i = 0; i < overlapCandidates.length; i++) {
-                        if (!overlapCandidates[i].esLaIsocronaVisible()) {
-                            currentOverlap.hide();
-                            return;
-                        }
+                    let visible1 = overlapCandidates[0].esLaIsocronaVisible();
+                    let visible2 = overlapCandidates[1].esLaIsocronaVisible();
+
+                    if (!visible1 || !visible2) {
+                        currentOverlap.hide();
                     }
-                    currentOverlap.show();
                 }
             }
-            onIsochroneMoved(e.latlng, vehiculo)
         });
 
         vehiculo.marcador.on('dragstart', (e) => {
@@ -270,22 +270,25 @@ function cargarDatos(datos) {
         );
 
         vehiculo.marcador.on('click', (e) => {
+            onIsochroneMoved(e.latlng, vehiculo)
+
             if (overlapCandidates.includes(vehiculo)) {
                 if (currentOverlap) {
-                    for (let i = 0; i < overlapCandidates.length; i++) {
-                        if (!overlapCandidates[i].esLaIsocronaVisible()) {
-                            currentOverlap.hide();
-                            return;
-                        }
+                    let visible1 = overlapCandidates[0].esLaIsocronaVisible();
+                    let visible2 = overlapCandidates[1].esLaIsocronaVisible();
+
+                    if (!visible1 || !visible2) {
+                        currentOverlap.hide();
                     }
-                    currentOverlap.show();
                 }
             }
-            onIsochroneMoved(e.latlng, vehiculo)
         });
 
         vehiculo.marcador.on('dragstart', (e) => {
             vehiculo.setVisibilidadIsocrona(false);
+            if (overlapCandidates.includes(vehiculo)) {
+                currentOverlap.hide();
+            }
         })
 
         vehiculo.marcador.on('dragend', (e) => {
