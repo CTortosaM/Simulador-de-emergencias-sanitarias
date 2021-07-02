@@ -52,6 +52,7 @@ li {
 #listaDeCapas {
     max-height: 280px;
     min-height: 10rem;
+    background-color: #D5D5D5  ;
     overflow: auto;
 }
 

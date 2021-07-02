@@ -98,9 +98,7 @@ let overlays = {
 desactivarControles();
 L.control.layers(baseLayers, overlays).addTo(elMapa);
 
-eel.getDatosDeBases()().then((data) => {
-    console.log(data);
-});
+eel.getDatosDeBases()().then((data) => {});
 
 // --------------------------
 // Cargamos las bases, que son datos permanentes
@@ -404,11 +402,12 @@ function onSubirShapeFile() {
  * @param {object} capa 
  */
 function anyadirCapaShapefile(nombreShapefile, capa) {
-    let tenemosLaCapa = elShapeFileYaEstaEnElMapa(nombreShapefile);
+    let sanitizedName = sanitizeString(nombreShapefile);
+    let tenemosLaCapa = elShapeFileYaEstaEnElMapa('elementoCapa' + sanitizedName);
 
     // Puesto que vamos a incorporar el nombre al DOM, realizamos una limpieza
     // de carácteres especiales para evitar las inyecciones
-    let sanitizedName = sanitizeString(nombreShapefile);
+
     if (!tenemosLaCapa) {
         capasShapeFile.push({
             FileName: nombreShapefile,
@@ -440,7 +439,7 @@ function crearElementoHTMLCapa(nombre) {
         <div class="card-body cuerpoCardCapa">
             <p class="col-10">${nombre}</p>
             <button  class="btn bg-secondary col-2" id="elementoCapaBoton${nombre}">
-                <i class="fa fa-trash-o fa-lg"></i>
+                <i class="far fa-trash-alt"></i>
             </button>
         </div>
     </div>
@@ -451,40 +450,37 @@ function crearElementoHTMLCapa(nombre) {
         let elElementoAnyadido = document.getElementById('elementoCapaBoton' + nombre);
 
         elElementoAnyadido.addEventListener('click', (e) => {
-            let elementoPadre = document.getElementById('elementoCapa' + nombre);
-            elementoPadre.parentNode.removeChild(elementoPadre);
+
 
             for (let i = 0; i < capasShapeFile.length; i++) {
-
                 if (capasShapeFile[i].SanitizedName === 'elementoCapa' + nombre) {
+                    
+                    let elementoPadre = document.getElementById('elementoCapa' + nombre);
+                    elementoPadre.parentNode.removeChild(elementoPadre);
+
                     // Quitamos la capa del mapa
                     elMapa.removeLayer(capasShapeFile[i].GeoJson);
 
                     // Eliminamos el registro de la capa
-                    capasShapeFile.splice(capasShapeFile.indexOf(capasShapeFile[i]));
-                    break;
+                    capasShapeFile.splice(capasShapeFile.indexOf(capasShapeFile[i]), 1);
+                    return;
                 }
             }
         });
 
-    } catch(e) {
+    } catch (e) {
         console.error(e);
-    } 
+    }
 }
 
 function elShapeFileYaEstaEnElMapa(nombreShapefile) {
-    let flag = false;
-    capasShapeFile.forEach((capa) => {
-        // Si la capa ya existe no la quiero volver a añadir
-        if (capa.FileName == nombreShapefile) {
 
-            // TODO : Quiero parar el bucle cuando encuentre
-            // un duplicado
-            flag = true;
+    for (let i = 0; i < capasShapeFile.length; i++) {
+        if (capasShapeFile[i].SanitizedName === nombreShapefile) {
+            return true;
         }
-    });
-
-    return flag;
+    }
+    return false;
 }
 
 /**
@@ -542,5 +538,3 @@ function setErrorMessageExtensionFichero(hayError, id) {
         mensaje.classList.add('invisible');
     }
 }
-
-
