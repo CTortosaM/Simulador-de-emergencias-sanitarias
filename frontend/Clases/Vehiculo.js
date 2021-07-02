@@ -15,8 +15,8 @@ class Vehiculo {
      */
     constructor(lat = 0, lng = 0, tipoDeVehiculo = 'SVA', disponibilidad = '12 AM', tiempoDeIsocrona = 10, elMapa = null, descripcion = '') {
         this.posicion = {};
-        this.posicion.lat = lat;
-        this.posicion.lng = lng;
+        this.posicion.lat = parseFloat(lat);
+        this.posicion.lng = parseFloat(lng);
 
         this.disponibilidad = disponibilidad;
         this.descripcion = descripcion;
@@ -105,11 +105,12 @@ class Vehiculo {
      * @param {number} lat 
      * @param {number} lng 
      */
-    desplazarA(lat = 0, lng = 0) {
+    desplazarA(lat, lng) {
         this.posicion.lat = lat;
         this.posicion.lng = lng;
 
-        this.marcador.setLatLng(this.posicion).update();
+        let nuevaPosicionMarcador = new L.LatLng(lat,lng);
+        this.marcador.setLatLng(nuevaPosicionMarcador).update();
     }
 
 
@@ -196,10 +197,10 @@ class Vehiculo {
         // Tolerancia min = 0.001
         // Tolerancia max = 0.05
         const lowerTiempo = 1;
-        const upperTiempo = 60;
+        const upperTiempo = 30;
 
-        const lowerTolerance = 0.0007;
-        const upperTolerance = 0.04;
+        const lowerTolerance = 0.0002;
+        const upperTolerance = 0.01;
 
         // Algoritmo:  [A, B] --> [a, b]
         // (valor - A) * (b - a)/(B - A) + a
@@ -264,9 +265,12 @@ class Vehiculo {
      * 
      * @param {object} e 
      */
-    onDragMarcador(e, callback) {
-        let newCoords = e.target._latlng;
-        this.desplazarA(newCoords.lat, newCoords.lng);
+    onDragMarcador(newPos, callback) {
+
+        if (!this.marcador.isPopupOpen() || this.isocrona) {
+            callback(this.isocrona);
+            return;
+        }
 
         this.setVisibilidadIsocrona(false);
 
@@ -275,7 +279,7 @@ class Vehiculo {
             this.disponibilidad,
             'Cargando...'
         )
-
+        
         this.actualizarIsocrona(this.tiempoDeIsocrona, (worked, error) => {
             if (worked && !error) {
                 this.setVisibilidadIsocrona(true);

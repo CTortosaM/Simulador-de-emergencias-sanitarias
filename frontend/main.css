@@ -51,6 +51,7 @@ li {
 
 #listaDeCapas {
     max-height: 280px;
+    min-height: 10rem;
     overflow: auto;
 }
 

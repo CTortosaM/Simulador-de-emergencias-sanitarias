@@ -78,6 +78,7 @@ sliderTiempoIsocronas.oninput = (ev) => {
 }
 
 sliderTiempoIsocronas.onchange = (ev) => {
+    if (currentOverlap) currentOverlap.hide();
     tiempoDeIsocronas = parseInt(sliderTiempoIsocronas.value);
     updateTiempoDeIsocronas(parseInt(sliderTiempoIsocronas.value));
 }
@@ -230,9 +231,19 @@ function cargarDatos(datos) {
             sva.Descripcion
         );
 
-        vehiculo.marcador.on('dragend', (e) => {
-            onIsochroneMoved(e, vehiculo)
+        vehiculo.marcador.on('click', (e) => {
+            onIsochroneMoved(e.latlng, vehiculo)
         });
+
+        vehiculo.marcador.on('dragstart', (e) => {
+            vehiculo.setVisibilidadIsocrona(false);
+        })
+
+        vehiculo.marcador.on('dragend', (e) => {
+            let nuevaPosicion = e.target._latlng;
+            vehiculo.desplazarA(nuevaPosicion.lat, nuevaPosicion.lng);
+            vehiculo.isocrona = null;
+        })
 
         vehiculo.marcador.addTo(pointersSVA);
         entidadesMapa.SVA.push(vehiculo);
@@ -249,9 +260,19 @@ function cargarDatos(datos) {
             svb.Descripcion
         );
 
-        vehiculo.marcador.on('dragend', (e) => {
-            onIsochroneMoved(e, vehiculo)
+        vehiculo.marcador.on('click', (e) => {
+            onIsochroneMoved(e.latlng, vehiculo)
         });
+
+        vehiculo.marcador.on('dragstart', (e) => {
+            vehiculo.setVisibilidadIsocrona(false);
+        })
+
+        vehiculo.marcador.on('dragend', (e) => {
+            let nuevaPosicion = e.target._latlng;
+            vehiculo.desplazarA(nuevaPosicion.lat, nuevaPosicion.lng);
+            vehiculo.isocrona = null;
+        })
 
         vehiculo.marcador.addTo(poinersSVB);
         entidadesMapa.SVB.push(vehiculo);
@@ -479,6 +500,8 @@ function resetPage() {
             }
         })
     });
+
+    overlapCandidates = [];
 
     // Restablece controles
     tiempoDeIsocronas = 15;
