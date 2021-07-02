@@ -161,7 +161,7 @@ class Vehiculo {
                     highQuality: true
                 });
 
-                /* L.geoJSON(this.isocronaSimple, {
+                /*L.geoJSON(this.isocronaSimple, {
                     style: {
                         color: '#129fe6'
                     }
@@ -246,6 +246,8 @@ class Vehiculo {
      * @returns interseccion
      */
     checkSolapeCon(otroVehiculo) {
+
+        if (!otroVehiculo.isocrona || !this.isocrona) return;
 
         // Esta es la mejor manera que encontré de 
         // revertir al objeto original isocrona

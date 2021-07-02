@@ -230,6 +230,17 @@ function cargarDatos(datos) {
         );
 
         vehiculo.marcador.on('click', (e) => {
+            if (overlapCandidates.includes(vehiculo)) {
+                if (currentOverlap) {
+                    for (let i = 0; i < overlapCandidates.length; i++) {
+                        if (!overlapCandidates[i].esLaIsocronaVisible()) {
+                            currentOverlap.hide();
+                            return;
+                        }
+                    }
+                    currentOverlap.show();
+                }
+            }
             onIsochroneMoved(e.latlng, vehiculo)
         });
 
@@ -259,6 +270,17 @@ function cargarDatos(datos) {
         );
 
         vehiculo.marcador.on('click', (e) => {
+            if (overlapCandidates.includes(vehiculo)) {
+                if (currentOverlap) {
+                    for (let i = 0; i < overlapCandidates.length; i++) {
+                        if (!overlapCandidates[i].esLaIsocronaVisible()) {
+                            currentOverlap.hide();
+                            return;
+                        }
+                    }
+                    currentOverlap.show();
+                }
+            }
             onIsochroneMoved(e.latlng, vehiculo)
         });
 
