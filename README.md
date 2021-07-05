@@ -1,4 +1,4 @@
-# Simulador de recursos sanitarios
+# Simulador de emergencias sanitarios
 Repositorio para el desarrollo del trabajo final de grado para el grado en tecnologías interactivas.
 
 El trabajo consiste en desarrollar una aplicación que permita la manipulación, simulación y visualización de vehículos de emergencias situados sobre el mapa.
