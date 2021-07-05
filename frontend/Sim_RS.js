@@ -246,6 +246,9 @@ function cargarDatos(datos) {
 
         vehiculo.marcador.on('dragstart', (e) => {
             vehiculo.setVisibilidadIsocrona(false);
+            if (overlapCandidates.includes(vehiculo) && currentOverlap !== null) {
+                currentOverlap.hide();
+            }
         })
 
         vehiculo.marcador.on('dragend', (e) => {
@@ -286,7 +289,7 @@ function cargarDatos(datos) {
 
         vehiculo.marcador.on('dragstart', (e) => {
             vehiculo.setVisibilidadIsocrona(false);
-            if (overlapCandidates.includes(vehiculo)) {
+            if (overlapCandidates.includes(vehiculo) && currentOverlap !== null) {
                 currentOverlap.hide();
             }
         })
@@ -348,7 +351,7 @@ function toggleIsocronas(e) {
 
             for (let i = 0; i < entidadesMapa[tipo].length; i++) {
                 entidadesMapa[tipo][i].setVisibilidadIsocrona(flag);
-                if  (currentOverlap && flag) currentOverlap.show();
+                if (currentOverlap && flag) currentOverlap.show();
             }
         }
     })
@@ -487,7 +490,7 @@ function crearElementoHTMLCapa(nombre) {
 
             for (let i = 0; i < capasShapeFile.length; i++) {
                 if (capasShapeFile[i].SanitizedName === 'elementoCapa' + nombre) {
-                    
+
                     let elementoPadre = document.getElementById('elementoCapa' + nombre);
                     elementoPadre.parentNode.removeChild(elementoPadre);
 
