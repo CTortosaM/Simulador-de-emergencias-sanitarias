@@ -18,10 +18,7 @@ def test_driver(driver:WebDriver, nombreNavegador:str):
 
     # Presencia de marcadores
     marcadores = driver.find_elements_by_class_name('awesome-marker')
-    assert marcadores.__len__() > 0, 'No se han encontrado marcadores en la página'
-    print('''
-        Número de marcadores: {}
-    '''.format(marcadores.__len__()))
+    
 
 # Instancia navegadores
 with Chrome() as driverChrome:
