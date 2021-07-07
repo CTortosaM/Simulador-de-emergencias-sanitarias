@@ -21,8 +21,19 @@ def obtenerCoordsEPSG():
     coordenadas = json.dumps(coords)
     return coordenadas
 
+
 @eel.expose
 def obtenerGeoJson(lng, lat, tiempoEnMinutos):
+    """Cálcula la isócrona en la posición indicada y de la extensión de tiempo proporcionada
+
+    Parameters:
+    lng (float): Longitud de la posición
+    lat (float): Latitud de la posición
+    tiempoEnMinutos (int): Extensión de la isocrona en minutos
+
+    Returns:
+    string:Isocrona, en forma de GeoJson y formato string
+    """
     body = {"locations":[[lng, lat]],"range":[tiempoEnMinutos*60]}
 
     headers = {
@@ -36,17 +47,14 @@ def obtenerGeoJson(lng, lat, tiempoEnMinutos):
 
 
 @eel.expose
-def getDatos(tipoDeVehiculo='SVA'):
-
-    try:
-        with open('./Datos/Datos.json') as f:
-            data = json.load(f)[tipoDeVehiculo]
-            return json.dumps(data)
-    except (KeyError, TypeError, ValueError) as error:
-      return 'Error'
-
-@eel.expose
 def getDatosDeBases():
+    """CObtiene la información de las bases de la BD
+
+    Parameters:
+
+    Returns:
+    {Data: Array / Null, Error: String / Null}
+    """
     response = {
         'Error': None,
         'Data': []
@@ -70,64 +78,45 @@ def getDatosDeBases():
             
         return response
 
-    
-    
-
-    
-
 
 # @eel.expose
-# def getDatos_CSV():
-#   
-#     try:
-#         with open('./Datos/Datos.csv') as datos_f:
-#             csv_reader = csv.DictReader(datos_f)
+# def getEstimacionPoblacion(poligono):
+#     url = 'https://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/pesv3Broker/GPServer/pesv3Broker/execute?f=json'
 
-#             sva = []
-#             svb = []
-#             datos = {'SVA': sva, 'SVB': svb}
-#             for row in csv_reader:
-#                 if len(row) > 1:
-#                     if (row['Tipo'] == "SVA"):
-#                         sva.append(row)
-#                     else:
-#                         svb.append(row)
-#           
-#             return json.dumps(datos)
-#     except (ValueError, IOError, RuntimeError) as error:
-#         return 'Error'
+#     headers = {
+#         'Accept-Content':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+#         'Cookie': '_ga=GA1.2.222787148.1613236203; _gid=GA1.2.55038318.1617956848; logged=false; urs_login_status=false; uvts=28d5d143-200c-4477-4d09-314a514fbfa8',
+#         'Accept-Encoding':'gzip, deflate, br'
+#     }
+#     requestData = {
+#         "polygon": poligono,
+#         "variables": [
+#         "gpw-v4-population-count-rev10_2020"
+#         ],
+#         "statistics": [
+#             "SUM"
+#         ],
+#         "requestID": "123456789"
+#     }
 
+#     data = {
+#         "Input_Data": requestData
+#     }
 
-@eel.expose
-def getEstimacionPoblacion(poligono):
-    url = 'https://sedac.ciesin.columbia.edu/arcgis/rest/services/sedac/pesv3Broker/GPServer/pesv3Broker/execute?f=json'
-
-    headers = {
-        'Accept-Content':'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'Cookie': '_ga=GA1.2.222787148.1613236203; _gid=GA1.2.55038318.1617956848; logged=false; urs_login_status=false; uvts=28d5d143-200c-4477-4d09-314a514fbfa8',
-        'Accept-Encoding':'gzip, deflate, br'
-    }
-    requestData = {
-        "polygon": poligono,
-        "variables": [
-        "gpw-v4-population-count-rev10_2020"
-        ],
-        "statistics": [
-            "SUM"
-        ],
-        "requestID": "123456789"
-    }
-
-    data = {
-        "Input_Data": requestData
-    }
-
-    call = requests.post(url, data=parser.urlencode(data), headers=headers)
-    return call.json()
+#     call = requests.post(url, data=parser.urlencode(data), headers=headers)
+#     return call.json()
 
 
 @eel.expose
 def getEstimacionPoblacion_WorlPop(poligono):
+    """Cálcula la población cubierta en el polígono proporcionado
+
+    Parameters:
+    poligono (dict): Poligono donde calcular la población
+
+    Returns:
+    number:Poblacion
+    """
 
     # Proporcionamos el parámetro runasync false porque si no
     # la tarea de comprobar como de avanzada estaba la tarea mediante la API
