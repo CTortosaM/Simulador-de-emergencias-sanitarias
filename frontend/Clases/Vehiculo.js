@@ -264,8 +264,10 @@ class Vehiculo {
     }
 
     /**
-     * 
-     * @param {object} e 
+     * Acción a realizar cuando se arrastra el marcador
+     * @param {Position} newPos {Lat, lng}
+     * @param {function} callback Callback(isocrona//null)
+     * @returns 
      */
     onDragMarcador(newPos, callback) {
 
@@ -378,6 +380,10 @@ class Vehiculo {
         this.marcador.setPopupContent(newContent);
     }
 
+
+    /**
+     * Elimina cualquier aspecto del objeto del mapa
+     */
     destruir() {
         this.setVisibilidadIsocrona(false);
         this.elMapa.removeLayer(this.marcador);

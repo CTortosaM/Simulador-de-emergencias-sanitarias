@@ -336,6 +336,10 @@ function onIsochroneMoved(e, isochroneEntity) {
 
 }
 
+/**
+ * Alterna la visibilidad de las isócronas
+ * @param {event} e Evento click del botón html
+ */
 function toggleIsocronas(e) {
     if (currentOverlap) currentOverlap.hide();
     let flag = true;
@@ -358,18 +362,30 @@ function toggleIsocronas(e) {
 
 }
 
+/**
+ * Notifica a la base que extraiga un vehículo
+ */
 function extraerVehiculo() {
     if (lastBaseClicked) {
         lastBaseClicked.extraerVehiculo();
     }
 }
 
+
+/**
+ * Notificar a la base que añada el vehiculo del parámetro
+ * @param {Vehiculo} vehiculo 
+ */
 function anyadirVehiculo(vehiculo) {
     if (lastBaseClicked) {
         lastBaseClicked.anyadirVehiculo(vehiculo);
     }
 }
 
+/**
+ * Seleccionar si nos encontramos en modo selección de vehículos
+ * @param {boolean} selecting 
+ */
 function setSelectionMode(selecting) {
     selectionMode = selecting;
 }
@@ -396,6 +412,11 @@ function updateTiempoDeIsocronas(tiempo) {
     });
 }
 
+
+/**
+ * Función evento para cuando se pulsa el botón
+ * subir shapefile
+ */
 function onSubirShapeFile() {
     let input = document.createElement('input');
     input.type = 'file'
@@ -509,6 +530,12 @@ function crearElementoHTMLCapa(nombre) {
     }
 }
 
+
+/**
+ * ¿Está el shapefile ya en el mapa? Esta función te lo dice
+ * @param {string} nombreShapefile 
+ * @returns {boolean} Boolean
+ */
 function elShapeFileYaEstaEnElMapa(nombreShapefile) {
 
     for (let i = 0; i < capasShapeFile.length; i++) {
@@ -550,15 +577,6 @@ function resetPage() {
         SVB: [],
         Base: entidadesMapa.Base
     };
-}
-
-/**
- * 
- * @param {Event} e 
- */
-function deleteElementoCapa(e) {
-    let target = e.target;
-    console.log(e);
 }
 
 /**

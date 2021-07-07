@@ -1,5 +1,10 @@
 class Overlap {
 
+    /**
+     * 
+     * @param {object} geometry Objeto Geoson
+     * @param {object} elMapa Referencia al mapa de leaflet
+     */
     constructor(geometry, elMapa) {
         this.estimacionPoblacion = null;
         this.elMapa = elMapa;
