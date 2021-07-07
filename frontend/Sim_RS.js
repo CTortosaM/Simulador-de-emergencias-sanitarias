@@ -127,13 +127,6 @@ function getDatos(tipo = 'SVA', callback) {
     })
 }
 
-
-function getDatos_CSV(callback) {
-    enlaceABackend.getVehiculos_CSV((datos, error) => {
-        callback(datos, error);
-    })
-}
-
 /**
  * Activa los elementos del panel de control referidos
  * a las isocronas
@@ -153,6 +146,10 @@ function desactivarControles() {
     botonToggleIsocronas.disabled = true;
 }
 
+/**
+ * Función disparada del evento click cargar CSV.
+ * 
+ */
 function cargarFicheroCSVdeVehiculos() {
 
     let input = document.createElement('input');
@@ -213,6 +210,10 @@ function cargarFicheroCSVdeVehiculos() {
     input.click();
 }
 
+/**
+ * Función inicial de carga de datos
+ * @param {object} datos 
+ */
 function cargarDatos(datos) {
 
     let losSVA = datos['SVA'];
