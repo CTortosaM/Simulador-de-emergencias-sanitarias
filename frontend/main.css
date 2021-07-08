@@ -61,3 +61,12 @@ li {
     background-color: #D5D5D5;
 }
 
+.seccionBotonesPopupBase {
+    display: flex;
+    justify-content: space-between;
+}
+
+.botonPopupBase {
+    width: 48%;
+}
+

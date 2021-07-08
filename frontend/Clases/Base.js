@@ -27,18 +27,21 @@ class Base {
         this.vehiculos = [];
 
         let icono = L.AwesomeMarkers.icon({
-            icon: 'medkit',
+            icon: 'plus-square',
             markerColor: 'pink',
             prefix: 'fa'
         });
 
         let markerContent = `
-            <b>${this.descripcion}</b>
-            <br>
-            <button class="btn btn-dark" onClick="extraerVehiculo()">Extraer Vehiculo</button>
-            <button class="btn btn-dark" onClick="setSelectionMode(true)">Mover Vehiculo</button>
-            <p>Tras pulsar "Mover Vehiculo", selecciona en el mapa un marcador de vehículo</p>
-            <p>${this.vehiculos.length} vehiculos disponibles</p>
+        
+        <b>${this.descripcion}</b>
+        <br>
+        <div class="seccionBotonesPopupBase">
+        <button class="btn btn-dark botonPopupBase" onClick="extraerVehiculo()">Extraer Vehiculo</button>
+        <button class="btn btn-dark botonPopupBase" onClick="setSelectionMode(true)">Mover Vehiculo</button>
+        </div>
+        <p>Tras pulsar "Mover Vehiculo", selecciona en el mapa un marcador de vehículo</p>
+        <p>${this.vehiculos.length} vehiculos disponibles</p>
         `;
 
         this.marcador = L.marker(this.posicion, {
@@ -109,8 +112,10 @@ class Base {
         this.marcador.setPopupContent(`
         <b>${this.descripcion}</b>
         <br>
-        <button class="btn btn-dark" onClick="extraerVehiculo()">Extraer Vehiculo</button>
-        <button class="btn btn-dark" onClick="setSelectionMode(true)">Mover Vehiculo</button>
+        <div class="seccionBotonesPopupBase">
+        <button class="btn btn-dark botonPopupBase" onClick="extraerVehiculo()">Extraer Vehiculo</button>
+        <button class="btn btn-dark botonPopupBase" onClick="setSelectionMode(true)">Mover Vehiculo</button>
+        </div>
         <p>Tras pulsar "Mover Vehiculo", selecciona en el mapa un marcador de vehículo</p>
         <p>${this.vehiculos.length} vehiculos disponibles</p>
     `);
