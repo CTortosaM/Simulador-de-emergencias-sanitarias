@@ -39,6 +39,7 @@
                             <h5>Datos</h5>
                             <button id="botonCargarFicheroCSV" class="btn btn-primary btn-panel"
                                 onclick="cargarFicheroCSVdeVehiculos()">Cargar datos</button>
+                            <input type="file" id="ElInputDeCSV" hidden>
                             <div id="mensajeAlertaExtension" class="alert alert-danger invisible mt-2 mensajeDeError"
                                 role="alert">
                                 Ha habido algun problema. Comprueba que la extensión del fichero es .csv y que el
@@ -60,21 +61,21 @@
                                 <button id="botonToggleIsocronas" class="btn btn-secondary btn-panel"
                                     onclick="toggleIsocronas()">Mostrar/Ocultar</button>
                             </div>
-                            
+
                         </div>
                         <div class="mt-5" id="SeccionCapas">
                             <h5>Archivos shape</h6>
-                            <button id="botonUploadShape" class="btn btn-primary btn-panel"
-                                onclick="onSubirShapeFile()">Subir archivo</button>
-                            <div id="mensajeAlertaShapeFile"
-                                class="alert alert-danger invisible mt-2 mensajeDeError" role="alert">
-                                Ha habido algun problema. Comprueba que el shapefile está en formato zip.
-                            </div>
-                            <div id="dragAndDropCapas">
-                                <h6>Capas</h6>
-                                <ul id="listaDeCapas" class="border list-group overflow-auto">
-                                </ul>
-                            </div>
+                                <button id="botonUploadShape" class="btn btn-primary btn-panel"
+                                    onclick="onSubirShapeFile()">Subir archivo</button>
+                                <div id="mensajeAlertaShapeFile"
+                                    class="alert alert-danger invisible mt-2 mensajeDeError" role="alert">
+                                    Ha habido algun problema. Comprueba que el shapefile está en formato zip.
+                                </div>
+                                <div id="dragAndDropCapas">
+                                    <h6>Capas</h6>
+                                    <ul id="listaDeCapas" class="border list-group overflow-auto">
+                                    </ul>
+                                </div>
                         </div>
                     </li>
                 </ul>

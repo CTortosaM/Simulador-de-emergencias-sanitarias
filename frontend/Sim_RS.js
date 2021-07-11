@@ -21,6 +21,8 @@ let pointersBases = L.layerGroup();
 
 let isocronasVisibles = false;
 
+let DOCUMENTO_CARGADO = false;
+
 const elMapa = L.map('mapa', {
     zoomControl: false,
     minZoom: 2,
@@ -98,7 +100,9 @@ let overlays = {
 desactivarControles();
 L.control.layers(baseLayers, overlays).addTo(elMapa);
 
-eel.getDatosDeBases()().then((data) => {});
+
+// INPUT CSVs
+document.getElementById('ElInputDeCSV').onchange = onArchivoRecibidoEnInputCSV;
 
 // --------------------------
 // Cargamos las bases, que son datos permanentes
@@ -113,6 +117,8 @@ enlaceABackend.getBases_DB((err, res) => {
         base.marcador.addTo(pointersBases);
         entidadesMapa.Base.push(base);
     });
+
+    DOCUMENTO_CARGADO = true;
 })
 
 /**
@@ -152,61 +158,8 @@ function desactivarControles() {
  */
 function cargarFicheroCSVdeVehiculos() {
 
-    let input = document.createElement('input');
-    input.type = 'file';
-
-    input.onchange = (e) => {
-        let file = e.target.files[0];
-
-        const extension = file.name.split('.').pop();
-
-        if (extension !== 'csv') {
-            setErrorMessageExtensionFichero(true, 'mensajeAlertaExtension');
-            return;
-        }
-
-        Papa.parse(file, {
-            header: true,
-            complete: function (res) {
-                if (res.errors.length > 0) {
-                    res.errors.forEach((error) => {
-                        console.error(error.message);
-                    })
-
-                    setErrorMessageExtensionFichero(true, 'mensajeAlertaExtension');
-                    return;
-                }
-
-                let losDatos = {
-                    SVA: [],
-                    SVB: []
-                }
-
-                try {
-                    res.data.forEach((vehiculo) => {
-                        if (vehiculo.Tipo == 'SVA') {
-                            losDatos.SVA.push(vehiculo);
-                        } else {
-                            losDatos.SVB.push(vehiculo);
-                        }
-                    });
-                } catch (error) {
-                    setErrorMessageExtensionFichero(true);
-                    console.error(error);
-                    return;
-                }
-
-                setErrorMessageExtensionFichero(false, 'mensajeAlertaExtension');
-                resetPage();
-                cargarDatos(losDatos);
-                activarControles();
-
-                document.getElementById('botonCargarFicheroCSV').innerHTML = "Cargar datos nuevos";
-
-            }
-        })
-    }
-
+    let input = document.getElementById("ElInputDeCSV");
+    //input.type = 'file';
     input.click();
 }
 
@@ -592,4 +545,61 @@ function setErrorMessageExtensionFichero(hayError, id) {
     } else {
         mensaje.classList.add('invisible');
     }
+}
+
+/**
+ * Función de procesado de archivo CSV para cargar vehiculos
+ * @param {event} e Evento onChange del input archivos 
+ */
+function onArchivoRecibidoEnInputCSV(e) {
+
+    let file = e.target.files[0];
+
+    const extension = file.name.split('.').pop();
+
+    if (extension !== 'csv') {
+        setErrorMessageExtensionFichero(true, 'mensajeAlertaExtension');
+        return;
+    }
+
+    Papa.parse(file, {
+        header: true,
+        complete: function (res) {
+            if (res.errors.length > 0) {
+                res.errors.forEach((error) => {
+                    console.error(error.message);
+                })
+
+                setErrorMessageExtensionFichero(true, 'mensajeAlertaExtension');
+                return;
+            }
+
+            let losDatos = {
+                SVA: [],
+                SVB: []
+            }
+
+            try {
+                res.data.forEach((vehiculo) => {
+                    if (vehiculo.Tipo == 'SVA') {
+                        losDatos.SVA.push(vehiculo);
+                    } else {
+                        losDatos.SVB.push(vehiculo);
+                    }
+                });
+            } catch (error) {
+                setErrorMessageExtensionFichero(true);
+                console.error(error);
+                return;
+            }
+
+            setErrorMessageExtensionFichero(false, 'mensajeAlertaExtension');
+            resetPage();
+            cargarDatos(losDatos);
+            activarControles();
+
+            document.getElementById('botonCargarFicheroCSV').innerHTML = "Cargar datos nuevos";
+
+        }
+    })
 }

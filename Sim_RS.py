@@ -129,17 +129,22 @@ def getEstimacionPoblacion_WorlPop(poligono):
     taskQueueRespuesta = requests.get(query)
 
     if taskQueueRespuesta.status_code != 200:
-        return 'Not avalaible'
+        return 'Not disponible'
 
     respuestaJson = taskQueueRespuesta.json()
 
     if (respuestaJson['error']):
         return respuestaJson['error']
 
-    if (respuestaJson['status'] != 'finished'):
-        return 'Not avalaible'
+    if (respuestaJson['status'] != 'finished' or not respuestaJson['data']):
+        return 'No disponible'
 
-    return respuestaJson['data']
+    print(respuestaJson)
+    try:
+        return respuestaJson['data']
+    except KeyError as error:
+        print(error)
+        return 'No disponible'
 
 eel.init("frontend")
 eel.start('main.html', cmdline_args=['--start-fullscreen'], size=(1280, 720), position=(0,0))
