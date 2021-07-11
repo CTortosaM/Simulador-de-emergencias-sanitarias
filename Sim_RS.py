@@ -138,12 +138,9 @@ def getEstimacionPoblacion_WorlPop(poligono):
 
     if (respuestaJson['status'] != 'finished' or not respuestaJson['data']):
         return 'No disponible'
-
-    print(respuestaJson)
     try:
         return respuestaJson['data']
     except KeyError as error:
-        print(error)
         return 'No disponible'
 
 eel.init("frontend")
