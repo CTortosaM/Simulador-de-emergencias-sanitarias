@@ -14,14 +14,11 @@ class Overlap {
         this.simplePolygons = [];
 
         if (geometry.geometry.type === 'MultiPolygon') {
-            let coordinates1 = geometry.geometry.coordinates[0];
-            let coordinates2 = geometry.geometry.coordinates[1];
+            console.log()
+            geometry.geometry.coordinates.forEach((coord) => {
+                poligonos.push(turf.polygon(coord));
+            });
 
-            let poly1 = turf.polygon(coordinates1);
-            let poly2 = turf.polygon(coordinates2);
-
-            poligonos.push(poly1);
-            poligonos.push(poly2);
         } else {
             poligonos.push(geometry);
         }
@@ -65,30 +62,6 @@ class Overlap {
 
         this.marcador.on('click', (e) => {
             if (!this.estimacionPoblacion) {
-                /*eel.getEstimacionPoblacion(geometry.geometry.coordinates[0])()
-                .then((data) => {
-                    this.estimacionPoblacion = data.results[0].value.estimates['gpw-v4-population-count-rev10_2020']['SUM'];
-                    this.marcador.setPopupContent(`<p>${this.estimacionPoblacion}`);
-                }); */
-
-                /* enlaceABackend.getEstimacionPoblacion_WorldPop(this.simpleGeometry, (res, error) => {
-                    if (error) {
-                        this.marcador.setPopupContent('Error');
-                        return;
-                    }
-                    try {
-                        this.estimacionPoblacion = Math.floor(res.total_population);
-
-                        if (isNaN(this.estimacionPoblacion)) {
-                            this.marcador.setPopupContent('Error obteniendo datos de población');
-                        } else {
-                            this.marcador.setPopupContent(`Población cubierta: ${this.estimacionPoblacion}`);
-                        }
-                    } catch (err) {
-                        this.marcador.setPopupContent('Error obteniendo datos de población');
-                    }
-                }) */
-
                 this.getEstimacionPoblacionOverlap(0, 0);
             }
         });
@@ -118,11 +91,15 @@ class Overlap {
 
 
     getEstimacionPoblacionOverlap(index, estimacion) {
-        if (index >= this.simplePolygons.length || isNaN(estimacion)) {
+        if (index >= this.simplePolygons.length || isNaN(estimacion) || this.estimacionPoblacion) {
             return;
         }
 
         this.marcador.setPopupContent(`Estimando población ${index+1}/${this.simplePolygons.length} segmentos`);
+
+        if (!this.simplePolygons[index]) {
+            index +=1;
+        }
         enlaceABackend.getEstimacionPoblacion_WorldPop(this.simplePolygons[index], (res, err) => {
             if (err || isNaN(res.total_population)) {
                 this.marcador.setPopupContent('Error obteniendo datos de población');

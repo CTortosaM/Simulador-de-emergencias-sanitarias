@@ -75,6 +75,7 @@ class Base {
                 }
 
                 unVehiculo.setVisibilidadIsocrona(false);
+                unVehiculo.isocrona = null;
                 elMapa.removeLayer(unVehiculo.marcador);
 
                 this._updatePopup();

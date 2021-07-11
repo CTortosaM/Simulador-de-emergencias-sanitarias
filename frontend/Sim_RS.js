@@ -295,7 +295,9 @@ function onIsochroneMoved(e, isochroneEntity) {
  * @param {event} e Evento click del botón html
  */
 function toggleIsocronas(e) {
-    if (currentOverlap) currentOverlap.hide();
+    if (currentOverlap) {
+        currentOverlap.hide();
+    }
     let flag = true;
     isocronasVisibles = !isocronasVisibles;
 
@@ -333,6 +335,11 @@ function extraerVehiculo() {
 function anyadirVehiculo(vehiculo) {
     if (lastBaseClicked) {
         lastBaseClicked.anyadirVehiculo(vehiculo);
+
+        if (overlapCandidates.includes(vehiculo) && currentOverlap) {
+            currentOverlap.hide();
+            currentOverlap = null;
+        }
     }
 }
 
