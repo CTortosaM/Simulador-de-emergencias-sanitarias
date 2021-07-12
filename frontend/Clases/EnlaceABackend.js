@@ -13,7 +13,12 @@ class EnlaceABackend {
      */
     getEstimacionPoblacion_WorldPop(poligono, callback) {
         eel.getEstimacionPoblacion_WorlPop(poligono)().then((resultado) => {
-            callback(resultado, null);
+            if (!resultado.total_population) {
+                callback(null, 'Error obteniendo datos');
+            } else {
+                callback(resultado, null);
+            }
+            
         }, (rejected) => {
             callback(null, rejected);
         })

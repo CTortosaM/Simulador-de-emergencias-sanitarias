@@ -80,7 +80,10 @@ sliderTiempoIsocronas.oninput = (ev) => {
 }
 
 sliderTiempoIsocronas.onchange = (ev) => {
-    if (currentOverlap) currentOverlap.hide();
+    if (currentOverlap) {
+        currentOverlap.hide();
+        currentOverlap = null;
+    }
     tiempoDeIsocronas = parseInt(sliderTiempoIsocronas.value);
     updateTiempoDeIsocronas(parseInt(sliderTiempoIsocronas.value));
 }
@@ -261,7 +264,7 @@ function cargarDatos(datos) {
 }
 
 /**
- * Evento disparado al arrastrar marcador
+ * Evento disparado al clickar el marcador
  * @param {IsochroneEntity} isochroneEntity
  */
 function onIsochroneMoved(e, isochroneEntity) {
@@ -311,7 +314,13 @@ function toggleIsocronas(e) {
 
             for (let i = 0; i < entidadesMapa[tipo].length; i++) {
                 entidadesMapa[tipo][i].setVisibilidadIsocrona(flag);
-                if (currentOverlap && flag) currentOverlap.show();
+                if (currentOverlap) {
+                    if (flag) {
+                        currentOverlap.show();
+                    } else {
+                        currentOverlap.hide();
+                    }
+                }
             }
         }
     })
@@ -339,7 +348,7 @@ function anyadirVehiculo(vehiculo) {
         if (overlapCandidates.includes(vehiculo) && currentOverlap) {
             currentOverlap.hide();
             currentOverlap = null;
-        }
+        }   
     }
 }
 
@@ -363,6 +372,7 @@ function updateTiempoDeIsocronas(tiempo) {
         if (subseccion === "SVA" || subseccion === "SVB") {
             entidadesMapa[subseccion].forEach((vehiculo) => {
                 vehiculo.tiempoDeIsocrona = tiempo;
+
                 if (vehiculo.tieneIsocrona()) {
                     vehiculo.actualizarIsocrona(tiempo, (res, err) => {
                         if (err) console.error(err);
@@ -559,7 +569,6 @@ function setErrorMessageExtensionFichero(hayError, id) {
  * @param {event} e Evento onChange del input archivos 
  */
 function onArchivoRecibidoEnInputCSV(e) {
-
     let file = e.target.files[0];
 
     const extension = file.name.split('.').pop();

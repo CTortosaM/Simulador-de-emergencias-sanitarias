@@ -14,7 +14,6 @@ class Overlap {
         this.simplePolygons = [];
 
         if (geometry.geometry.type === 'MultiPolygon') {
-            console.log()
             geometry.geometry.coordinates.forEach((coord) => {
                 poligonos.push(turf.polygon(coord));
             });
