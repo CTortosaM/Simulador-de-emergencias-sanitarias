@@ -160,9 +160,9 @@ function desactivarControles() {
  * 
  */
 function cargarFicheroCSVdeVehiculos() {
-
-    let input = document.getElementById("ElInputDeCSV");
-    //input.type = 'file';
+    let input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = onArchivoRecibidoEnInputCSV;
     input.click();
 }
 
@@ -348,7 +348,7 @@ function anyadirVehiculo(vehiculo) {
         if (overlapCandidates.includes(vehiculo) && currentOverlap) {
             currentOverlap.hide();
             currentOverlap = null;
-        }   
+        }
     }
 }
 
@@ -376,6 +376,7 @@ function updateTiempoDeIsocronas(tiempo) {
                 if (vehiculo.tieneIsocrona()) {
                     vehiculo.actualizarIsocrona(tiempo, (res, err) => {
                         if (err) console.error(err);
+                        vehiculo.setVisibilidadIsocrona(true);
                     });
                 }
             });
@@ -521,7 +522,7 @@ function elShapeFileYaEstaEnElMapa(nombreShapefile) {
  * Elimina todos los vehículos e isócronas del mapa
  */
 function resetPage() {
-
+    console.log("Reseteo la página");
     // Elimina los vehiculos del mapa
     Object.keys(entidadesMapa).forEach((tipo) => {
         entidadesMapa[tipo].forEach((entidad) => {
@@ -603,19 +604,19 @@ function onArchivoRecibidoEnInputCSV(e) {
                         losDatos.SVB.push(vehiculo);
                     }
                 });
+
+                resetPage();
+                setErrorMessageExtensionFichero(false, 'mensajeAlertaExtension');
+                cargarDatos(losDatos);
+                activarControles();
+
+                document.getElementById('botonCargarFicheroCSV').innerHTML = "Cargar datos nuevos";
+
             } catch (error) {
                 setErrorMessageExtensionFichero(true);
                 console.error(error);
                 return;
             }
-
-            setErrorMessageExtensionFichero(false, 'mensajeAlertaExtension');
-            resetPage();
-            cargarDatos(losDatos);
-            activarControles();
-
-            document.getElementById('botonCargarFicheroCSV').innerHTML = "Cargar datos nuevos";
-
         }
-    })
+    });
 }

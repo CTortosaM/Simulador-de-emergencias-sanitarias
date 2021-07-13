@@ -131,14 +131,16 @@ def getEstimacionPoblacion_WorlPop(poligono):
     if taskQueueRespuesta.status_code != 200:
         return 'Not disponible'
 
-    respuestaJson = taskQueueRespuesta.json()
-
-    if (respuestaJson['error']):
-        return respuestaJson['error']
-
-    if (respuestaJson['status'] != 'finished' or not respuestaJson['data']):
-        return 'No disponible'
     try:
+
+        respuestaJson = taskQueueRespuesta.json()
+
+        if (respuestaJson['error']):
+            return respuestaJson['error']
+
+        if (not respuestaJson['data'] or respuestaJson['status'] != 'finished'):
+            return 'No disponible'
+
         return respuestaJson['data']
     except KeyError as error:
         return 'No disponible'
