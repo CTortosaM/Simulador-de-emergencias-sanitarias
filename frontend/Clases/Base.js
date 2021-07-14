@@ -10,7 +10,6 @@ class Base {
      * @param {number} lng Longitud de la posición
      * @param {string} descripcion Descripción de la base
      * @param {object} elMapa Referencia al mapa de Leaflet
-     * @param {function} onClickExtraer Acción al clickar botón de extraer
      */
     constructor(lat = 0, lng = 0, descripcion = 'Una descripción', elMapa) {
         this.posicion = {
