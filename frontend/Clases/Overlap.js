@@ -1,3 +1,7 @@
+/**
+ * Clase que representa una intersección
+ * entre isócronas
+ */
 class Overlap {
 
     /**
@@ -90,6 +94,12 @@ class Overlap {
 
 
     getEstimacionPoblacionOverlap(index, estimacion) {
+
+        // la idea de esta función es que se llame a sí misma recursivamente
+        // calculando la población por cada posible segmento que la forme.
+        // Tener en cuenta que una intersección entre polígonos puede dar
+        // como resultado múltiples segmentos
+
         if (index >= this.simplePolygons.length || isNaN(estimacion) || this.estimacionPoblacion) {
             return;
         }

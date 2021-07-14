@@ -128,7 +128,7 @@ enlaceABackend.getBases_DB((err, res) => {
  * Realiza una petición al backend para sustraer los datos
  * referidos a un tipo de entidad del mapa
  * @param {string} tipo Tipo de entidad del mapa 
- * @param {function} callback Callback para resultados
+ * @param {function} callback (datos/error)
  */
 function getDatos(tipo = 'SVA', callback) {
     enlaceABackend.getVehiculos(tipo, (datos, error) => {
@@ -189,6 +189,7 @@ function cargarDatos(datos) {
         vehiculo.marcador.on('click', (e) => {
             onIsochroneMoved(e.latlng, vehiculo)
 
+            // Si se oculta uno de las isocronas, oculta la intersección
             if (overlapCandidates.includes(vehiculo)) {
                 if (currentOverlap) {
                     let visible1 = overlapCandidates[0].esLaIsocronaVisible();
@@ -304,6 +305,10 @@ function toggleIsocronas(e) {
     let flag = true;
     isocronasVisibles = !isocronasVisibles;
 
+    /*
+        Si hay una isocrona visible, las ocultamos.
+        Si están todas ocultas, las mostramos
+    */ 
     Object.keys(entidadesMapa).forEach((tipo) => {
         if (tipo === 'SVA' || tipo === 'SVB') {
             for (let i = 0; i < entidadesMapa[tipo].length; i++) {
@@ -366,9 +371,6 @@ function setSelectionMode(selecting) {
  */
 function updateTiempoDeIsocronas(tiempo) {
     Object.keys(entidadesMapa).forEach((subseccion) => {
-
-        // TODO: Considerar cambiar este if statement por algo
-        // del estilo if (subseccion !== "Base")
         if (subseccion === "SVA" || subseccion === "SVB") {
             entidadesMapa[subseccion].forEach((vehiculo) => {
                 vehiculo.tiempoDeIsocrona = tiempo;
@@ -451,6 +453,7 @@ function anyadirCapaShapefile(nombreShapefile, capa) {
 /**
  * Elimina los elementos no alphanumericos del string
  * @param {string} input String al cual hacer sanitizing
+ * @returns string limpio
  */
 function sanitizeString(input) {
     input = input.replace('zip', '');

@@ -9,7 +9,7 @@ class EnlaceABackend {
     /**
      * 
      * @param {Array} poligono Array con los vértices del polígono 
-     * @param {function} callback Función callback para devolver el resultado 
+     * @param {function} callback (resultado/error)
      */
     getEstimacionPoblacion_WorldPop(poligono, callback) {
         eel.getEstimacionPoblacion_WorlPop(poligono)().then((resultado) => {
@@ -26,7 +26,7 @@ class EnlaceABackend {
 
     /**
      * Contacta al backend para extraer la información de bases
-     * @param {function} callback 
+     * @param {function} callback (Error/Res)
      */
     getBases_DB(callback) {
         eel.getDatosDeBases()().then((data) => {

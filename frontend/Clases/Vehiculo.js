@@ -231,7 +231,7 @@ class Vehiculo {
     }
 
     /**
-     * 
+     * ¿Es la isocrona visible en el mapa? Esta función te lo dice
      * @returns {boolean} Visibilidad de la isocrona en el mapa
      */
     esLaIsocronaVisible() {
@@ -243,7 +243,7 @@ class Vehiculo {
      * Comprueba si existe solape entre isocronas y devuelve
      * un objeto Overlap / null
      * @param {Vehiculo} otroVehiculo 
-     * @returns interseccion
+     * @returns interseccion (Overlap)
      */
     checkSolapeCon(otroVehiculo) {
 
@@ -264,12 +264,11 @@ class Vehiculo {
     }
 
     /**
-     * Acción a realizar cuando se arrastra el marcador
-     * @param {Position} newPos {Lat, lng}
+     * Acción a realizar cuando se clicka
      * @param {function} callback Callback(isocrona//null)
      * @returns 
      */
-    onDragMarcador(newPos, callback) {
+    onDragMarcador(callback) {
 
         if (!this.marcador.isPopupOpen() || this.isocrona) {
             callback(this.isocrona);

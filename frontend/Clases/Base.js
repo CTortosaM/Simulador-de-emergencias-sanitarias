@@ -12,7 +12,7 @@ class Base {
      * @param {object} elMapa Referencia al mapa de Leaflet
      * @param {function} onClickExtraer Acción al clickar botón de extraer
      */
-    constructor(lat = 0, lng = 0, descripcion = 'Una descripción', elMapa, onClickExtraer) {
+    constructor(lat = 0, lng = 0, descripcion = 'Una descripción', elMapa) {
         this.posicion = {
             lat: lat,
             lng: lng
@@ -61,7 +61,7 @@ class Base {
 
     /**
      * Añade vehiculo a la pila correspondiente
-     * @param {Vehiculo} unVehiculo
+     * @param {Vehiculo} unVehiculo 
      */
     anyadirVehiculo(unVehiculo) {
         if (unVehiculo instanceof Vehiculo) {
@@ -108,7 +108,9 @@ class Base {
         elVehiculo.marcador.addTo(elMapa);
     }
 
-
+    /**
+     * Actualiza el contenido del popup
+     */
     _updatePopup() {
         this.marcador.setPopupContent(`
         <b>${this.descripcion}</b>
